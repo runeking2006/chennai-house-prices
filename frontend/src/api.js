@@ -1,6 +1,6 @@
 // simple API wrapper for /meta and /predict
 
-const API_BASE = "http://127.0.0.1:8000"; // set if needed, default same origin
+const API_BASE = "https://chennai-house-prices.onrender.com";
 
 export async function fetchMeta() {
   const res = await fetch(`${API_BASE}/meta`);
