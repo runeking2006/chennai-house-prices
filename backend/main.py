@@ -217,15 +217,20 @@ class FormData(BaseModel):
 @app.post("/store_form_data")
 def store_form_data(data: FormData):
     try:
-        cursor.execute("""
-            INSERT INTO user_inputs (district, taluk, property_type, ownership_type, built_area_sqft, bedrooms, bathrooms)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (data.district, data.taluk, data.property_type, data.ownership_type,
-              data.built_area_sqft, data.bedrooms, data.bathrooms))
-        conn.commit()
+        with psycopg2.connect(DATABASE_URL) as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO user_inputs 
+                    (district, taluk, property_type, ownership_type, built_area_sqft, bedrooms, bathrooms)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    data.district, data.taluk, data.property_type, data.ownership_type,
+                    data.built_area_sqft, data.bedrooms, data.bathrooms
+                ))
         return {"message": "Form data stored successfully!"}
     except Exception as e:
         return {"error": str(e)}
+
 
 @app.get("/")
 def root():
