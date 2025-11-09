@@ -5,6 +5,22 @@ import joblib
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict, Any
+import psycopg2  # <--- Added for database connection
+import os
+from urllib.parse import urlparse
+
+# === Database Connection ===
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable not set")
+
+url = urlparse(DATABASE_URL)
+db_config = {
+    "host": url.hostname,
+    "database": url.path[1:],
+    "user": url.username,
+    "password": url.password
+}
 
 # === FastAPI App ===
 app = FastAPI()
@@ -20,6 +36,10 @@ app.add_middleware(
 model = joblib.load("models/xgb_tn_property_model.pkl")
 feature_scaler = joblib.load("models/feature_scaler.pkl")
 label_encoders = joblib.load("models/label_encoders.pkl")  # expected dict: {col_name: LabelEncoder}
+
+# === Database Connection ===
+conn = psycopg2.connect(DATABASE_URL)
+cursor = conn.cursor()
 
 # === Build full District–Taluk Mapping ===
 district_taluk_pairs = [
@@ -128,15 +148,11 @@ class InputData(BaseModel):
 
 # === Helper: build /meta lists ===
 def build_meta() -> Dict[str, Any]:
-    # districts (sorted)
     districts = sorted(list({d for d, _ in district_taluk_pairs}))
-
-    # taluks per district
     taluks_by_district: Dict[str, List[str]] = {}
     for d, t in district_taluk_pairs:
         taluks_by_district.setdefault(d, []).append(t)
 
-    # property_types & ownership_types from label_encoders if available, else fallbacks
     if isinstance(label_encoders, dict):
         prop_types = list(label_encoders.get("property_type").classes_) if label_encoders.get("property_type") is not None else ["Apartment", "Independent_House", "Villa", "Plot"]
         owner_types = list(label_encoders.get("ownership_type").classes_) if label_encoders.get("ownership_type") is not None else ["Freehold", "Leasehold", "Cooperative"]
@@ -153,22 +169,13 @@ def build_meta() -> Dict[str, Any]:
 
 @app.get("/meta")
 def meta():
-    """
-    Returns:
-    - districts: list of district names
-    - taluks_by_district: { district: [taluk, ...] }
-    - property_types: list of property type categories (derived from encoders if present)
-    - ownership_types: list of ownership type categories (derived from encoders if present)
-    """
     return build_meta()
 
 @app.post("/predict")
 def predict(data: InputData):
     try:
-        # combine district + taluk as trained feature
         district_taluk = district_taluk_map.get((data.district, data.taluk), "Unknown_Taluk")
 
-        # build input dict
         input_dict = {
             "district_taluk": district_taluk,
             "property_type": data.property_type,
@@ -180,22 +187,16 @@ def predict(data: InputData):
 
         df = pd.DataFrame([input_dict])
 
-        # --- Encode categorical safely ---
         for col, le in label_encoders.items():
             if col in df.columns:
                 if df.at[0, col] not in le.classes_:
-                    # extend encoder with unseen label temporarily
                     le.classes_ = np.append(le.classes_, df.at[0, col])
                 df[col] = le.transform(df[col])
 
-        # --- Scale numeric features only ---
         num_cols = ["built_area_sqft", "bedrooms", "bathrooms"]
         df[num_cols] = feature_scaler.transform(df[num_cols])
-
-        # --- Reorder to match training ---
         df = df[feature_columns]
 
-        # --- Predict ---
         prediction = model.predict(df)[0]
         price_inr = np.expm1(prediction)
         return {"predicted_price": round(float(price_inr), 2)}
@@ -203,6 +204,28 @@ def predict(data: InputData):
     except Exception as e:
         return {"error": str(e)}
 
+# === New Endpoint to Store User Inputs ===
+class FormData(BaseModel):
+    district: str
+    taluk: str
+    property_type: str
+    ownership_type: str
+    built_area_sqft: float
+    bedrooms: int
+    bathrooms: int
+
+@app.post("/store_form_data")
+def store_form_data(data: FormData):
+    try:
+        cursor.execute("""
+            INSERT INTO user_inputs (district, taluk, property_type, ownership_type, built_area_sqft, bedrooms, bathrooms)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (data.district, data.taluk, data.property_type, data.ownership_type,
+              data.built_area_sqft, data.bedrooms, data.bathrooms))
+        conn.commit()
+        return {"message": "Form data stored successfully!"}
+    except Exception as e:
+        return {"error": str(e)}
 
 @app.get("/")
 def root():
