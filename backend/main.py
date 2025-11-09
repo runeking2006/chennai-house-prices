@@ -8,6 +8,8 @@ from typing import List, Dict, Any
 import psycopg2  # <--- Added for database connection
 import os
 from urllib.parse import urlparse
+import sqlite3
+from datetime import datetime
 
 # === Database Connection ===
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -217,11 +219,12 @@ class FormData(BaseModel):
 @app.post("/store_form_data")
 def store_form_data(data: FormData):
     try:
+        
         with psycopg2.connect(DATABASE_URL) as conn:
             with conn.cursor() as cursor:
                 cursor.execute("""
-                    INSERT INTO user_inputs 
-                    (district, taluk, property_type, ownership_type, built_area_sqft, bedrooms, bathrooms)
+                    INSERT INTO user_inputs
+                    (district, taluk, property_type, ownership_type, built_area_sqft, bedrooms, bathrooms) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """, (
                     data.district, data.taluk, data.property_type, data.ownership_type,
@@ -231,6 +234,40 @@ def store_form_data(data: FormData):
     except Exception as e:
         return {"error": str(e)}
 
+
+@app.get("/analytics/property_distribution")
+def get_property_distribution():
+    try:
+        with psycopg2.connect(DATABASE_URL) as conn:
+            df = pd.read_sql_query("SELECT * FROM user_inputs", conn)
+
+        if df.empty:
+            return {"message": "No data yet"}
+
+        grouped = (
+            df.groupby(["district", "taluk", "property_type", "ownership_type"])
+            .size()
+            .reset_index(name="count")
+        )
+        return grouped.to_dict(orient="records")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/analytics/trends")
+def get_trends():
+    try:
+        with psycopg2.connect(DATABASE_URL) as conn:
+            df = pd.read_sql_query("SELECT * FROM user_inputs", conn)
+
+        if df.empty or "created_at" not in df.columns:
+            return {"message": "No data yet"}
+
+        df["date"] = pd.to_datetime(df["created_at"]).dt.date
+        trend = df.groupby("date").size().reset_index(name="count")
+        return trend.to_dict(orient="records")
+    except Exception as e:
+        return {"error": str(e)}
 
 @app.get("/")
 def root():
