@@ -1,7 +1,9 @@
 // src/App.js
 import React, { useEffect, useState } from "react";
-import { fetchMeta, predictPrice } from "./api";
+import { fetchMeta, predictPrice, storeFormData, getPropertyDistribution, getTrends, fetchAnalytics, fetchTrends } from "./api";
 import { motion, AnimatePresence } from "framer-motion";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
+import "chart.js/auto";
 
 /*
   NOTE: We use meta from backend when possible.
@@ -127,6 +129,18 @@ function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [predicting, setPredicting] = useState(false);
+  const [distribution, setDistribution] = useState([]);
+  const [trends, setTrends] = useState([]);
+  const [selectedView, setSelectedView] = useState("freehold");
+  const [selectedPropertyType, setSelectedPropertyType] = useState("house");
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [isDrilledDown, setIsDrilledDown] = useState(false);
+  const [propertyDistribution, setPropertyDistribution] = useState([]);
+  const [trendData, setTrendData] = useState([]);
+  const [drillData, setDrillData] = useState([]);
+  const [ownershipFilter, setOwnershipFilter] = useState("Freehold");
+  const [analytics, setAnalytics] = useState([]);
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#B53471", "#833471"];
 
 useEffect(() => {
   let mounted = true;
@@ -176,6 +190,84 @@ useEffect(() => {
 }, []);
 
 
+  useEffect(() => {
+    async function loadAnalytics() {
+      const distData = await getPropertyDistribution(selectedView, selectedPropertyType, selectedDistrict);
+      setDistribution(distData);
+      const trendData = await getTrends();
+      setTrends(trendData);
+    }
+    loadAnalytics();
+  }, [selectedView, selectedPropertyType, selectedDistrict]);
+
+  useEffect(() => {
+    fetch("https://chennai-house-prices.onrender.com/analytics/property_distribution")
+      .then((res) => res.json())
+      .then(setPropertyDistribution);
+
+    fetch("https://chennai-house-prices.onrender.com/analytics/trends")
+      .then((res) => res.json())
+      .then(setTrendData);
+  }, []);
+
+  const handleDistrictClick = (district) => {
+    if (selectedDistrict === district) {
+      setSelectedDistrict(null);
+      setDrillData([]);
+    } else {
+      setSelectedDistrict(district);
+      const filtered = propertyDistribution.filter(
+        (item) => item.district === district
+      );
+      setDrillData(filtered);
+    }
+  };
+
+  const mainPieData = {
+    labels: [
+      ...new Set(propertyDistribution.map((item) => item.district)),
+    ],
+    datasets: [
+      {
+        data: Object.values(
+          propertyDistribution.reduce((acc, cur) => {
+            acc[cur.district] = (acc[cur.district] || 0) + cur.count;
+            return acc;
+          }, {})
+        ),
+        backgroundColor: [
+          "#60a5fa", "#f87171", "#34d399", "#fbbf24", "#a78bfa",
+        ],
+      },
+    ],
+  };
+
+  const drillPieData = {
+    labels: drillData.map((d) => d.taluk),
+    datasets: [
+      {
+        data: drillData.map((d) => d.count),
+        backgroundColor: [
+          "#34d399", "#fbbf24", "#a78bfa", "#60a5fa", "#f87171",
+        ],
+      },
+    ],
+  };
+
+  const trendChartData = {
+    labels: trendData.map((d) => d.date),
+    datasets: [
+      {
+        label: "User Activity Over Time",
+        data: trendData.map((d) => d.count),
+        borderColor: "#2563eb",
+        backgroundColor: "rgba(37,99,235,0.2)",
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  };
+
   function handleDistrictChange(e) {
     const district = e.target.value;
     const newTaluks = (meta && meta.taluks_by_district[district]) || [];
@@ -208,6 +300,8 @@ useEffect(() => {
       const data = await predictPrice(payload);
       if (data.predicted_price !== undefined) {
         setResult(data.predicted_price);
+        // ✅ log the form input quietly for analytics
+        await storeFormData(payload);
       } else if (data.error) {
         setError(data.error);
       } else {
@@ -221,6 +315,26 @@ useEffect(() => {
   }
 
   const formatRupee = (n) => `₹ ${Number(n).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+
+  const handleSliceClick = (data) => {
+    if (!isDrilledDown) {
+      setSelectedDistrict(data.name);
+      setIsDrilledDown(true);
+    } else {
+      setSelectedDistrict(null);
+      setIsDrilledDown(false);
+    }
+  };
+
+  const toggleOwnership = () => {
+    setSelectedView((prev) => (prev === "freehold" ? "leasehold" : "freehold"));
+    setIsDrilledDown(false);
+    setSelectedDistrict(null);
+  };
+
+  const filteredAnalytics = analytics.filter(
+    (item) => item.ownership_type === ownershipFilter
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
@@ -364,6 +478,11 @@ useEffect(() => {
                       </>
                     ) : null}
                   </div>
+                  {/* Note below prediction */}
+                  <p className="mt-4 text-xs text-gray-500 italic">
+                    NOTE: These data help analyze which districts, taluks, and property types users prefer most.
+                  </p>
+
                 </motion.div>
               )}
             </AnimatePresence>
@@ -375,6 +494,189 @@ useEffect(() => {
             )}
           </form>
         )}
+
+        {/* Swipe right / arrow indicator */}
+        <div className="mt-6 text-center text-sm text-blue-600 cursor-pointer select-none">
+          ➡️ Swipe right to view insights
+        </div>
+
+        {/* Analytics and Visualization Section */}
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-4">Analytics & Insights</h2>
+
+          {/* Property Distribution Pie Chart */}
+          <div className="mb-8">
+            <h3 className="text-lg font-medium mb-2">Property Distribution</h3>
+            <div className="flex items-center mb-2">
+              <span className="text-sm mr-2">View by:</span>
+              <button
+                onClick={toggleOwnership}
+                className={`px-3 py-1 rounded-md text-sm mr-2 ${selectedView === "freehold" ? "bg-blue-600 text-white" : "bg-gray-100"}`}
+              >
+                Freehold
+              </button>
+              <button
+                onClick={toggleOwnership}
+                className={`px-3 py-1 rounded-md text-sm ${selectedView === "leasehold" ? "bg-blue-600 text-white" : "bg-gray-100"}`}
+              >
+                Leasehold
+              </button>
+            </div>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={distribution}
+                  dataKey="count"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  onClick={handleSliceClick}
+                >
+                  {distribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Trends Line Chart */}
+          <div>
+            <h3 className="text-lg font-medium mb-2">Trends Over Time</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={trends}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="average_price" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Analytics Section */}
+        <motion.div
+          className="mt-8 overflow-x-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-medium">User Insights</h2>
+            <button
+              onClick={toggleOwnership}
+              className="px-3 py-1 border rounded-md text-sm"
+            >
+              View: {selectedView === "freehold" ? "Freehold" : "Leasehold"}
+            </button>
+          </div>
+
+          <div className="flex space-x-6 w-[800px]">
+            {/* Pie Chart Section */}
+            <ResponsiveContainer width="50%" height={300}>
+              <PieChart>
+                <Pie
+                  data={distribution}
+                  dataKey="value"
+                  nameKey="name"
+                  outerRadius={120}
+                  fill="#8884d8"
+                  onClick={handleSliceClick}
+                >
+                  {distribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+
+            {/* Trendline Section */}
+            <ResponsiveContainer width="50%" height={300}>
+              <LineChart data={trends}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="count" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        {/* New Analytics and Trends Section */}
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-4">Detailed Analytics & Trends</h2>
+
+          {/* Ownership Filter */}
+          <div className="flex items-center mb-4">
+            <span className="text-sm mr-2">Ownership:</span>
+            <button
+              onClick={() => setOwnershipFilter("Freehold")}
+              className={`px-3 py-1 rounded-md text-sm mr-2 ${ownershipFilter === "Freehold" ? "bg-blue-600 text-white" : "bg-gray-100"}`}
+            >
+              Freehold
+            </button>
+            <button
+              onClick={() => setOwnershipFilter("Leasehold")}
+              className={`px-3 py-1 rounded-md text-sm ${ownershipFilter === "Leasehold" ? "bg-blue-600 text-white" : "bg-gray-100"}`}
+            >
+              Leasehold
+            </button>
+          </div>
+
+          {/* Analytics Pie Chart */}
+          <div className="mb-8">
+            <h3 className="text-lg font-medium mb-2">Property Type Distribution</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={filteredAnalytics}
+                  dataKey="count"
+                  nameKey="property_type"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={120}
+                  fill="#8884d8"
+                  label
+                >
+                  {filteredAnalytics.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Trends Line Chart */}
+          <div>
+            <h3 className="text-lg font-medium mb-2">Average Price Trends</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={trends}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="district" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="avg_price"
+                  stroke="#8884d8"
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
     </div>
   );
