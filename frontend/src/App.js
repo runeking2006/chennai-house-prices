@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { predictPrice } from "./api"; // <--- Your API helper
 
-// === Manually insert your district-taluk pairs here ===
 const district_taluk_pairs = [
   ["Chennai", "Alandur"], ["Chennai", "Ambattur"], ["Chennai", "Aminjikarai"], ["Chennai", "Ayanavaram"],
 ["Chennai", "Egmore"], ["Chennai", "Guindy"], ["Chennai", "Madhavaram"], ["Chennai", "Madhuravoyal"],
@@ -87,8 +86,16 @@ const district_taluk_pairs = [
 ["Tenkasi", "Sivagiri"], ["Tenkasi", "Thiruvengadam"], ["Tenkasi", "Veerakeralampudur"],
 ["Tirupathur", "Tirupathur"], ["Tirupathur", "Ambur"], ["Tirupathur", "Natrampalli"], ["Tirupathur", "Vaniyambadi"],
 ["Mayiladuthurai", "Mayiladuthurai"], ["Mayiladuthurai", "Kuthalam"], ["Mayiladuthurai", "Sirkali"], ["Mayiladuthurai", "Tharangambadi"]
-
 ];
+
+// === Helper for Indian currency formatting ===
+const formatINR = (num) => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(num);
+};
 
 export default function App() {
   const [form, setForm] = useState({
@@ -103,10 +110,9 @@ export default function App() {
 
   const [taluks, setTaluks] = useState([]);
   const [prediction, setPrediction] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // === Build meta from district_taluk_pairs manually ===
   const districts = [...new Set(district_taluk_pairs.map(([d]) => d))];
   const taluks_by_district = districts.reduce((acc, d) => {
     acc[d] = district_taluk_pairs
@@ -137,8 +143,11 @@ export default function App() {
         bedrooms: parseInt(form.bedrooms),
         bathrooms: parseInt(form.bathrooms),
       });
+
       if (res.predicted_price) {
-        setPrediction(res.predicted_price);
+        const totalPrice = parseFloat(res.predicted_price);
+        const perSqft = totalPrice / parseFloat(form.built_area_sqft || 1);
+        setPrediction({ totalPrice, perSqft });
       } else if (res.error) {
         setMessage(res.error);
       }
@@ -154,43 +163,25 @@ export default function App() {
       className="app-container"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      style={{
-        maxWidth: "400px",
-        margin: "auto",
-        padding: "20px",
-        fontFamily: "sans-serif",
-      }}
+      style={{ maxWidth: "400px", margin: "auto", padding: "20px", fontFamily: "sans-serif" }}
     >
       <h2>Property Price Predictor</h2>
 
       <select name="district" value={form.district} onChange={handleChange}>
         <option value="">Select District</option>
         {districts.map((d) => (
-          <option key={d} value={d}>
-            {d}
-          </option>
+          <option key={d} value={d}>{d}</option>
         ))}
       </select>
 
-      <select
-        name="taluk"
-        value={form.taluk}
-        onChange={handleChange}
-        disabled={!form.district}
-      >
+      <select name="taluk" value={form.taluk} onChange={handleChange} disabled={!form.district}>
         <option value="">Select Taluk</option>
         {taluks.map((t) => (
-          <option key={t} value={t}>
-            {t}
-          </option>
+          <option key={t} value={t}>{t}</option>
         ))}
       </select>
 
-      <select
-        name="property_type"
-        value={form.property_type}
-        onChange={handleChange}
-      >
+      <select name="property_type" value={form.property_type} onChange={handleChange}>
         <option value="">Select Property Type</option>
         <option value="Flat">Flat</option>
         <option value="Commercial">Commercial</option>
@@ -198,48 +189,31 @@ export default function App() {
         <option value="Apartment">Apartment</option>
       </select>
 
-      <select
-        name="ownership_type"
-        value={form.ownership_type}
-        onChange={handleChange}
-      >
+      <select name="ownership_type" value={form.ownership_type} onChange={handleChange}>
         <option value="">Select Ownership Type</option>
         <option value="Freehold">Freehold</option>
         <option value="Leasehold">Leasehold</option>
       </select>
 
-      <input
-        type="number"
-        name="built_area_sqft"
-        placeholder="Built Area (sqft)"
-        value={form.built_area_sqft}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        name="bedrooms"
-        placeholder="Bedrooms"
-        value={form.bedrooms}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        name="bathrooms"
-        placeholder="Bathrooms"
-        value={form.bathrooms}
-        onChange={handleChange}
-      />
+      <input type="number" name="built_area_sqft" placeholder="Built Area (sqft)" value={form.built_area_sqft} onChange={handleChange} />
+      <input type="number" name="bedrooms" placeholder="Bedrooms" value={form.bedrooms} onChange={handleChange} />
+      <input type="number" name="bathrooms" placeholder="Bathrooms" value={form.bathrooms} onChange={handleChange} />
 
       <button onClick={handlePredict} disabled={loading}>
         {loading ? "Predicting..." : "Predict"}
       </button>
 
       <p style={{ fontSize: "0.8rem", marginTop: "5px" }}>
-        Note: These predictions are for understanding user preferences for buying
-        property.
+        Note: These predictions are for understanding user preferences for buying property.
       </p>
 
-      {prediction && <p>Predicted Price: ₹{prediction}</p>}
+      {prediction && (
+        <div>
+          <p>Predicted Price: {formatINR(prediction.totalPrice)}</p>
+          <p>Per sqft: {formatINR(prediction.perSqft)}</p>
+        </div>
+      )}
+
       {message && <p style={{ color: "red" }}>{message}</p>}
     </motion.div>
   );
