@@ -1,17 +1,10 @@
-// src/App.js
-import React, { useEffect, useState } from "react";
-import { fetchMeta, predictPrice, storeFormData, getPropertyDistribution, getTrends, fetchAnalytics, fetchTrends } from "./api";
+import React, { useState, useEffect } from "react";
+import { predictPrice } from "./api"; // your API call
 import { motion, AnimatePresence } from "framer-motion";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
-import "chart.js/auto";
 
-/*
-  NOTE: We use meta from backend when possible.
-  If fetchMeta fails or is incomplete, fallback to the full district_taluk_pairs below.
-*/
-
+// Full district-taluk pairs array
 const district_taluk_pairs = [
-    ["Chennai", "Alandur"], ["Chennai", "Ambattur"], ["Chennai", "Aminjikarai"], ["Chennai", "Ayanavaram"],
+  ["Chennai", "Alandur"], ["Chennai", "Ambattur"], ["Chennai", "Aminjikarai"], ["Chennai", "Ayanavaram"],
 ["Chennai", "Egmore"], ["Chennai", "Guindy"], ["Chennai", "Madhavaram"], ["Chennai", "Madhuravoyal"],
 ["Chennai", "Mambalam"], ["Chennai", "Mylapore"], ["Chennai", "Perambur"], ["Chennai", "Purasavakkam"],
 ["Chennai", "Sholinganallur"], ["Chennai", "Thiruvottriyur"], ["Chennai", "Tondiarpet"], ["Chennai", "Velacherry"],
@@ -97,589 +90,164 @@ const district_taluk_pairs = [
 
 ];
 
-// convert pairs to a mapping only once
-const buildFallbackMeta = () => {
-  const taluks_by_district = {};
-  for (const [d, t] of district_taluk_pairs) {
-    if (!taluks_by_district[d]) taluks_by_district[d] = [];
-    taluks_by_district[d].push(t);
-  }
-  const districts = Object.keys(taluks_by_district).sort();
-  return {
-    districts,
-    taluks_by_district,
-    property_types: ["commercial", "flat", "house", "plot"],
-    ownership_types: ["freehold", "leasehold"]
-  };
-};
+const districts = [...new Set(district_taluk_pairs.map(pair => pair[0]))];
 
-function App() {
-  const [meta, setMeta] = useState(null);
-  const [loadingMeta, setLoadingMeta] = useState(true);
+export default function App() {
   const [form, setForm] = useState({
     district: "",
     taluk: "",
     property_type: "",
     ownership_type: "",
     built_area_sqft: "",
-    bedrooms: 1,
-    bathrooms: 1
+    bedrooms: ""
   });
+
   const [taluks, setTaluks] = useState([]);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
-  const [predicting, setPredicting] = useState(false);
-  const [distribution, setDistribution] = useState([]);
-  const [trends, setTrends] = useState([]);
-  const [selectedView, setSelectedView] = useState("freehold");
-  const [selectedPropertyType, setSelectedPropertyType] = useState("house");
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [isDrilledDown, setIsDrilledDown] = useState(false);
-  const [propertyDistribution, setPropertyDistribution] = useState([]);
-  const [trendData, setTrendData] = useState([]);
-  const [drillData, setDrillData] = useState([]);
-  const [ownershipFilter, setOwnershipFilter] = useState("Freehold");
-  const [analytics, setAnalytics] = useState([]);
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#B53471", "#833471"];
-
-useEffect(() => {
-  let mounted = true;
-
-  const applyFallback = () => {
-    const fallback = buildFallbackMeta();
-    if (!mounted) return;
-    setMeta(fallback);
-    const d = fallback.districts[0] || "";
-    setForm(f => ({ ...f,
-      district: d,
-      taluk: fallback.taluks_by_district[d] ? fallback.taluks_by_district[d][0] : "",
-      property_type: fallback.property_types[0],
-      ownership_type: fallback.ownership_types[0]
-    }));
-    setTaluks(fallback.taluks_by_district[d] || []);
-    setLoadingMeta(false);
-  };
-
-  (async () => {
-    try {
-      const m = await fetchMeta();
-      if (!mounted) return;
-      const isValid = m && Array.isArray(m.districts) && m.districts.length > 0 && m.taluks_by_district;
-      if (isValid) {
-        setMeta(m);
-        const d = m.districts[0];
-        setForm(f => ({ 
-          ...f,
-          district: d,
-          taluk: ((m.taluks_by_district[d] && m.taluks_by_district[d][0]) || ""),
-          property_type: ((m.property_types && m.property_types[0]) || ""),
-          ownership_type: ((m.ownership_types && m.ownership_types[0]) || "")
-        }));
-        setTaluks(m.taluks_by_district[d] || []);
-      } else {
-        console.warn("fetchMeta returned invalid meta, using fallback", m);
-        applyFallback();
-      }
-    } catch (err) {
-      console.error("fetchMeta failed — using fallback:", err);
-      applyFallback();
-    }
-  })();
-
-  return () => { mounted = false; };
-}, []);
-
+  const [prediction, setPrediction] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function loadAnalytics() {
-      const distData = await getPropertyDistribution(selectedView, selectedPropertyType, selectedDistrict);
-      setDistribution(distData);
-      const trendData = await getTrends();
-      setTrends(trendData);
-    }
-    loadAnalytics();
-  }, [selectedView, selectedPropertyType, selectedDistrict]);
-
-  useEffect(() => {
-    fetch("https://chennai-house-prices.onrender.com/analytics/property_distribution")
-      .then((res) => res.json())
-      .then(setPropertyDistribution);
-
-    fetch("https://chennai-house-prices.onrender.com/analytics/trends")
-      .then((res) => res.json())
-      .then(setTrendData);
-  }, []);
-
-  const handleDistrictClick = (district) => {
-    if (selectedDistrict === district) {
-      setSelectedDistrict(null);
-      setDrillData([]);
+    if (form.district) {
+      const filteredTaluks = district_taluk_pairs
+        .filter(pair => pair[0] === form.district)
+        .map(pair => pair[1]);
+      setTaluks(filteredTaluks);
+      setForm(prev => ({ ...prev, taluk: "" })); // reset taluk when district changes
     } else {
-      setSelectedDistrict(district);
-      const filtered = propertyDistribution.filter(
-        (item) => item.district === district
-      );
-      setDrillData(filtered);
+      setTaluks([]);
+      setForm(prev => ({ ...prev, taluk: "" }));
     }
+  }, [form.district]);
+
+  const handleChange = e => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const mainPieData = {
-    labels: [
-      ...new Set(propertyDistribution.map((item) => item.district)),
-    ],
-    datasets: [
-      {
-        data: Object.values(
-          propertyDistribution.reduce((acc, cur) => {
-            acc[cur.district] = (acc[cur.district] || 0) + cur.count;
-            return acc;
-          }, {})
-        ),
-        backgroundColor: [
-          "#60a5fa", "#f87171", "#34d399", "#fbbf24", "#a78bfa",
-        ],
-      },
-    ],
-  };
-
-  const drillPieData = {
-    labels: drillData.map((d) => d.taluk),
-    datasets: [
-      {
-        data: drillData.map((d) => d.count),
-        backgroundColor: [
-          "#34d399", "#fbbf24", "#a78bfa", "#60a5fa", "#f87171",
-        ],
-      },
-    ],
-  };
-
-  const trendChartData = {
-    labels: trendData.map((d) => d.date),
-    datasets: [
-      {
-        label: "User Activity Over Time",
-        data: trendData.map((d) => d.count),
-        borderColor: "#2563eb",
-        backgroundColor: "rgba(37,99,235,0.2)",
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-
-  function handleDistrictChange(e) {
-    const district = e.target.value;
-    const newTaluks = (meta && meta.taluks_by_district[district]) || [];
-    setTaluks(newTaluks);
-    setForm(f => ({ ...f, district, taluk: newTaluks[0] || "" }));
-  }
-
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setForm(f => ({ ...f, [name]: value }));
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setPredicting(true);
-    setError(null);
-    setResult(null);
-
-    const payload = {
-      district: form.district,
-      taluk: form.taluk,
-      property_type: form.property_type,
-      ownership_type: form.ownership_type,
-      built_area_sqft: parseFloat(form.built_area_sqft || 0),
-      bedrooms: parseInt(form.bedrooms || 0, 10),
-      bathrooms: parseInt(form.bathrooms || 0, 10)
-    };
-
+  const handlePredict = async () => {
+    setLoading(true);
     try {
-      const data = await predictPrice(payload);
-      if (data.predicted_price !== undefined) {
-        setResult(data.predicted_price);
-        // ✅ log the form input quietly for analytics
-        await storeFormData(payload);
-      } else if (data.error) {
-        setError(data.error);
-      } else {
-        setError("Unknown response from server");
-      }
+      const res = await predictPrice(form);
+      setPrediction(res.predicted_price);
     } catch (err) {
-      setError(err.message || "Prediction failed");
+      console.error(err);
+      setPrediction(null);
     } finally {
-      setPredicting(false);
-    }
-  }
-
-  const formatRupee = (n) => `₹ ${Number(n).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
-
-  const handleSliceClick = (data) => {
-    if (!isDrilledDown) {
-      setSelectedDistrict(data.name);
-      setIsDrilledDown(true);
-    } else {
-      setSelectedDistrict(null);
-      setIsDrilledDown(false);
+      setLoading(false);
     }
   };
-
-  const toggleOwnership = () => {
-    setSelectedView((prev) => (prev === "freehold" ? "leasehold" : "freehold"));
-    setIsDrilledDown(false);
-    setSelectedDistrict(null);
-  };
-
-  const filteredAnalytics = analytics.filter(
-    (item) => item.ownership_type === ownershipFilter
-  );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow p-6">
-        <h1 className="text-2xl font-semibold mb-4">Tamil Nadu Property Price Predictor</h1>
+    <motion.div 
+      className="app-container" 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      transition={{ duration: 0.5 }}
+      style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "400px", margin: "0 auto", padding: "20px" }}
+    >
+      <h2>Property Price Predictor</h2>
 
-        {loadingMeta ? (
-          <div>Loading…</div>
-        ) : error && !meta ? (
-          <div className="text-red-600">{error}</div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm">District</label>
-                <select
-                  name="district"
-                  value={form.district}
-                  onChange={handleDistrictChange}
-                  className="mt-1 block w-full rounded-md border p-2"
-                >
-                  {meta.districts.map(d => <option key={d} value={d}>{d}</option>)}
-                </select>
-              </div>
+      <motion.select 
+        name="district" 
+        value={form.district} 
+        onChange={handleChange}
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ delay: 0.1 }}
+      >
+        <option value="">Select District</option>
+        {districts.map(d => <option key={d} value={d}>{d}</option>)}
+      </motion.select>
 
-              <div>
-                <label className="block text-sm">Taluk</label>
-                <select
-                  name="taluk"
-                  value={form.taluk}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border p-2"
-                >
-                  {taluks.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-            </div>
+      <motion.select 
+        name="taluk" 
+        value={form.taluk} 
+        onChange={handleChange} 
+        disabled={!form.district}
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ delay: 0.2 }}
+      >
+        <option value="">Select Taluk</option>
+        {taluks.map(t => <option key={t} value={t}>{t}</option>)}
+      </motion.select>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm">Property Type</label>
-                <select
-                  name="property_type"
-                  value={form.property_type}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border p-2"
-                >
-                  {meta.property_types.map(pt => <option key={pt} value={pt}>{pt}</option>)}
-                </select>
-              </div>
+      <motion.select 
+        name="property_type" 
+        value={form.property_type} 
+        onChange={handleChange}
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ delay: 0.3 }}
+      >
+        <option value="">Select Property Type</option>
+        <option value="Flat">Flat</option>
+        <option value="Commercial">Commercial</option>
+        <option value="Plot">Plot</option>
+        <option value="Apartment">Apartment</option>
+      </motion.select>
 
-              <div>
-                <label className="block text-sm">Ownership Type</label>
-                <select
-                  name="ownership_type"
-                  value={form.ownership_type}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border p-2"
-                >
-                  {meta.ownership_types.map(o => <option key={o} value={o}>{o}</option>)}
-                </select>
-              </div>
-            </div>
+      <motion.select 
+        name="ownership_type" 
+        value={form.ownership_type} 
+        onChange={handleChange}
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ delay: 0.4 }}
+      >
+        <option value="">Select Ownership Type</option>
+        <option value="Freehold">Freehold</option>
+        <option value="Leasehold">Leasehold</option>
+      </motion.select>
 
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm">Built Area (sqft)</label>
-                <input
-                  name="built_area_sqft"
-                  value={form.built_area_sqft}
-                  onChange={handleChange}
-                  type="number"
-                  step="0.01"
-                  className="mt-1 block w-full rounded-md border p-2"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm">Bedrooms</label>
-                <input
-                  name="bedrooms"
-                  value={form.bedrooms}
-                  onChange={handleChange}
-                  type="number"
-                  min="0"
-                  className="mt-1 block w-full rounded-md border p-2"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm">Bathrooms</label>
-                <input
-                  name="bathrooms"
-                  value={form.bathrooms}
-                  onChange={handleChange}
-                  type="number"
-                  min="0"
-                  className="mt-1 block w-full rounded-md border p-2"
-                  required
-                />
-              </div>
-            </div>
+      <motion.input 
+        type="number" 
+        name="built_area_sqft" 
+        placeholder="Built Area (sqft)" 
+        value={form.built_area_sqft} 
+        onChange={handleChange} 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ delay: 0.5 }}
+      />
+      <motion.input 
+        type="number" 
+        name="bedrooms" 
+        placeholder="Bedrooms" 
+        value={form.bedrooms} 
+        onChange={handleChange} 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ delay: 0.6 }}
+      />
 
-            <div className="flex items-center space-x-3">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-md"
-                disabled={predicting}
-              >
-                {predicting ? "Predicting…" : "Predict"}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setResult(null); setError(null); }}
-                className="px-3 py-2 border rounded-md"
-              >
-                Reset
-              </button>
-            </div>
+      <motion.button 
+        onClick={handlePredict}
+        disabled={loading}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        style={{ padding: "10px", marginTop: "10px" }}
+      >
+        {loading ? "Predicting..." : "Predict"}
+      </motion.button>
 
-            <AnimatePresence>
-              {result !== null && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 8 }}
-                  transition={{ duration: 0.25 }}
-                  className="mt-4 p-4 bg-green-50 rounded-md"
-                >
-                  <div className="text-sm text-gray-600">Predicted Price</div>
-                  <div className="text-xl font-semibold">{
-                    formatRupee(result)
-                  }</div>
+      <p style={{ fontSize: "0.8rem", marginTop: "5px" }}>
+        Note: These predictions are for understanding user preferences for buying property.
+      </p>
 
-                  {/* extra small useful stat: price per sqft */}
-                  <div className="mt-2 text-sm text-gray-700">
-                    {form.built_area_sqft > 0 ? (
-                      <>
-                        <span className="font-medium">Per sqft: </span>
-                        {formatRupee(Number(result) / Number(form.built_area_sqft))}
-                      </>
-                    ) : null}
-                  </div>
-                  {/* Note below prediction */}
-                  <p className="mt-4 text-xs text-gray-500 italic">
-                    NOTE: These data help analyze which districts, taluks, and property types users prefer most.
-                  </p>
-
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {error && (
-              <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-md">
-                {error}
-              </div>
-            )}
-          </form>
+      <AnimatePresence>
+        {prediction && !loading && (
+          <motion.p
+            key="prediction"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            style={{ fontWeight: "bold", marginTop: "10px" }}
+          >
+            Predicted Price: ₹{prediction}
+          </motion.p>
         )}
-
-        {/* Swipe right / arrow indicator */}
-        <div className="mt-6 text-center text-sm text-blue-600 cursor-pointer select-none">
-          ➡️ Swipe right to view insights
-        </div>
-
-        {/* Analytics and Visualization Section */}
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">Analytics & Insights</h2>
-
-          {/* Property Distribution Pie Chart */}
-          <div className="mb-8">
-            <h3 className="text-lg font-medium mb-2">Property Distribution</h3>
-            <div className="flex items-center mb-2">
-              <span className="text-sm mr-2">View by:</span>
-              <button
-                onClick={toggleOwnership}
-                className={`px-3 py-1 rounded-md text-sm mr-2 ${selectedView === "freehold" ? "bg-blue-600 text-white" : "bg-gray-100"}`}
-              >
-                Freehold
-              </button>
-              <button
-                onClick={toggleOwnership}
-                className={`px-3 py-1 rounded-md text-sm ${selectedView === "leasehold" ? "bg-blue-600 text-white" : "bg-gray-100"}`}
-              >
-                Leasehold
-              </button>
-            </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={distribution}
-                  dataKey="count"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  fill="#8884d8"
-                  onClick={handleSliceClick}
-                >
-                  {distribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Trends Line Chart */}
-          <div>
-            <h3 className="text-lg font-medium mb-2">Trends Over Time</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="average_price" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Analytics Section */}
-        <motion.div
-          className="mt-8 overflow-x-auto"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-medium">User Insights</h2>
-            <button
-              onClick={toggleOwnership}
-              className="px-3 py-1 border rounded-md text-sm"
-            >
-              View: {selectedView === "freehold" ? "Freehold" : "Leasehold"}
-            </button>
-          </div>
-
-          <div className="flex space-x-6 w-[800px]">
-            {/* Pie Chart Section */}
-            <ResponsiveContainer width="50%" height={300}>
-              <PieChart>
-                <Pie
-                  data={distribution}
-                  dataKey="value"
-                  nameKey="name"
-                  outerRadius={120}
-                  fill="#8884d8"
-                  onClick={handleSliceClick}
-                >
-                  {distribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-
-            {/* Trendline Section */}
-            <ResponsiveContainer width="50%" height={300}>
-              <LineChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="count" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </motion.div>
-
-        {/* New Analytics and Trends Section */}
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">Detailed Analytics & Trends</h2>
-
-          {/* Ownership Filter */}
-          <div className="flex items-center mb-4">
-            <span className="text-sm mr-2">Ownership:</span>
-            <button
-              onClick={() => setOwnershipFilter("Freehold")}
-              className={`px-3 py-1 rounded-md text-sm mr-2 ${ownershipFilter === "Freehold" ? "bg-blue-600 text-white" : "bg-gray-100"}`}
-            >
-              Freehold
-            </button>
-            <button
-              onClick={() => setOwnershipFilter("Leasehold")}
-              className={`px-3 py-1 rounded-md text-sm ${ownershipFilter === "Leasehold" ? "bg-blue-600 text-white" : "bg-gray-100"}`}
-            >
-              Leasehold
-            </button>
-          </div>
-
-          {/* Analytics Pie Chart */}
-          <div className="mb-8">
-            <h3 className="text-lg font-medium mb-2">Property Type Distribution</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={filteredAnalytics}
-                  dataKey="count"
-                  nameKey="property_type"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={120}
-                  fill="#8884d8"
-                  label
-                >
-                  {filteredAnalytics.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Trends Line Chart */}
-          <div>
-            <h3 className="text-lg font-medium mb-2">Average Price Trends</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="district" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="avg_price"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-    </div>
+      </AnimatePresence>
+    </motion.div>
   );
 }
-
-export default App;
