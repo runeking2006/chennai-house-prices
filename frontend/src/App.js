@@ -89,12 +89,11 @@ const district_taluk_pairs = [
 ];
 
 // === Helper for Indian currency formatting ===
-const formatINR = (num) => {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(num);
+const formatINR = (num, decimals = 0) => {
+  return num.toLocaleString("en-IN", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
 };
 
 export default function App() {
@@ -209,8 +208,8 @@ export default function App() {
 
       {prediction && (
         <div>
-          <p>Predicted Price: {formatINR(prediction.totalPrice)}</p>
-          <p>Per sqft: {formatINR(prediction.perSqft)}</p>
+          <p>Predicted Price: ₹ {formatINR(prediction.totalPrice)}</p>
+          <p>Per sqft: ₹ {formatINR(prediction.perSqft, 2)}</p>
         </div>
       )}
 
