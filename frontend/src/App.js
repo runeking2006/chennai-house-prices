@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { predictPrice } from "./api"; // your API call
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { predictPrice } from "./api"; // <--- Your API helper
 
-// Full district-taluk pairs array
+// === Manually insert your district-taluk pairs here ===
 const district_taluk_pairs = [
   ["Chennai", "Alandur"], ["Chennai", "Ambattur"], ["Chennai", "Aminjikarai"], ["Chennai", "Ayanavaram"],
 ["Chennai", "Egmore"], ["Chennai", "Guindy"], ["Chennai", "Madhavaram"], ["Chennai", "Madhuravoyal"],
@@ -90,8 +90,6 @@ const district_taluk_pairs = [
 
 ];
 
-const districts = [...new Set(district_taluk_pairs.map(pair => pair[0]))];
-
 export default function App() {
   const [form, setForm] = useState({
     district: "",
@@ -99,155 +97,150 @@ export default function App() {
     property_type: "",
     ownership_type: "",
     built_area_sqft: "",
-    bedrooms: ""
+    bedrooms: "",
+    bathrooms: "",
   });
 
   const [taluks, setTaluks] = useState([]);
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  // === Build meta from district_taluk_pairs manually ===
+  const districts = [...new Set(district_taluk_pairs.map(([d]) => d))];
+  const taluks_by_district = districts.reduce((acc, d) => {
+    acc[d] = district_taluk_pairs
+      .filter(([district]) => district === d)
+      .map(([, taluk]) => taluk);
+    return acc;
+  }, {});
 
   useEffect(() => {
     if (form.district) {
-      const filteredTaluks = district_taluk_pairs
-        .filter(pair => pair[0] === form.district)
-        .map(pair => pair[1]);
-      setTaluks(filteredTaluks);
-      setForm(prev => ({ ...prev, taluk: "" })); // reset taluk when district changes
-    } else {
-      setTaluks([]);
-      setForm(prev => ({ ...prev, taluk: "" }));
+      setTaluks(taluks_by_district[form.district] || []);
+      setForm((prev) => ({ ...prev, taluk: "" }));
     }
   }, [form.district]);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handlePredict = async () => {
     setLoading(true);
+    setPrediction(null);
+    setMessage("");
     try {
-      const res = await predictPrice(form);
-      setPrediction(res.predicted_price);
+      const res = await predictPrice({
+        ...form,
+        built_area_sqft: parseFloat(form.built_area_sqft),
+        bedrooms: parseInt(form.bedrooms),
+        bathrooms: parseInt(form.bathrooms),
+      });
+      if (res.predicted_price) {
+        setPrediction(res.predicted_price);
+      } else if (res.error) {
+        setMessage(res.error);
+      }
     } catch (err) {
-      console.error(err);
-      setPrediction(null);
-    } finally {
-      setLoading(false);
+      console.error("Prediction error:", err);
+      setMessage("Prediction failed. Check console.");
     }
+    setLoading(false);
   };
 
   return (
-    <motion.div 
-      className="app-container" 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
-      transition={{ duration: 0.5 }}
-      style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "400px", margin: "0 auto", padding: "20px" }}
+    <motion.div
+      className="app-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      style={{
+        maxWidth: "400px",
+        margin: "auto",
+        padding: "20px",
+        fontFamily: "sans-serif",
+      }}
     >
       <h2>Property Price Predictor</h2>
 
-      <motion.select 
-        name="district" 
-        value={form.district} 
-        onChange={handleChange}
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
-        transition={{ delay: 0.1 }}
-      >
+      <select name="district" value={form.district} onChange={handleChange}>
         <option value="">Select District</option>
-        {districts.map(d => <option key={d} value={d}>{d}</option>)}
-      </motion.select>
+        {districts.map((d) => (
+          <option key={d} value={d}>
+            {d}
+          </option>
+        ))}
+      </select>
 
-      <motion.select 
-        name="taluk" 
-        value={form.taluk} 
-        onChange={handleChange} 
+      <select
+        name="taluk"
+        value={form.taluk}
+        onChange={handleChange}
         disabled={!form.district}
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
-        transition={{ delay: 0.2 }}
       >
         <option value="">Select Taluk</option>
-        {taluks.map(t => <option key={t} value={t}>{t}</option>)}
-      </motion.select>
+        {taluks.map((t) => (
+          <option key={t} value={t}>
+            {t}
+          </option>
+        ))}
+      </select>
 
-      <motion.select 
-        name="property_type" 
-        value={form.property_type} 
+      <select
+        name="property_type"
+        value={form.property_type}
         onChange={handleChange}
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
-        transition={{ delay: 0.3 }}
       >
         <option value="">Select Property Type</option>
         <option value="Flat">Flat</option>
         <option value="Commercial">Commercial</option>
         <option value="Plot">Plot</option>
         <option value="Apartment">Apartment</option>
-      </motion.select>
+      </select>
 
-      <motion.select 
-        name="ownership_type" 
-        value={form.ownership_type} 
+      <select
+        name="ownership_type"
+        value={form.ownership_type}
         onChange={handleChange}
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
-        transition={{ delay: 0.4 }}
       >
         <option value="">Select Ownership Type</option>
         <option value="Freehold">Freehold</option>
         <option value="Leasehold">Leasehold</option>
-      </motion.select>
+      </select>
 
-      <motion.input 
-        type="number" 
-        name="built_area_sqft" 
-        placeholder="Built Area (sqft)" 
-        value={form.built_area_sqft} 
-        onChange={handleChange} 
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
-        transition={{ delay: 0.5 }}
+      <input
+        type="number"
+        name="built_area_sqft"
+        placeholder="Built Area (sqft)"
+        value={form.built_area_sqft}
+        onChange={handleChange}
       />
-      <motion.input 
-        type="number" 
-        name="bedrooms" 
-        placeholder="Bedrooms" 
-        value={form.bedrooms} 
-        onChange={handleChange} 
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
-        transition={{ delay: 0.6 }}
+      <input
+        type="number"
+        name="bedrooms"
+        placeholder="Bedrooms"
+        value={form.bedrooms}
+        onChange={handleChange}
+      />
+      <input
+        type="number"
+        name="bathrooms"
+        placeholder="Bathrooms"
+        value={form.bathrooms}
+        onChange={handleChange}
       />
 
-      <motion.button 
-        onClick={handlePredict}
-        disabled={loading}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        style={{ padding: "10px", marginTop: "10px" }}
-      >
+      <button onClick={handlePredict} disabled={loading}>
         {loading ? "Predicting..." : "Predict"}
-      </motion.button>
+      </button>
 
       <p style={{ fontSize: "0.8rem", marginTop: "5px" }}>
-        Note: These predictions are for understanding user preferences for buying property.
+        Note: These predictions are for understanding user preferences for buying
+        property.
       </p>
 
-      <AnimatePresence>
-        {prediction && !loading && (
-          <motion.p
-            key="prediction"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            style={{ fontWeight: "bold", marginTop: "10px" }}
-          >
-            Predicted Price: ₹{prediction}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      {prediction && <p>Predicted Price: ₹{prediction}</p>}
+      {message && <p style={{ color: "red" }}>{message}</p>}
     </motion.div>
   );
 }
