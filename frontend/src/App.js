@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { predictPrice } from "./api"; // <--- Your API helper
+import { predictPrice } from "./api"; // API helper
 
+// ===== District–Taluk pairs =====
 const district_taluk_pairs = [
   ["Chennai", "Alandur"], ["Chennai", "Ambattur"], ["Chennai", "Aminjikarai"], ["Chennai", "Ayanavaram"],
 ["Chennai", "Egmore"], ["Chennai", "Guindy"], ["Chennai", "Madhavaram"], ["Chennai", "Madhuravoyal"],
@@ -114,9 +115,7 @@ export default function App() {
 
   const districts = [...new Set(district_taluk_pairs.map(([d]) => d))];
   const taluks_by_district = districts.reduce((acc, d) => {
-    acc[d] = district_taluk_pairs
-      .filter(([district]) => district === d)
-      .map(([, taluk]) => taluk);
+    acc[d] = district_taluk_pairs.filter(([district]) => district === d).map(([, t]) => t);
     return acc;
   }, {});
 
@@ -147,9 +146,7 @@ export default function App() {
         const totalPrice = parseFloat(res.predicted_price);
         const perSqft = totalPrice / parseFloat(form.built_area_sqft || 1);
         setPrediction({ totalPrice, perSqft });
-      } else if (res.error) {
-        setMessage(res.error);
-      }
+      } else if (res.error) setMessage(res.error);
     } catch (err) {
       console.error("Prediction error:", err);
       setMessage("Prediction failed. Check console.");
@@ -159,61 +156,130 @@ export default function App() {
 
   return (
     <motion.div
-      className="app-container"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      style={{ maxWidth: "400px", margin: "auto", padding: "20px", fontFamily: "sans-serif" }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-6"
     >
-      <h2>Property Price Predictor</h2>
+      <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-6 space-y-5">
+        <h2 className="text-2xl font-bold text-center text-indigo-700">
+          🏠 Property Price Predictor
+        </h2>
 
-      <select name="district" value={form.district} onChange={handleChange}>
-        <option value="">Select District</option>
-        {districts.map((d) => (
-          <option key={d} value={d}>{d}</option>
-        ))}
-      </select>
+        {/* District */}
+        <select
+          name="district"
+          value={form.district}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="">Select District</option>
+          {districts.map((d) => (
+            <option key={d}>{d}</option>
+          ))}
+        </select>
 
-      <select name="taluk" value={form.taluk} onChange={handleChange} disabled={!form.district}>
-        <option value="">Select Taluk</option>
-        {taluks.map((t) => (
-          <option key={t} value={t}>{t}</option>
-        ))}
-      </select>
+        {/* Taluk */}
+        <select
+          name="taluk"
+          value={form.taluk}
+          onChange={handleChange}
+          disabled={!form.district}
+          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+        >
+          <option value="">Select Taluk</option>
+          {taluks.map((t) => (
+            <option key={t}>{t}</option>
+          ))}
+        </select>
 
-      <select name="property_type" value={form.property_type} onChange={handleChange}>
-        <option value="">Select Property Type</option>
-        <option value="Flat">Flat</option>
-        <option value="Commercial">Commercial</option>
-        <option value="Plot">Plot</option>
-        <option value="Apartment">Apartment</option>
-      </select>
+        {/* Property Type */}
+        <select
+          name="property_type"
+          value={form.property_type}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="">Select Property Type</option>
+          <option>Flat</option>
+          <option>Commercial</option>
+          <option>Plot</option>
+          <option>Apartment</option>
+        </select>
 
-      <select name="ownership_type" value={form.ownership_type} onChange={handleChange}>
-        <option value="">Select Ownership Type</option>
-        <option value="Freehold">Freehold</option>
-        <option value="Leasehold">Leasehold</option>
-      </select>
+        {/* Ownership Type */}
+        <select
+          name="ownership_type"
+          value={form.ownership_type}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="">Select Ownership Type</option>
+          <option>Freehold</option>
+          <option>Leasehold</option>
+        </select>
 
-      <input type="number" name="built_area_sqft" placeholder="Built Area (sqft)" value={form.built_area_sqft} onChange={handleChange} />
-      <input type="number" name="bedrooms" placeholder="Bedrooms" value={form.bedrooms} onChange={handleChange} />
-      <input type="number" name="bathrooms" placeholder="Bathrooms" value={form.bathrooms} onChange={handleChange} />
-
-      <button onClick={handlePredict} disabled={loading}>
-        {loading ? "Predicting..." : "Predict"}
-      </button>
-
-      <p style={{ fontSize: "0.8rem", marginTop: "5px" }}>
-        Note: These predictions are for understanding user preferences for buying property.
-      </p>
-
-      {prediction && (
-        <div>
-          <p>Predicted Price: ₹ {formatINR(prediction.totalPrice)}</p>
-          <p>Per sqft: ₹ {formatINR(prediction.perSqft, 2)}</p>
+        {/* Inputs */}
+        <input
+          type="number"
+          name="built_area_sqft"
+          placeholder="Built Area (sqft)"
+          value={form.built_area_sqft}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+        />
+        <div className="flex gap-2">
+          <input
+            type="number"
+            name="bedrooms"
+            placeholder="Bedrooms"
+            value={form.bedrooms}
+            onChange={handleChange}
+            className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+          />
+          <input
+            type="number"
+            name="bathrooms"
+            placeholder="Bathrooms"
+            value={form.bathrooms}
+            onChange={handleChange}
+            className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+          />
         </div>
-      )}
 
-      {message && <p style={{ color: "red" }}>{message}</p>}
+        {/* Predict Button */}
+        <button
+          onClick={handlePredict}
+          disabled={loading}
+          className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+        >
+          {loading ? "Predicting..." : "Predict"}
+        </button>
+
+        <p className="text-xs text-gray-500 text-center">
+          Note: These predictions are for understanding user preferences for buying property.
+        </p>
+
+        {/* Result */}
+        {prediction && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-green-50 p-4 rounded-xl text-center border border-green-200"
+          >
+            <p className="text-lg font-semibold text-green-700">
+              Predicted Price: ₹ {formatINR(prediction.totalPrice)}
+            </p>
+            <p className="text-sm text-gray-700">
+              Per sqft: ₹ {formatINR(prediction.perSqft, 2)}
+            </p>
+          </motion.div>
+        )}
+
+        {message && (
+          <p className="text-red-500 text-sm text-center font-medium">{message}</p>
+        )}
+      </div>
     </motion.div>
   );
 }
