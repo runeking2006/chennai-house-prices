@@ -39,7 +39,10 @@ export default function AnalyticsView() {
     const districtMap = {};
     filtered.forEach(d => {
       // Sum counts from the taluk_counts object
-      const talukSum = Object.values(d.taluk_counts).reduce((acc, val) => acc + val, 0);
+      
+      // 🔥 FIX 1 APPLIED HERE
+      const talukSum = Object.values(d.taluk_counts || {}).reduce((acc, val) => acc + val, 0);
+      
       districtMap[d.district] = (districtMap[d.district] || 0) + talukSum;
     });
     return Object.entries(districtMap).map(([name, value]) => ({ name, value }));
@@ -48,7 +51,10 @@ export default function AnalyticsView() {
   const getTalukData = useCallback((type, district) => {
     const filtered = propertyDistribution.filter(d => d.property_type === type && d.district === district);
     if (!filtered.length) return [];
-    return Object.entries(filtered[0].taluk_counts).map(([name, value]) => ({ name, value }));
+    
+    // 🔥 FIX 2 APPLIED HERE
+    return Object.entries(filtered[0].taluk_counts || {}).map(([name, value]) => ({ name, value }));
+  
   }, [propertyDistribution]);
 
   const handleSliceClick = (type, district) => setDrillDown({ type, district });
@@ -65,7 +71,10 @@ export default function AnalyticsView() {
   // 6️⃣ UI Polish: Memoize totalCount
   const totalCount = useMemo(() => {
     return propertyDistribution.reduce((acc, d) => {
-        const talukSum = Object.values(d.taluk_counts).reduce((sum, val) => sum + val, 0);
+        
+        // 🔥 FIX 3 APPLIED HERE
+        const talukSum = Object.values(d.taluk_counts || {}).reduce((sum, val) => sum + val, 0);
+        
         return acc + talukSum;
     }, 0);
   }, [propertyDistribution]);
