@@ -232,7 +232,18 @@ export default function App() {
         </button>
       </div>
 
-      {showAnalytics && <AnalyticsView />}
+{showAnalytics && (
+  <div className="p-4">
+    <button
+      onClick={() => setShowAnalytics(false)}
+      className="mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+    >
+      ⬅ Back
+    </button>
+
+    <AnalyticsView />
+  </div>
+)}
 
       {!showAnalytics && (
         <motion.div
