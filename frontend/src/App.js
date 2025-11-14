@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useDrag } from "@use-gesture/react";
 import { predictPrice } from "./api"; // API helper
+import AnalyticsView from "./AnalyticsView"; // Your analytics component
 
 // ===== District–Taluk pairs =====
 const district_taluk_pairs = [
@@ -113,6 +115,9 @@ export default function App() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  const [xOffset, setXOffset] = useState(0);
+
   const districts = [...new Set(district_taluk_pairs.map(([d]) => d))];
   const taluks_by_district = districts.reduce((acc, d) => {
     acc[d] = district_taluk_pairs.filter(([district]) => district === d).map(([, t]) => t);
@@ -128,6 +133,20 @@ export default function App() {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const storeFormData = async (data) => {
+    try {
+      const res = await fetch("https://chennai-house-prices.onrender.com/store_form_data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      console.log("Form data store response:", result);
+    } catch (err) {
+      console.error("Storing form data failed:", err);
+    }
   };
 
   const handlePredict = async () => {
@@ -147,15 +166,14 @@ export default function App() {
         const perSqft = totalPrice / parseFloat(form.built_area_sqft || 1);
         setPrediction({ totalPrice, perSqft });
         storeFormData({
-  district: form.district,
-  taluk: form.taluk,
-  property_type: form.property_type,
-  ownership_type: form.ownership_type,
-  built_area_sqft: parseFloat(form.built_area_sqft),
-  bedrooms: parseInt(form.bedrooms),
-  bathrooms: parseInt(form.bathrooms),
-});
-
+          district: form.district,
+          taluk: form.taluk,
+          property_type: form.property_type,
+          ownership_type: form.ownership_type,
+          built_area_sqft: parseFloat(form.built_area_sqft),
+          bedrooms: parseInt(form.bedrooms),
+          bathrooms: parseInt(form.bathrooms),
+        });
       } else if (res.error) setMessage(res.error);
     } catch (err) {
       console.error("Prediction error:", err);
@@ -164,172 +182,179 @@ export default function App() {
     setLoading(false);
   };
 
-  // line 91
-const storeFormData = async (data) => {
-  try {
-    const res = await fetch("https://chennai-house-prices.onrender.com/store_form_data", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    const result = await res.json();
-    console.log("Form data store response:", result);
-  } catch (err) {
-    console.error("Storing form data failed:", err);
-  }
-};
+  // Gesture binding for swipe
+  const bind = useDrag(
+    ({ down, movement: [mx], direction: [xDir], velocity }) => {
+      if (down) {
+        setXOffset(mx);
+      } else {
+        if (mx > 150 || (xDir > 0 && velocity > 0.5)) setShowAnalytics(true);
+        if (mx < -150 || (xDir < 0 && velocity > 0.5)) setShowAnalytics(false);
+        setXOffset(0);
+      }
+    }
+  );
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-6"
-    >
-      <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-6 space-y-5">
-        <h2 className="text-2xl font-bold text-center text-indigo-700">
-          🏠 Tamil Nadu Property Price Predictor
-        </h2>
-
-        {/* District */}
-        <select
-          name="district"
-          value={form.district}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="">Select District</option>
-          {districts.map((d) => (
-            <option key={d}>{d}</option>
-          ))}
-        </select>
-
-        {/* Taluk */}
-        <select
-          name="taluk"
-          value={form.taluk}
-          onChange={handleChange}
-          disabled={!form.district}
-          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
-        >
-          <option value="">Select Taluk</option>
-          {taluks.map((t) => (
-            <option key={t}>{t}</option>
-          ))}
-        </select>
-
-        {/* Property Type */}
-        <select
-          name="property_type"
-          value={form.property_type}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="">Select Property Type</option>
-          <option>Flat</option>
-          <option>Commercial</option>
-          <option>Plot</option>
-          <option>Apartment</option>
-        </select>
-
-        {/* Ownership Type */}
-        <select
-          name="ownership_type"
-          value={form.ownership_type}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="">Select Ownership Type</option>
-          <option>Freehold</option>
-          <option>Leasehold</option>
-        </select>
-
-        {/* Inputs */}
-        <input
-          type="number"
-          name="built_area_sqft"
-          placeholder="Built Area (sqft)"
-          value={form.built_area_sqft}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-        />
-        <div className="flex gap-2">
-          <input
-            type="number"
-            name="bedrooms"
-            placeholder="Bedrooms"
-            value={form.bedrooms}
-            onChange={handleChange}
-            className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-          />
-          <input
-            type="number"
-            name="bathrooms"
-            placeholder="Bathrooms"
-            value={form.bathrooms}
-            onChange={handleChange}
-            className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        {/* Predict Button */}
-        <button
-          onClick={handlePredict}
-          disabled={loading}
-          className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
-        >
-          {loading ? "Predicting..." : "Predict"}
-        </button>
-
-        <p className="text-xs text-gray-500 text-center">
-          Note: These predictions are for understanding user preferences for buying property.
-        </p>
-
-        {/* Result */}
-        {prediction && (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="bg-green-50 p-4 rounded-xl text-center border border-green-200"
-  >
-    <div className="flex flex-col items-center gap-3">
-      <div>
-        <p className="text-lg font-semibold text-green-700">
-          Predicted Price: ₹ {formatINR(prediction.totalPrice)}
-        </p>
-        <p className="text-sm text-gray-700">
-          Per sqft: ₹ {formatINR(prediction.perSqft, 2)}
-        </p>
-      </div>
-
-      {/* Reset Button */}
-      <button
-        onClick={() => {
-          setForm({
-            district: "",
-            taluk: "",
-            property_type: "",
-            ownership_type: "",
-            built_area_sqft: "",
-            bedrooms: "",
-            bathrooms: "",
-          });
-          setPrediction(null);
-        }}
-        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+    <>
+      <motion.div
+        {...bind()}
+        style={{ x: xOffset }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-6"
       >
-        Reset
-      </button>
-    </div>
-  </motion.div>
-)}
+        <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-6 space-y-5">
+          <h2 className="text-2xl font-bold text-center text-indigo-700">
+            🏠 Tamil Nadu Property Price Predictor
+          </h2>
 
+          {/* District */}
+          <select
+            name="district"
+            value={form.district}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">Select District</option>
+            {districts.map((d) => (<option key={d}>{d}</option>))}
+          </select>
 
-        {message && (
-          <p className="text-red-500 text-sm text-center font-medium">{message}</p>
+          {/* Taluk */}
+          <select
+            name="taluk"
+            value={form.taluk}
+            onChange={handleChange}
+            disabled={!form.district}
+            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            <option value="">Select Taluk</option>
+            {taluks.map((t) => (<option key={t}>{t}</option>))}
+          </select>
+
+          {/* Property Type */}
+          <select
+            name="property_type"
+            value={form.property_type}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">Select Property Type</option>
+            <option>Flat</option>
+            <option>Commercial</option>
+            <option>Plot</option>
+            <option>Apartment</option>
+          </select>
+
+          {/* Ownership Type */}
+          <select
+            name="ownership_type"
+            value={form.ownership_type}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">Select Ownership Type</option>
+            <option>Freehold</option>
+            <option>Leasehold</option>
+          </select>
+
+          {/* Inputs */}
+          <input
+            type="number"
+            name="built_area_sqft"
+            placeholder="Built Area (sqft)"
+            value={form.built_area_sqft}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+          />
+          <div className="flex gap-2">
+            <input
+              type="number"
+              name="bedrooms"
+              placeholder="Bedrooms"
+              value={form.bedrooms}
+              onChange={handleChange}
+              className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              name="bathrooms"
+              placeholder="Bathrooms"
+              value={form.bathrooms}
+              onChange={handleChange}
+              className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          {/* Predict Button */}
+          <button
+            onClick={handlePredict}
+            disabled={loading}
+            className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+          >
+            {loading ? "Predicting..." : "Predict"}
+          </button>
+
+          <p className="text-xs text-gray-500 text-center">
+            Note: These predictions are for understanding user preferences for buying property.
+          </p>
+
+          {/* Result */}
+          {prediction && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-green-50 p-4 rounded-xl text-center border border-green-200"
+            >
+              <div className="flex flex-col items-center gap-3">
+                <p className="text-lg font-semibold text-green-700">
+                  Predicted Price: ₹ {formatINR(prediction.totalPrice)}
+                </p>
+                <p className="text-sm text-gray-700">
+                  Per sqft: ₹ {formatINR(prediction.perSqft, 2)}
+                </p>
+                <button
+                  onClick={() => {
+                    setForm({
+                      district: "",
+                      taluk: "",
+                      property_type: "",
+                      ownership_type: "",
+                      built_area_sqft: "",
+                      bedrooms: "",
+                      bathrooms: "",
+                    });
+                    setPrediction(null);
+                  }}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                >
+                  Reset
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {message && (
+            <p className="text-red-500 text-sm text-center font-medium">{message}</p>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Analytics view */}
+      <AnimatePresence>
+        {showAnalytics && (
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed inset-0 bg-white z-50 overflow-auto"
+          >
+            <AnalyticsView />
+          </motion.div>
         )}
-      </div>
-    </motion.div>
+      </AnimatePresence>
+    </>
   );
 }
