@@ -217,34 +217,29 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       
-      <div className="flex justify-center gap-4 mb-4">
+      {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
+      <div className="flex justify-center gap-4 mb-6">
         <button
-          className={`px-4 py-2 rounded-lg ${!showAnalytics ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}`}
           onClick={() => setShowAnalytics(false)}
+          className={`px-4 py-2 rounded-lg font-semibold ${
+            !showAnalytics ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700"
+          }`}
         >
           🏠 Predictor
         </button>
+
         <button
-          className={`px-4 py-2 rounded-lg ${showAnalytics ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}`}
           onClick={() => setShowAnalytics(true)}
+          className={`px-4 py-2 rounded-lg font-semibold ${
+            showAnalytics ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700"
+          }`}
         >
           📊 Analytics
         </button>
       </div>
 
-{showAnalytics && (
-  <div className="p-4">
-    <button
-      onClick={() => setShowAnalytics(false)}
-      className="mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-    >
-      ⬅ Back
-    </button>
-
-    <AnalyticsView />
-  </div>
-)}
-
+      {/* ===== PREDICTOR VIEW ===== */}
+      {/* This section only renders when showAnalytics is false */}
       {!showAnalytics && (
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -412,7 +407,8 @@ export default function App() {
         </motion.div>
       )}
 
-      {/* Analytics view */}
+      {/* ===== ANALYTICS OVERLAY ===== */}
+      {/* This section only renders when showAnalytics is true */}
       <AnimatePresence>
         {showAnalytics && (
           <motion.div
