@@ -146,6 +146,16 @@ export default function App() {
         const totalPrice = parseFloat(res.predicted_price);
         const perSqft = totalPrice / parseFloat(form.built_area_sqft || 1);
         setPrediction({ totalPrice, perSqft });
+        storeFormData({
+  district: form.district,
+  taluk: form.taluk,
+  property_type: form.property_type,
+  ownership_type: form.ownership_type,
+  built_area_sqft: parseFloat(form.built_area_sqft),
+  bedrooms: parseInt(form.bedrooms),
+  bathrooms: parseInt(form.bathrooms),
+});
+
       } else if (res.error) setMessage(res.error);
     } catch (err) {
       console.error("Prediction error:", err);
@@ -153,6 +163,22 @@ export default function App() {
     }
     setLoading(false);
   };
+
+  // line 91
+const storeFormData = async (data) => {
+  try {
+    const res = await fetch("https://chennai-house-prices.onrender.com/store_form_data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const result = await res.json();
+    console.log("Form data store response:", result);
+  } catch (err) {
+    console.error("Storing form data failed:", err);
+  }
+};
 
   return (
     <motion.div
@@ -163,7 +189,7 @@ export default function App() {
     >
       <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-6 space-y-5">
         <h2 className="text-2xl font-bold text-center text-indigo-700">
-          🏠 TamilNadu Property Price Predictor
+          🏠 Tamil Nadu Property Price Predictor
         </h2>
 
         {/* District */}
