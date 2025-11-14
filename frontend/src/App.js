@@ -262,19 +262,43 @@ export default function App() {
 
         {/* Result */}
         {prediction && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-green-50 p-4 rounded-xl text-center border border-green-200"
-          >
-            <p className="text-lg font-semibold text-green-700">
-              Predicted Price: ₹ {formatINR(prediction.totalPrice)}
-            </p>
-            <p className="text-sm text-gray-700">
-              Per sqft: ₹ {formatINR(prediction.perSqft, 2)}
-            </p>
-          </motion.div>
-        )}
+  <motion.div
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="bg-green-50 p-4 rounded-xl text-center border border-green-200"
+  >
+    <div className="flex flex-col items-center gap-3">
+      <div>
+        <p className="text-lg font-semibold text-green-700">
+          Predicted Price: ₹ {formatINR(prediction.totalPrice)}
+        </p>
+        <p className="text-sm text-gray-700">
+          Per sqft: ₹ {formatINR(prediction.perSqft, 2)}
+        </p>
+      </div>
+
+      {/* Reset Button */}
+      <button
+        onClick={() => {
+          setForm({
+            district: "",
+            taluk: "",
+            property_type: "",
+            ownership_type: "",
+            built_area_sqft: "",
+            bedrooms: "",
+            bathrooms: "",
+          });
+          setPrediction(null);
+        }}
+        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+      >
+        Reset
+      </button>
+    </div>
+  </motion.div>
+)}
+
 
         {message && (
           <p className="text-red-500 text-sm text-center font-medium">{message}</p>
