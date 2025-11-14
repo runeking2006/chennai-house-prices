@@ -232,6 +232,8 @@ export default function App() {
         </button>
       </div>
 
+      {showAnalytics && <AnalyticsView />}
+
       {!showAnalytics && (
         <motion.div
           initial={{ opacity: 0, y: 30 }}

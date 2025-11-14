@@ -236,22 +236,44 @@ def store_form_data(data: FormData):
 
 
 @app.get("/analytics/property_distribution")
-def get_property_distribution():
+def get_property_distribution(ownership_type: str = None):
     try:
         with psycopg2.connect(DATABASE_URL) as conn:
             df = pd.read_sql_query("SELECT * FROM user_inputs", conn)
 
         if df.empty:
-            return {"message": "No data yet"}
+            return []
 
-        grouped = (
-            df.groupby(["district", "taluk", "property_type", "ownership_type"])
-            .size()
-            .reset_index(name="count")
-        )
-        return grouped.to_dict(orient="records")
+        # Apply ownership filter
+        if ownership_type:
+            df = df[df["ownership_type"] == ownership_type]
+
+        if df.empty:
+            return []
+
+        # Build required structure
+        result = []
+
+        grouped = df.groupby(["property_type", "district", "taluk"]).size().reset_index(name="count")
+
+        # Build nested structure
+        for (ptype, district), group_df in grouped.groupby(["property_type", "district"]):
+            taluk_counts = {
+                row["taluk"]: int(row["count"])
+                for _, row in group_df.iterrows()
+            }
+
+            result.append({
+                "property_type": ptype,
+                "district": district,
+                "taluk_counts": taluk_counts
+            })
+
+        return result
+
     except Exception as e:
         return {"error": str(e)}
+
 
 
 @app.get("/analytics/trends")
