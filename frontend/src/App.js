@@ -163,7 +163,7 @@ export default function App() {
     >
       <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-6 space-y-5">
         <h2 className="text-2xl font-bold text-center text-indigo-700">
-          🏠 Property Price Predictor
+          🏠 TamilNadu Property Price Predictor
         </h2>
 
         {/* District */}
