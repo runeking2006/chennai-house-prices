@@ -178,7 +178,7 @@ export default function AnalyticsView() {
                         onClick={(entry) => {
                           // 3️⃣ Pie Slice Click Accuracy
                           console.log("Clicked slice:", entry);
-                          handleSliceClick(type, entry.name);
+                          handleSliceClick(type, entry?.name || entry?.payload?.name);
                         }}
                       >
                         {pieData.map((entry, index) => (
