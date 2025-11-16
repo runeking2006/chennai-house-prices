@@ -419,7 +419,7 @@ export default function App() {
             // 4️⃣ Analytics overlay styling
             className="fixed inset-0 bg-white z-50 overflow-auto p-6" 
           >
-            <AnalyticsView />
+            <AnalyticsView onBack={() => setShowAnalytics(false)} />
           </motion.div>
         )}
       </AnimatePresence>
