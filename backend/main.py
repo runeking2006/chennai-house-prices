@@ -169,6 +169,10 @@ def build_meta() -> Dict[str, Any]:
         "ownership_types": owner_types
     }
 
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}
+
 @app.get("/meta")
 def meta():
     return build_meta()
