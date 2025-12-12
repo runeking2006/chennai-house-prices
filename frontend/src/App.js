@@ -215,7 +215,17 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div
+  className="min-h-screen p-6"
+  style={{
+    backgroundImage: 'url("unnamed.jpg")',
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    minHeight: "100vh",
+  }}
+  >
+
       
       {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
       <div className="flex justify-center gap-4 mb-6">
