@@ -216,19 +216,16 @@ export default function App() {
 
   return (
     <div
-  className="min-h-screen p-6"
-  style={{
-    backgroundImage: 'url("unnamed.jpg")',
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    minHeight: "100vh",
-  }}
-  >
-
-      
+      className="min-h-screen p-6 pt-20"
+      style={{
+        backgroundImage: 'url("unnamed.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
-      <div className="flex justify-center gap-4 mb-6 sticky top-4 z-40">
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 flex gap-4 z-50">
         <button
           onClick={() => setShowAnalytics(false)}
           className={`px-4 py-2 rounded-lg font-semibold ${
@@ -427,7 +424,7 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             // 4️⃣ Analytics overlay styling
-            className="bg-white p-6 overflow-hidden"
+            className="bg-white p-6 overflow-x-hidden overflow-y-auto"
           >
             <AnalyticsView onBack={() => setShowAnalytics(false)} />
           </motion.div>
