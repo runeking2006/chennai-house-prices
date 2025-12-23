@@ -215,20 +215,9 @@ export default function App() {
 
 
   return (
-    <div
-  className="min-h-screen p-6"
-  style={{
-    backgroundImage: 'url("unnamed.jpg")',
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    minHeight: "100vh",
-  }}
-  >
-
-      
-      {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
-      <div className="flex justify-center gap-4 mb-6 sticky top-4 z-40">
+    <div className="bg-white min-h-screen">
+      {/* TOGGLE — stays on top */}
+      <div className="sticky top-0 z-50 bg-white py-4 flex justify-center gap-4">
         <button
           onClick={() => setShowAnalytics(false)}
           className={`px-4 py-2 rounded-lg font-semibold ${
@@ -248,191 +237,177 @@ export default function App() {
         </button>
       </div>
 
-      {/* ===== PREDICTOR VIEW ===== */}
-      {/* This section only renders when showAnalytics is false */}
-      {!showAnalytics && (
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center justify-center"
-        >
-          <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-6 space-y-5">
-            <h2 className="text-2xl font-bold text-center text-indigo-700">
-              🏠 Tamil Nadu Property Price Predictor
-            </h2>
-
-            {/* District */}
-            <select
-              name="district"
-              value={form.district}
-              onChange={handleChange}
-              aria-label="Select District" // 6️⃣ Accessibility
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="">Select District</option>
-              {/* 1️⃣ Dropdown keys */}
-              {districts.map((d) => (<option key={d} value={d}>{d}</option>))}
-            </select>
-
-            {/* Taluk */}
-            <select
-              name="taluk"
-              value={form.taluk}
-              onChange={handleChange}
-              disabled={!form.district}
-              aria-label="Select Taluk" // 6️⃣ Accessibility
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              <option value="">Select Taluk</option>
-              {/* 1️⃣ Dropdown keys */}
-              {taluks.map((t) => (<option key={t} value={t}>{t}</option>))}
-            </select>
-
-            {/* Property Type */}
-            <select
-              name="property_type"
-              value={form.property_type}
-              onChange={handleChange}
-              aria-label="Select Property Type" // 6️⃣ Accessibility
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="">Select Property Type</option>
-              {/* 1️⃣ Dropdown keys */}
-              <option value="Flat">Flat</option>
-              <option value="Commercial">Commercial</option>
-              <option value="Plot">Plot</option>
-              <option value="Apartment">Apartment</option>
-            </select>
-
-            {/* Ownership Type */}
-            <select
-              name="ownership_type"
-              value={form.ownership_type}
-              onChange={handleChange}
-              aria-label="Select Ownership Type" // 6️⃣ Accessibility
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="">Select Ownership Type</option>
-              {/* 1️⃣ Dropdown keys */}
-              <option value="Freehold">Freehold</option>
-              <option value="Leasehold">Leasehold</option>
-            </select>
-
-            {/* Inputs */}
-            <input
-              type="number"
-              name="built_area_sqft"
-              placeholder="Built Area (sqft)"
-              value={form.built_area_sqft}
-              onChange={handleChange}
-              min="0" // 3️⃣ Prevent invalid numeric input
-              aria-label="Built Area (sqft)" // 6️⃣ Accessibility
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-            />
-            <div className="flex gap-2">
-              <input
-                type="number"
-                name="bedrooms"
-                placeholder="Bedrooms"
-                value={form.bedrooms}
-                onChange={handleChange}
-                min="0" // 3️⃣ Prevent invalid numeric input
-                aria-label="Bedrooms" // 6️⃣ Accessibility
-                className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-              />
-              <input
-                type="number"
-                name="bathrooms"
-                placeholder="Bathrooms"
-                value={form.bathrooms}
-                onChange={handleChange}
-                min="0" // 3️⃣ Prevent invalid numeric input
-                aria-label="Bathrooms" // 6️⃣ Accessibility
-                className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            {/* Predict Button */}
-            <button
-              onClick={handlePredict}
-              disabled={loading}
-              // 7️⃣ Loading spinner styling
-              className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center"
-            >
-              {/* 7️⃣ Loading spinner */}
-              {loading ? (
-                <>
-                  <Spinner />
-                  Predicting...
-                </>
-              ) : (
-                "Predict"
-              )}
-            </button>
-
-            <p className="text-xs text-gray-500 text-center">
-              Note: These predictions are used for understanding user preferences for buying property.
-            </p>
-
-            {/* Result */}
-            {prediction && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-green-50 p-4 rounded-xl text-center border border-green-200"
-              >
-                <div className="flex flex-col items-center gap-3">
-                  <p className="text-lg font-semibold text-green-700">
-                    Predicted Price: ₹ {formatINR(prediction.totalPrice)}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    Per sqft: ₹ {formatINR(prediction.perSqft, 2)}
-                  </p>
-                  <button
-                    onClick={() => {
-                      setForm({
-                        district: "",
-                        taluk: "",
-                        property_type: "",
-                        ownership_type: "",
-                        built_area_sqft: "",
-                        bedrooms: "",
-                        bathrooms: "",
-                      });
-                      setPrediction(null);
-                    }}
-                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                  >
-                    Reset
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {message && (
-              <p className="text-red-500 text-sm text-center font-medium">{message}</p>
-            )}
-          </div>
-        </motion.div>
-      )}
-
-      {/* ===== ANALYTICS OVERLAY ===== */}
-      {/* This section only renders when showAnalytics is true */}
-      <AnimatePresence>
-        {showAnalytics && (
+      {/* SCROLLABLE CONTENT */}
+      <div className="p-6 overflow-y-auto">
+        {showAnalytics ? (
+          <AnalyticsView onBack={() => setShowAnalytics(false)} />
+        ) : (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            // 4️⃣ Analytics overlay styling
-            className="bg-white overflow-auto p-6" 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex items-center justify-center"
           >
-            <AnalyticsView onBack={() => setShowAnalytics(false)} />
+            <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-6 space-y-5">
+              <h2 className="text-2xl font-bold text-center text-indigo-700">
+                🏠 Tamil Nadu Property Price Predictor
+              </h2>
+
+              {/* District */}
+              <select
+                name="district"
+                value={form.district}
+                onChange={handleChange}
+                aria-label="Select District" // 6️⃣ Accessibility
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="">Select District</option>
+                {/* 1️⃣ Dropdown keys */}
+                {districts.map((d) => (<option key={d} value={d}>{d}</option>))}
+              </select>
+
+              {/* Taluk */}
+              <select
+                name="taluk"
+                value={form.taluk}
+                onChange={handleChange}
+                disabled={!form.district}
+                aria-label="Select Taluk" // 6️⃣ Accessibility
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+              >
+                <option value="">Select Taluk</option>
+                {/* 1️⃣ Dropdown keys */}
+                {taluks.map((t) => (<option key={t} value={t}>{t}</option>))}
+              </select>
+
+              {/* Property Type */}
+              <select
+                name="property_type"
+                value={form.property_type}
+                onChange={handleChange}
+                aria-label="Select Property Type" // 6️⃣ Accessibility
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="">Select Property Type</option>
+                {/* 1️⃣ Dropdown keys */}
+                <option value="Flat">Flat</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Plot">Plot</option>
+                <option value="Apartment">Apartment</option>
+              </select>
+
+              {/* Ownership Type */}
+              <select
+                name="ownership_type"
+                value={form.ownership_type}
+                onChange={handleChange}
+                aria-label="Select Ownership Type" // 6️⃣ Accessibility
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="">Select Ownership Type</option>
+                {/* 1️⃣ Dropdown keys */}
+                <option value="Freehold">Freehold</option>
+                <option value="Leasehold">Leasehold</option>
+              </select>
+
+              {/* Inputs */}
+              <input
+                type="number"
+                name="built_area_sqft"
+                placeholder="Built Area (sqft)"
+                value={form.built_area_sqft}
+                onChange={handleChange}
+                min="0" // 3️⃣ Prevent invalid numeric input
+                aria-label="Built Area (sqft)" // 6️⃣ Accessibility
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+              />
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  name="bedrooms"
+                  placeholder="Bedrooms"
+                  value={form.bedrooms}
+                  onChange={handleChange}
+                  min="0" // 3️⃣ Prevent invalid numeric input
+                  aria-label="Bedrooms" // 6️⃣ Accessibility
+                  className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+                />
+                <input
+                  type="number"
+                  name="bathrooms"
+                  placeholder="Bathrooms"
+                  value={form.bathrooms}
+                  onChange={handleChange}
+                  min="0" // 3️⃣ Prevent invalid numeric input
+                  aria-label="Bathrooms" // 6️⃣ Accessibility
+                  className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              {/* Predict Button */}
+              <button
+                onClick={handlePredict}
+                disabled={loading}
+                // 7️⃣ Loading spinner styling
+                className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center"
+              >
+                {/* 7️⃣ Loading spinner */}
+                {loading ? (
+                  <>
+                    <Spinner />
+                    Predicting...
+                  </>
+                ) : (
+                  "Predict"
+                )}
+              </button>
+
+              <p className="text-xs text-gray-500 text-center">
+                Note: These predictions are used for understanding user preferences for buying property.
+              </p>
+
+              {/* Result */}
+              {prediction && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-green-50 p-4 rounded-xl text-center border border-green-200"
+                >
+                  <div className="flex flex-col items-center gap-3">
+                    <p className="text-lg font-semibold text-green-700">
+                      Predicted Price: ₹ {formatINR(prediction.totalPrice)}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      Per sqft: ₹ {formatINR(prediction.perSqft, 2)}
+                    </p>
+                    <button
+                      onClick={() => {
+                        setForm({
+                          district: "",
+                          taluk: "",
+                          property_type: "",
+                          ownership_type: "",
+                          built_area_sqft: "",
+                          bedrooms: "",
+                          bathrooms: "",
+                        });
+                        setPrediction(null);
+                      }}
+                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {message && (
+                <p className="text-red-500 text-sm text-center font-medium">{message}</p>
+              )}
+            </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }
