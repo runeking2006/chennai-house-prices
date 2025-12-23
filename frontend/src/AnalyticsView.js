@@ -9,6 +9,7 @@ export default function AnalyticsView({ onBack }) {
   const [ownership, setOwnership] = useState("Freehold");
   const [propertyDistribution, setPropertyDistribution] = useState([]);
   const [drillDown, setDrillDown] = useState({ type: null, district: null });
+  const [activeIndex, setActiveIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -47,7 +48,10 @@ export default function AnalyticsView({ onBack }) {
   }, [propertyDistribution]);
 
   const handleSliceClick = (type, district) => setDrillDown({ type, district });
-  const handleBack = () => setDrillDown({ type: null, district: null });
+  const handleBack = () => {
+    setDrillDown({ type: null, district: null });
+    setActiveIndex(null);
+  };
 
   const propertyTypes = ["Apartment", "Plot", "Flat", "Commercial"];
   const talukData = useMemo(() => {
@@ -70,15 +74,7 @@ export default function AnalyticsView({ onBack }) {
       style={{ position: "relative" }}
     >
 
-      {/* Fixed position back button for top-left */}
-      <button
-        onClick={onBack}
-        className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600"
-        style={{ position: "absolute", top: 24, left: 24, zIndex: 50 }}
-      >
-        ← Back
-      </button>
-
+      
       <div className="flex gap-4 items-center">
         <span className="font-semibold">Ownership:</span>
         <select
@@ -156,7 +152,11 @@ export default function AnalyticsView({ onBack }) {
                         nameKey="name"
                         outerRadius={100}
                         label
-                        onClick={(entry) => {
+                        activeIndex={activeIndex}
+                        stroke="#4f46e5"
+                        strokeWidth={activeIndex !== null ? 3 : 0}
+                        onClick={(entry, index) => {
+                          setActiveIndex(index);
                           handleSliceClick(type, entry?.name || entry?.payload?.name);
                         }}
                       >
