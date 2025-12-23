@@ -227,7 +227,7 @@ export default function App() {
   >
 
       {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
-      <div className="flex justify-center gap-4 mb-6 sticky top-4 z-40">
+      <div className="flex justify-center gap-4 mb-6 fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white p-2 rounded-xl shadow">
         <button
           onClick={() => setShowAnalytics(false)}
           className={`px-4 py-2 rounded-lg font-semibold ${
