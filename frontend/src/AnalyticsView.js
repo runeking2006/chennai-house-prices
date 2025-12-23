@@ -119,7 +119,7 @@ export default function AnalyticsView({ onBack }) {
                   data={talukData}
                   dataKey="value"
                   nameKey="name"
-                  outerRadius={120}
+                  outerRadius={110}
                   fill="#8884d8"
                   label
                 >
