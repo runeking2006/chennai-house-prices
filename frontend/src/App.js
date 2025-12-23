@@ -228,7 +228,7 @@ export default function App() {
 
       
       {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
-      <div className="flex justify-center gap-4 mb-6">
+      <div className="flex justify-center gap-4 mb-6 sticky top-4 z-40">
         <button
           onClick={() => setShowAnalytics(false)}
           className={`px-4 py-2 rounded-lg font-semibold ${
@@ -372,7 +372,7 @@ export default function App() {
             </button>
 
             <p className="text-xs text-gray-500 text-center">
-              Note: These predictions are for understanding user preferences for buying property.
+              Note: These predictions are used for understanding user preferences for buying property.
             </p>
 
             {/* Result */}
@@ -427,7 +427,7 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             // 4️⃣ Analytics overlay styling
-            className="fixed inset-0 bg-white z-50 overflow-auto p-6" 
+            className="bg-white overflow-auto p-6" 
           >
             <AnalyticsView onBack={() => setShowAnalytics(false)} />
           </motion.div>
