@@ -249,7 +249,6 @@ export default function App() {
 
       {/* ===== PREDICTOR VIEW ===== */}
       {/* This section only renders when showAnalytics is false */}
-      <div className="pt-20"></div>
       {!showAnalytics && (
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -433,7 +432,6 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="pt-20"></div>
     </div>
   );
 }
