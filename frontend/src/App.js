@@ -427,7 +427,7 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             // 4️⃣ Analytics overlay styling
-            className="bg-white overflow-auto p-6" 
+            className="bg-white p-6 overflow-hidden"
           >
             <AnalyticsView onBack={() => setShowAnalytics(false)} />
           </motion.div>
