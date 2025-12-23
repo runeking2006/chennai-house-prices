@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { predictPrice } from "./api"; // API helper
-import AnalyticsView from "./AnalyticsView"; // Analytics component
+import AnalyticsView from "./AnalyticsView"; // Your analytics component
 
 // ===== District–Taluk pairs =====
 const district_taluk_pairs = [
@@ -106,7 +106,14 @@ const Spinner = () => (
     fill="none"
     viewBox="0 0 24 24"
   >
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+    <circle
+      className="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    ></circle>
     <path
       className="opacity-75"
       fill="currentColor"
@@ -115,8 +122,9 @@ const Spinner = () => (
   </svg>
 );
 
+
 export default function App() {
-  const [form, setForm] = useState({
+  const [form, setForm] =useState({
     district: "",
     taluk: "",
     property_type: "",
@@ -130,10 +138,10 @@ export default function App() {
   const [prediction, setPrediction] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
   const [showAnalytics, setShowAnalytics] = useState(false);
 
   const districts = [...new Set(district_taluk_pairs.map(([d]) => d))];
-
   const taluks_by_district = districts.reduce((acc, d) => {
     acc[d] = district_taluk_pairs.filter(([district]) => district === d).map(([, t]) => t);
     return acc;
@@ -165,15 +173,15 @@ export default function App() {
   };
 
   const handlePredict = async () => {
+    // 2️⃣ Form validation before API call
     if (!form.district || !form.taluk || !form.property_type || !form.ownership_type || !form.built_area_sqft || !form.bedrooms || !form.bathrooms) {
-      setMessage("Please fill in all required fields.");
-      return;
+        setMessage("Please fill in all required fields.");
+        return;
     }
 
     setLoading(true);
     setPrediction(null);
     setMessage("");
-
     try {
       const res = await predictPrice({
         ...form,
@@ -186,7 +194,6 @@ export default function App() {
         const totalPrice = parseFloat(res.predicted_price);
         const perSqft = totalPrice / parseFloat(form.built_area_sqft || 1);
         setPrediction({ totalPrice, perSqft });
-
         storeFormData({
           district: form.district,
           taluk: form.taluk,
@@ -199,24 +206,29 @@ export default function App() {
       } else if (res.error) setMessage(res.error);
     } catch (err) {
       console.error("Prediction error:", err);
+      // 5️⃣ API error handling
       setMessage(err?.message || "Prediction failed. Try again later.");
     }
-
     setLoading(false);
   };
 
+
+
   return (
     <div
-      className="min-h-screen p-6 pt-20"
-      style={{
-        backgroundImage: 'url("unnamed.jpg")',
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      {/* ===== TOGGLE BUTTONS ===== */}
-      <div className="fixed top-4 left-1/2 -translate-x-1/2 flex gap-4 z-50">
+  className="min-h-screen p-6"
+  style={{
+    backgroundImage: 'url("unnamed.jpg")',
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    minHeight: "100vh",
+  }}
+  >
+
+      
+      {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
+      <div className="flex justify-center gap-4 mb-6 sticky top-4 z-40">
         <button
           onClick={() => setShowAnalytics(false)}
           className={`px-4 py-2 rounded-lg font-semibold ${
@@ -225,6 +237,7 @@ export default function App() {
         >
           🏠 Predictor
         </button>
+
         <button
           onClick={() => setShowAnalytics(true)}
           className={`px-4 py-2 rounded-lg font-semibold ${
@@ -236,6 +249,7 @@ export default function App() {
       </div>
 
       {/* ===== PREDICTOR VIEW ===== */}
+      {/* This section only renders when showAnalytics is false */}
       {!showAnalytics && (
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -253,15 +267,12 @@ export default function App() {
               name="district"
               value={form.district}
               onChange={handleChange}
-              aria-label="Select District"
+              aria-label="Select District" // 6️⃣ Accessibility
               className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">Select District</option>
-              {districts.map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
+              {/* 1️⃣ Dropdown keys */}
+              {districts.map((d) => (<option key={d} value={d}>{d}</option>))}
             </select>
 
             {/* Taluk */}
@@ -270,15 +281,12 @@ export default function App() {
               value={form.taluk}
               onChange={handleChange}
               disabled={!form.district}
-              aria-label="Select Taluk"
+              aria-label="Select Taluk" // 6️⃣ Accessibility
               className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
             >
               <option value="">Select Taluk</option>
-              {taluks.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
+              {/* 1️⃣ Dropdown keys */}
+              {taluks.map((t) => (<option key={t} value={t}>{t}</option>))}
             </select>
 
             {/* Property Type */}
@@ -286,10 +294,11 @@ export default function App() {
               name="property_type"
               value={form.property_type}
               onChange={handleChange}
-              aria-label="Select Property Type"
+              aria-label="Select Property Type" // 6️⃣ Accessibility
               className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">Select Property Type</option>
+              {/* 1️⃣ Dropdown keys */}
               <option value="Flat">Flat</option>
               <option value="Commercial">Commercial</option>
               <option value="Plot">Plot</option>
@@ -301,10 +310,11 @@ export default function App() {
               name="ownership_type"
               value={form.ownership_type}
               onChange={handleChange}
-              aria-label="Select Ownership Type"
+              aria-label="Select Ownership Type" // 6️⃣ Accessibility
               className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">Select Ownership Type</option>
+              {/* 1️⃣ Dropdown keys */}
               <option value="Freehold">Freehold</option>
               <option value="Leasehold">Leasehold</option>
             </select>
@@ -316,11 +326,10 @@ export default function App() {
               placeholder="Built Area (sqft)"
               value={form.built_area_sqft}
               onChange={handleChange}
-              min="0"
-              aria-label="Built Area (sqft)"
+              min="0" // 3️⃣ Prevent invalid numeric input
+              aria-label="Built Area (sqft)" // 6️⃣ Accessibility
               className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
             />
-
             <div className="flex gap-2">
               <input
                 type="number"
@@ -328,8 +337,8 @@ export default function App() {
                 placeholder="Bedrooms"
                 value={form.bedrooms}
                 onChange={handleChange}
-                min="0"
-                aria-label="Bedrooms"
+                min="0" // 3️⃣ Prevent invalid numeric input
+                aria-label="Bedrooms" // 6️⃣ Accessibility
                 className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
               />
               <input
@@ -338,8 +347,8 @@ export default function App() {
                 placeholder="Bathrooms"
                 value={form.bathrooms}
                 onChange={handleChange}
-                min="0"
-                aria-label="Bathrooms"
+                min="0" // 3️⃣ Prevent invalid numeric input
+                aria-label="Bathrooms" // 6️⃣ Accessibility
                 className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
               />
             </div>
@@ -348,11 +357,14 @@ export default function App() {
             <button
               onClick={handlePredict}
               disabled={loading}
+              // 7️⃣ Loading spinner styling
               className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center"
             >
+              {/* 7️⃣ Loading spinner */}
               {loading ? (
                 <>
-                  <Spinner /> Predicting...
+                  <Spinner />
+                  Predicting...
                 </>
               ) : (
                 "Predict"
@@ -406,6 +418,7 @@ export default function App() {
       )}
 
       {/* ===== ANALYTICS OVERLAY ===== */}
+      {/* This section only renders when showAnalytics is true */}
       <AnimatePresence>
         {showAnalytics && (
           <motion.div
@@ -413,7 +426,8 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white overflow-auto p-6"
+            // 4️⃣ Analytics overlay styling
+            className="bg-white overflow-auto p-6" 
           >
             <AnalyticsView onBack={() => setShowAnalytics(false)} />
           </motion.div>
