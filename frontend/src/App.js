@@ -227,7 +227,11 @@ export default function App() {
   >
 
       {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
-      <div className="flex justify-center gap-4 mb-6 sticky top-4 z-40">
+      <div
+  className={`flex justify-center gap-4 mb-6 z-40 ${
+    showAnalytics ? "relative" : "sticky top-4"
+  }`}
+  >
         <button
           onClick={() => setShowAnalytics(false)}
           className={`px-4 py-2 rounded-lg font-semibold ${
@@ -426,7 +430,7 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             // 4️⃣ Analytics overlay styling
-            className="bg-white overflow-auto p-6 pt-32" 
+            className="bg-white overflow-auto p-6" 
           >
             <AnalyticsView onBack={() => setShowAnalytics(false)} />
           </motion.div>
