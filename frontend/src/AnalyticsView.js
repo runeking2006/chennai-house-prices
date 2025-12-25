@@ -150,7 +150,7 @@ export default function AnalyticsView({ onBack }) {
                         data={pieData}
                         dataKey="value"
                         nameKey="name"
-                        outerRadius={90}
+                        outerRadius={85}
                         label
                         activeIndex={activeIndex}
                         stroke="#4f46e5"
