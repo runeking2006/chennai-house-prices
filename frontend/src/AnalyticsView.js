@@ -101,7 +101,7 @@ export default function AnalyticsView({ onBack }) {
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
   
     return (
-      <text x={x} y={y} fontSize={20} fill="#555" textAnchor="middle">
+      <text x={x} y={y} fontSize={20} fill="#000" textAnchor="middle">
         {value}
       </text>
     );
@@ -164,6 +164,7 @@ export default function AnalyticsView({ onBack }) {
                   outerRadius={100}
                   fill="#8884d8"
                   label={renderCloseLabel}
+                  labelLine={false}
                 >
                   {talukData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
