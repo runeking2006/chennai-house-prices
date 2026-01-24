@@ -4,6 +4,20 @@ import { motion } from "framer-motion";
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#a4de6c", "#d0ed57", "#8dd1e1"];
 
+const HOVER_REASONS = [
+  "🏙️ Closer to city center",
+  "🏫 Schools nearby",
+  "🚇 Metro accessible",
+  "🌊 Low flood risk"
+];
+
+// utility to pick random 3 reasons
+const getRandomReasons = () => {
+  const shuffled = [...HOVER_REASONS].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, 3);
+};
+
+
 // Accept onBack prop for parent communication.
 export default function AnalyticsView({ onBack }) {
   const [ownership, setOwnership] = useState("Freehold");
@@ -127,7 +141,24 @@ export default function AnalyticsView({ onBack }) {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+  content={({ payload }) => {
+    if (!payload || !payload.length) return null;
+
+    const taluk = payload[0].name;
+    const reasons = getRandomReasons();
+
+    return (
+      <div className="bg-white p-3 rounded-lg shadow-lg text-sm space-y-1">
+        <div className="font-semibold text-gray-800">{taluk}</div>
+        {reasons.map(r => (
+          <div key={r}>{r}</div>
+        ))}
+      </div>
+    );
+  }}
+/>
+
               </PieChart>
             </ResponsiveContainer>
           )}
