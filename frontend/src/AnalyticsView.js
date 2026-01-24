@@ -96,7 +96,7 @@ export default function AnalyticsView({ onBack }) {
 
   const renderCloseLabel = ({ cx, cy, midAngle, outerRadius, value }) => {
     const RADIAN = Math.PI / 180;
-    const radius = outerRadius - 10; // closer to pie
+    const radius = outerRadius - 5; // closer to pie
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
   
