@@ -93,6 +93,19 @@ export default function AnalyticsView({ onBack }) {
   
     return selected;
   };
+
+  const renderCloseLabel = ({ cx, cy, midAngle, outerRadius, value }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = outerRadius - 10; // closer to pie
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  
+    return (
+      <text x={x} y={y} fontSize={12} fill="#555" textAnchor="middle">
+        {value}
+      </text>
+    );
+  };  
   
 
   return (
@@ -150,7 +163,7 @@ export default function AnalyticsView({ onBack }) {
                   nameKey="name"
                   outerRadius={100}
                   fill="#8884d8"
-                  label
+                  label={renderCloseLabel}
                 >
                   {talukData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -197,7 +210,7 @@ export default function AnalyticsView({ onBack }) {
                         dataKey="value"
                         nameKey="name"
                         outerRadius={80}
-                        label
+                        label={renderCloseLabel}
                         activeIndex={activeIndex}
                         stroke="#4f46e5"
                         strokeWidth={activeIndex !== null ? 3 : 0}
