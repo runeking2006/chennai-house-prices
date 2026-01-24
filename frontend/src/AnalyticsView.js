@@ -26,6 +26,7 @@ export default function AnalyticsView({ onBack }) {
   const [activeIndex, setActiveIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [talukReasonMap, setTalukReasonMap] = useState({});
 
   useEffect(() => {
     const fetchDistribution = async () => {
@@ -79,6 +80,20 @@ export default function AnalyticsView({ onBack }) {
       return acc + talukSum;
     }, 0);
   }, [propertyDistribution]);
+  const getTalukReasons = (taluk) => {
+    if (talukReasonMap[taluk]) return talukReasonMap[taluk];
+  
+    const shuffled = [...HOVER_REASONS].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 3);
+  
+    setTalukReasonMap(prev => ({
+      ...prev,
+      [taluk]: selected
+    }));
+  
+    return selected;
+  };
+  
 
   return (
     <motion.div
@@ -146,7 +161,7 @@ export default function AnalyticsView({ onBack }) {
     if (!payload || !payload.length) return null;
 
     const taluk = payload[0].name;
-    const reasons = getRandomReasons();
+    const reasons = getTalukReasons(taluk);
 
     return (
       <div className="bg-white p-3 rounded-lg shadow-lg text-sm space-y-1">
