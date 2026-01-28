@@ -187,9 +187,21 @@ export default function AnalyticsView({ onBack }) {
     );
   }}
 />
-
               </PieChart>
             </ResponsiveContainer>
+          )}
+          {talukData.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-3 mt-4">
+              {talukData.map((t, i) => (
+                <div key={t.name} className="flex items-center gap-2 text-sm">
+                  <span
+                    className="w-4 h-4 rounded-sm"
+                    style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                  ></span>
+                  <span>{t.name}</span>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       ) : (
@@ -232,7 +244,10 @@ export default function AnalyticsView({ onBack }) {
                   <div className="flex flex-wrap justify-center gap-2 mt-2">
                     {pieData.map((d, i) => (
                       <div key={d.name} className="flex items-center gap-1">
-                        <span className="w-4 h-4" style={{ backgroundColor: COLORS[i % COLORS.length] }}></span>
+                        <span
+                          className="w-4 h-4"
+                          style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                        ></span>
                         <span className="text-sm">{d.name}</span>
                       </div>
                     ))}
