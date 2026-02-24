@@ -9,4 +9,3 @@ https://huggingface.co/runeking2006/tamilnadu-house-prices
 ## Web application link
 
 https://chennai-house-prices-1.onrender.com/
-[P.S. This app is hosted on a free server that "sleeps" after 15 minutes of inactivity. If the first request feels slow, please give it about 30 seconds to wake up! ☕]
