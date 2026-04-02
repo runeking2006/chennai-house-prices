@@ -1,13 +1,6 @@
 // api.js
 const API_BASE_URL = "https://chennai-house-prices.onrender.com";
 
-const API_KEY = "tn_project_9f3k2l_secure_2026";
-
-const headers = {
-  "Content-Type": "application/json",
-  "x-api-key": API_KEY,
-};
-
 export async function fetchMeta() {
   const res = await fetch(`${API_BASE_URL}/meta`);
   if (!res.ok) throw new Error("Failed to load meta");
@@ -17,7 +10,7 @@ export async function fetchMeta() {
 export async function predictPrice(data) {
   const res = await fetch(`${API_BASE_URL}/predict`, {
     method: "POST",
-    headers,
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
 
@@ -29,7 +22,7 @@ export async function predictPrice(data) {
 export async function storeFormData(data) {
   const res = await fetch(`${API_BASE_URL}/store_form_data`, {
     method: "POST",
-    headers,
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
 
@@ -37,15 +30,11 @@ export async function storeFormData(data) {
 }
 
 export async function getPropertyDistribution() {
-  const res = await fetch(`${API_BASE_URL}/analytics/property_distribution`, {
-    headers,
-  });
+  const res = await fetch(`${API_BASE_URL}/analytics/property_distribution`);
   return res.json();
 }
 
 export async function getTrends() {
-  const res = await fetch(`${API_BASE_URL}/analytics/trends`, {
-    headers,
-  });
+  const res = await fetch(`${API_BASE_URL}/analytics/trends`);
   return res.json();
 }

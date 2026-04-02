@@ -15,18 +15,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from fastapi import Header, HTTPException
 
-#basic auth
-API_KEY = os.getenv("API_KEY")
-
-def verify_api_key(x_api_key: str = Header(None)):
-    if not API_KEY:
-        raise HTTPException(status_code=500, detail="API key not configured")
-
-    if x_api_key is None or x_api_key != API_KEY:
-        raise HTTPException(status_code=403, detail="Unauthorized")
-    
 # === Database Connection ===
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
@@ -211,8 +200,7 @@ def meta():
 
 @app.post("/predict")
 @limiter.limit("10/minute")
-def predict(request: Request, data: InputData, x_api_key: str = Header(None)):
-    verify_api_key(x_api_key)
+def predict(request: Request, data: InputData):
     try:
         district_taluk = district_taluk_map.get((data.district, data.taluk), "Unknown_Taluk")
 
@@ -255,8 +243,7 @@ class FormData(BaseModel):
     bathrooms: int
 
 @app.post("/store_form_data")
-def store_form_data(data: FormData, x_api_key: str = Header(None)):
-    verify_api_key(x_api_key)
+def store_form_data(data: FormData):
     try:
         
         with psycopg2.connect(DATABASE_URL) as conn:
@@ -275,8 +262,7 @@ def store_form_data(data: FormData, x_api_key: str = Header(None)):
 
 
 @app.get("/analytics/property_distribution")
-def get_property_distribution(ownership_type: str = None, x_api_key: str = Header(None)):
-    verify_api_key(x_api_key)
+def get_property_distribution(ownership_type: str = None):
     try:
         with psycopg2.connect(DATABASE_URL) as conn:
             df = pd.read_sql_query("SELECT * FROM user_inputs", conn)
@@ -317,8 +303,7 @@ def get_property_distribution(ownership_type: str = None, x_api_key: str = Heade
 
 
 @app.get("/analytics/trends")
-def get_trends(x_api_key: str = Header(None)):
-    verify_api_key(x_api_key)
+def get_trends():
     try:
         with psycopg2.connect(DATABASE_URL) as conn:
             df = pd.read_sql_query("SELECT * FROM user_inputs", conn)
