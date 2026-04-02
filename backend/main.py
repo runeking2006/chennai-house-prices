@@ -10,7 +10,23 @@ import os
 from urllib.parse import urlparse
 import sqlite3
 from datetime import datetime
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from fastapi import Request
+from fastapi.responses import JSONResponse
+from fastapi import Header, HTTPException
 
+#basic auth
+API_KEY = os.getenv("API_KEY")
+
+def verify_api_key(x_api_key: str = Header(None)):
+    if not API_KEY:
+        raise HTTPException(status_code=500, detail="API key not configured")
+
+    if x_api_key is None or x_api_key != API_KEY:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    
 # === Database Connection ===
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
@@ -26,13 +42,29 @@ db_config = {
 
 # === FastAPI App ===
 app = FastAPI()
+origins = [
+    "http://localhost:3000",
+    "https://chennai-house-prices-1.onrender.com"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# === Rate Limiting ===
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+
+@app.exception_handler(RateLimitExceeded)
+def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Too many requests. Try again later."},
+    )
 
 # === Load all trained artifacts ===
 model = joblib.load("models/xgb_tn_property_model.pkl")
@@ -178,7 +210,9 @@ def meta():
     return build_meta()
 
 @app.post("/predict")
-def predict(data: InputData):
+@limiter.limit("10/minute")
+def predict(data: InputData, x_api_key: str = Header(None)):
+    verify_api_key(x_api_key)
     try:
         district_taluk = district_taluk_map.get((data.district, data.taluk), "Unknown_Taluk")
 
@@ -221,7 +255,8 @@ class FormData(BaseModel):
     bathrooms: int
 
 @app.post("/store_form_data")
-def store_form_data(data: FormData):
+def store_form_data(data: FormData, x_api_key: str = Header(None)):
+    verify_api_key(x_api_key)
     try:
         
         with psycopg2.connect(DATABASE_URL) as conn:
@@ -240,7 +275,8 @@ def store_form_data(data: FormData):
 
 
 @app.get("/analytics/property_distribution")
-def get_property_distribution(ownership_type: str = None):
+def get_property_distribution(ownership_type: str = None, x_api_key: str = Header(None)):
+    verify_api_key(x_api_key)
     try:
         with psycopg2.connect(DATABASE_URL) as conn:
             df = pd.read_sql_query("SELECT * FROM user_inputs", conn)
@@ -281,7 +317,8 @@ def get_property_distribution(ownership_type: str = None):
 
 
 @app.get("/analytics/trends")
-def get_trends():
+def get_trends(x_api_key: str = Header(None)):
+    verify_api_key(x_api_key)
     try:
         with psycopg2.connect(DATABASE_URL) as conn:
             df = pd.read_sql_query("SELECT * FROM user_inputs", conn)
