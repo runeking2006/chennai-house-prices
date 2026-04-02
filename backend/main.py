@@ -211,7 +211,7 @@ def meta():
 
 @app.post("/predict")
 @limiter.limit("10/minute")
-def predict(data: InputData, x_api_key: str = Header(None)):
+def predict(request: Request, data: InputData, x_api_key: str = Header(None)):
     verify_api_key(x_api_key)
     try:
         district_taluk = district_taluk_map.get((data.district, data.taluk), "Unknown_Taluk")

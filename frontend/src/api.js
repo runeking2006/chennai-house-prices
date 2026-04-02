@@ -1,7 +1,6 @@
 // api.js
 const API_BASE_URL = "https://chennai-house-prices.onrender.com";
 
-// ⚠️ keep same key as backend (or use env later)
 const API_KEY = "tn_project_9f3k2l_secure_2026";
 
 const headers = {
@@ -38,11 +37,15 @@ export async function storeFormData(data) {
 }
 
 export async function getPropertyDistribution() {
-  const res = await fetch(`${API_BASE_URL}/analytics/property_distribution`);
+  const res = await fetch(`${API_BASE_URL}/analytics/property_distribution`, {
+    headers,
+  });
   return res.json();
 }
 
 export async function getTrends() {
-  const res = await fetch(`${API_BASE_URL}/analytics/trends`);
+  const res = await fetch(`${API_BASE_URL}/analytics/trends`, {
+    headers,
+  });
   return res.json();
 }
