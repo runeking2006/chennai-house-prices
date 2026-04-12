@@ -225,6 +225,13 @@ export default function App() {
     minHeight: "100vh",
   }}
   >
+<h1 style={{ display: "none" }}>
+  HPP-House Price Predictor
+</h1>
+
+<p style={{ display: "none" }}>
+  Predict house prices in Chennai and Tamil Nadu using government guideline values and machine learning.
+</p>
 
       {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
       <div className="flex justify-center gap-4 mb-6 z-40 relative">
