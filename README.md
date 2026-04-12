@@ -9,3 +9,7 @@ https://huggingface.co/runeking2006/tamilnadu-house-prices
 ## Web application link
 
 https://chennai-house-prices-1.onrender.com/
+
+## Chatbot Integration
+
+Done through BOTPRESS , which acts as a guide for this Web app 
