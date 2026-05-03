@@ -359,3 +359,59 @@ def get_broker_insights():
 
     except Exception as e:
         return {"error": str(e)}
+    
+import hashlib
+from fastapi import HTTPException
+
+def hash_password(password: str):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+@app.post("/auth/register")
+def register(user: dict):
+    email = user.get("email")
+    password = user.get("password")
+    role = user.get("role", "user")
+
+    if not email or not password:
+        raise HTTPException(status_code=400, detail="Missing fields")
+
+    hashed = hash_password(password)
+
+    try:
+        with psycopg2.connect(DATABASE_URL) as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO users (email, password_hash, role)
+                    VALUES (%s, %s, %s)
+                """, (email, hashed, role))
+        return {"message": "User created"}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.post("/auth/login")
+def login(user: dict):
+    email = user.get("email")
+    password = user.get("password")
+
+    hashed = hash_password(password)
+
+    with psycopg2.connect(DATABASE_URL) as conn:
+        df = pd.read_sql_query(
+            "SELECT * FROM users WHERE email=%s",
+            conn,
+            params=(email,)
+        )
+
+    if df.empty:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    db_user = df.iloc[0]
+
+    if db_user["password_hash"] != hashed:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    return {
+        "email": db_user["email"],
+        "role": db_user["role"]
+    }
