@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from flask import app
 from pydantic import BaseModel
 import numpy as np
 import joblib
@@ -36,6 +35,8 @@ CORS_ORIGINS = os.getenv("CORS_ORIGINS")
 
 if not CORS_ORIGINS:
     raise ValueError("CORS_ORIGINS environment variable not set")
+
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
