@@ -60,6 +60,7 @@ export default function AnalyticsView({ onBack }) {
   }, [propertyDistribution]);
 
   const handleSliceClick = (type, district) => setDrillDown({ type, district });
+
   const handleBack = () => {
     setDrillDown({ type: null, district: null });
     setActiveIndex(null);
@@ -93,7 +94,7 @@ export default function AnalyticsView({ onBack }) {
     return selected;
   };
 
-  // ✅ UPDATED FUNCTION (percentage labels)
+  // ✅ ONLY CHANGE: value → percent
   const renderCloseLabel = ({ cx, cy, midAngle, outerRadius, percent }) => {
     const RADIAN = Math.PI / 180;
     const radius = outerRadius + 6;
@@ -121,92 +122,143 @@ export default function AnalyticsView({ onBack }) {
           value={ownership}
           onChange={(e) => setOwnership(e.target.value)}
           className="border border-gray-300 rounded-lg p-1"
+          aria-label="Select Ownership Type"
         >
           <option>Freehold</option>
           <option>Leasehold</option>
         </select>
       </div>
 
-      {loading && <p className="text-gray-500">Loading analytics...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
+      {loading && <p className="text-center text-gray-500">Loading analytics...</p>}
+      {error && <p className="text-center text-red-500">{error}</p>}
+      {!loading && !error && propertyDistribution.length === 0 && (
+        <p className="text-center text-gray-500">No data available for this selection.</p>
+      )}
       {!loading && !error && propertyDistribution.length > 0 && !drillDown.type && (
-        <p className="font-semibold">
-          Total Properties Evaluated: {totalCount}
+        <p className="text-center font-semibold mb-2">
+          Total Properties: {totalCount}
         </p>
       )}
 
       {drillDown.type ? (
         <div className="w-full max-w-4xl">
-          <button onClick={handleBack} className="mb-4 px-4 py-2 bg-indigo-500 text-white rounded-lg">
+          <button
+            onClick={handleBack}
+            className="mb-4 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600"
+          >
             ← Back
           </button>
 
           <h2 className="text-xl font-bold text-center mb-4">
-            {drillDown.type} in {drillDown.district}
+            {drillDown.type} in {drillDown.district} - Taluk Distribution
           </h2>
 
-          <ResponsiveContainer width="100%" height={400}>
-            <PieChart>
-              <Pie
-                data={talukData}
-                dataKey="value"
-                nameKey="name"
-                outerRadius="90%"
-                label={renderCloseLabel}
-                labelLine={false}
-              >
-                {talukData.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
+          {talukData.length === 0 ? (
+            <p className="text-center text-gray-500">No taluk data available.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={400}>
+              <PieChart>
+                <Pie
+                  data={talukData}
+                  dataKey="value"
+                  nameKey="name"
+                  outerRadius="90%"
+                  fill="#8884d8"
+                  label={renderCloseLabel}
+                  labelLine={false}
+                >
+                  {talukData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
 
-              <Tooltip
-                content={({ payload }) => {
-                  if (!payload || !payload.length) return null;
-                  const taluk = payload[0].name;
-                  const reasons = getTalukReasons(taluk);
+                <Tooltip
+                  content={({ payload }) => {
+                    if (!payload || !payload.length) return null;
 
-                  return (
-                    <div className="bg-white p-3 rounded-lg shadow-lg text-sm">
-                      <div className="font-semibold">{taluk}</div>
-                      {reasons.map(r => <div key={r}>{r}</div>)}
-                    </div>
-                  );
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+                    const taluk = payload[0].name;
+                    const reasons = getTalukReasons(taluk);
+
+                    return (
+                      <div className="bg-white p-3 rounded-lg shadow-lg text-sm space-y-1">
+                        <div className="font-semibold text-gray-800">{taluk}</div>
+                        {reasons.map(r => (
+                          <div key={r}>{r}</div>
+                        ))}
+                      </div>
+                    );
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+
+          {talukData.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-3 mt-4">
+              {talukData.map((t, i) => (
+                <div key={t.name} className="flex items-center gap-2 text-sm">
+                  <span
+                    className="w-4 h-4 rounded-sm"
+                    style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                  ></span>
+                  <span>{t.name}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-6 w-full max-w-6xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl">
           {propertyTypes.map((type) => {
             const pieData = getPieData(type);
 
             return (
-              <div key={type} className="bg-white p-4 rounded-2xl shadow-md">
-                <h3 className="text-lg font-semibold text-center mb-2">{type}</h3>
+              <div role="img" aria-label={`${type} Property Distribution Chart`} key={type} className="bg-white p-4 rounded-2xl shadow-md">
+                <h3 className="text-lg font-semibold text-center mb-2">{type} Distribution</h3>
 
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      dataKey="value"
-                      nameKey="name"
-                      outerRadius={80}
-                      label={renderCloseLabel}
-                      onClick={(entry, index) => {
-                        setActiveIndex(index);
-                        handleSliceClick(type, entry?.name);
-                      }}
-                    >
-                      {pieData.map((_, i) => (
-                        <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
+                {pieData.length === 0 ? (
+                  <div className="h-[300px] flex items-center justify-center">
+                    <p className="text-gray-500">No data available.</p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        dataKey="value"
+                        nameKey="name"
+                        outerRadius={80}
+                        label={renderCloseLabel}
+                        activeIndex={activeIndex}
+                        stroke="#4f46e5"
+                        strokeWidth={activeIndex !== null ? 3 : 0}
+                        onClick={(entry, index) => {
+                          setActiveIndex(index);
+                          handleSliceClick(type, entry?.name || entry?.payload?.name);
+                        }}
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+
+                {pieData.length > 0 && (
+                  <div className="flex flex-wrap justify-center gap-2 mt-2">
+                    {pieData.map((d, i) => (
+                      <div key={d.name} className="flex items-center gap-1">
+                        <span
+                          className="w-4 h-4"
+                          style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                        ></span>
+                        <span className="text-sm">{d.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
