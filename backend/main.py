@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from flask import app
 from pydantic import BaseModel
 import numpy as np
 import joblib
@@ -30,15 +31,15 @@ db_config = {
 }
 
 # === FastAPI App ===
-app = FastAPI()
-origins = [
-    "http://localhost:3000",
-    "https://chennai-house-prices-1.onrender.com"
-]
+# === CORS (Production Only - ENV Controlled) ===
+CORS_ORIGINS = os.getenv("CORS_ORIGINS")
+
+if not CORS_ORIGINS:
+    raise ValueError("CORS_ORIGINS environment variable not set")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=CORS_ORIGINS.split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -320,3 +321,40 @@ def get_trends():
 @app.get("/")
 def root():
     return {"message": "Tamil Nadu Property Price Prediction API is running."}
+
+@app.get("/broker/insights")
+def get_broker_insights():
+    try:
+        with psycopg2.connect(DATABASE_URL) as conn:
+
+            # === Hotspots ===
+            hotspots_df = pd.read_sql_query("""
+                SELECT district, taluk, COUNT(*) as demand_count
+                FROM user_inputs
+                GROUP BY district, taluk
+                ORDER BY demand_count DESC
+                LIMIT 5
+            """, conn)
+
+            # === Recent Activity ===
+            recent_df = pd.read_sql_query("""
+                SELECT district, taluk, property_type, ownership_type, built_area_sqft, bedrooms, bathrooms, created_at
+                FROM user_inputs
+                ORDER BY created_at DESC
+                LIMIT 10
+            """, conn)
+
+            # === Summary ===
+            summary_df = pd.read_sql_query("""
+                SELECT COUNT(*) as total_searches
+                FROM user_inputs
+            """, conn)
+
+        return {
+            "hotspots": hotspots_df.to_dict(orient="records"),
+            "recent_activity": recent_df.to_dict(orient="records"),
+            "summary": summary_df.to_dict(orient="records")[0]
+        }
+
+    except Exception as e:
+        return {"error": str(e)}
