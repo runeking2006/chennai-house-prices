@@ -136,7 +136,7 @@ export default function AnalyticsView({ onBack }) {
       )}
       {!loading && !error && propertyDistribution.length > 0 && !drillDown.type && (
         <p className="text-center font-semibold mb-2">
-          Total Properties: {totalCount}
+          Total Properties Evaluated: {totalCount}
         </p>
       )}
 
