@@ -136,7 +136,7 @@ export default function AnalyticsView({ onBack }) {
       )}
       {!loading && !error && propertyDistribution.length > 0 && !drillDown.type && (
         <p className="text-center font-semibold mb-2">
-          Total Properties Evaluated: {totalCount}
+          Market Demand: {totalCount}
         </p>
       )}
 
@@ -152,6 +152,10 @@ export default function AnalyticsView({ onBack }) {
           <h2 className="text-xl font-bold text-center mb-4">
             {drillDown.type} in {drillDown.district} - Taluk Distribution
           </h2>
+
+          <p className="text-center font-semibold mb-2">
+            Market Demand: {talukData.reduce((sum, t) => sum + t.value, 0)}
+          </p>
 
           {talukData.length === 0 ? (
             <p className="text-center text-gray-500">No taluk data available.</p>
