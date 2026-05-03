@@ -10,7 +10,7 @@ const HOVER_REASONS = [
   "🚇 Metro accessible",
   "🌊 Low flood risk",
   "🏠 Age of the properties",
-  "🛣️ Road accessible space"
+  "🛣️ Road accessing space"
 ];
 
 const getRandomReasons = () => {
