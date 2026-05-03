@@ -8,12 +8,14 @@ const HOVER_REASONS = [
   "🏙️ Closer to city center",
   "🏫 Schools nearby",
   "🚇 Metro accessible",
-  "🌊 Low flood risk"
+  "🌊 Low flood risk",
+  "🏠 Age of the properties",
+  "🛣️ Road accessible space"
 ];
 
 const getRandomReasons = () => {
   const shuffled = [...HOVER_REASONS].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, 3);
+  return shuffled.slice(0, 4);
 };
 
 export default function AnalyticsView({ onBack }) {
