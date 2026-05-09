@@ -202,7 +202,7 @@ export default function App() {
 
   return (
   <div
-  className="min-h-screen p-6 relative overflow-hidden"
+  className="min-h-screen p-6"
   style={{
     backgroundImage: 'url("unnamed.jpg")',
     backgroundSize: "cover",
@@ -211,25 +211,7 @@ export default function App() {
     minHeight: "100vh",
   }}
   >
-<div className="floating-system">
 
-<div className="bubble bubble1">
-  <div className="float-item house">🏠</div>
-</div>
-
-<div className="bubble bubble2">
-  <div className="float-item pin">📍</div>
-</div>
-
-<div className="bubble bubble3">
-  <div className="float-item key">🔑</div>
-</div>
-
-<div className="bubble bubble4">
-  <div className="float-item building">🏢</div>
-</div>
-
-</div>
 <h1 style={{ display: "none" }}>
   HPP-House Price Predictor
 </h1>

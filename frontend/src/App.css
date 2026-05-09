@@ -1,5 +1,4 @@
 /* === Global layout === */
-
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -8,22 +7,18 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   color: #222;
-  overflow-x: hidden;
 }
 
-/* === App container === */
 
+/* === App container === */
 .App {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem 1rem;
   text-align: center;
-  position: relative;
-  z-index: 1;
 }
 
 /* === Title === */
-
 h1 {
   color: #333;
   margin-bottom: 1rem;
@@ -31,7 +26,6 @@ h1 {
 }
 
 /* === Form section === */
-
 form {
   background: white;
   border-radius: 12px;
@@ -74,7 +68,6 @@ button:hover {
 }
 
 /* === Prediction result === */
-
 .result-box {
   background: #e9f5ff;
   border-radius: 12px;
@@ -84,8 +77,7 @@ button:hover {
   font-size: 1.1rem;
 }
 
-/* === Note === */
-
+/* === Note below prediction === */
 .note {
   margin-top: 0.8rem;
   font-size: 0.9rem;
@@ -93,7 +85,6 @@ button:hover {
 }
 
 /* === Analytics section === */
-
 .analytics-section {
   margin-top: 2rem;
   background: white;
@@ -108,8 +99,7 @@ button:hover {
   color: #333;
 }
 
-/* === Toggle buttons === */
-
+/* Toggle buttons for ownership type */
 .toggle-buttons {
   display: flex;
   justify-content: center;
@@ -132,7 +122,6 @@ button:hover {
 }
 
 /* === Charts === */
-
 .chart-container {
   display: flex;
   flex-direction: column;
@@ -140,139 +129,10 @@ button:hover {
   gap: 2rem;
 }
 
+/* Responsive chart layout */
 @media (min-width: 768px) {
   .chart-container {
     flex-direction: row;
     justify-content: space-around;
-  }
-}
-
-/* ================================================= */
-/* ===== FLOATING AMBIENT SYSTEM =================== */
-/* ================================================= */
-
-.floating-system {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ===== FLOATING GLASS BUBBLES ===== */
-
-.bubble {
-  position: absolute;
-  border-radius: 50%;
-  backdrop-filter: blur(10px);
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-
-  animation: bubbleFloat 14s ease-in-out infinite;
-}
-
-.bubble1 {
-  width: 180px;
-  height: 180px;
-  top: 8%;
-  left: 6%;
-}
-
-.bubble2 {
-  width: 150px;
-  height: 150px;
-  top: 30%;
-  right: 10%;
-  animation-delay: 4s;
-}
-
-.bubble3 {
-  width: 190px;
-  height: 190px;
-  bottom: 10%;
-  left: 18%;
-  animation-delay: 8s;
-}
-
-.bubble4 {
-  width: 170px;
-  height: 170px;
-  bottom: 16%;
-  right: 14%;
-  animation-delay: 12s;
-}
-
-/* ===== FLOATING ITEMS ===== */
-
-.float-item {
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  opacity: 0.9;
-
-  animation: iconFloat 8s ease-in-out infinite;
-}
-
-/* ===== ICON STYLES ===== */
-
-.house {
-  font-size: 80px;
-}
-
-.pin {
-  font-size: 72px;
-}
-
-.key {
-  font-size: 68px;
-}
-
-.building {
-  font-size: 74px;
-}
-
-/* ===== BUBBLE FLOAT ===== */
-
-@keyframes bubbleFloat {
-
-  0% {
-    transform: translateY(0px) translateX(0px);
-  }
-
-  25% {
-    transform: translateY(-20px) translateX(10px);
-  }
-
-  50% {
-    transform: translateY(-45px) translateX(-12px);
-  }
-
-  75% {
-    transform: translateY(-20px) translateX(12px);
-  }
-
-  100% {
-    transform: translateY(0px) translateX(0px);
-  }
-}
-
-/* ===== ICON FLOAT ===== */
-
-@keyframes iconFloat {
-
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-
-  50% {
-    transform: rotate(8deg) scale(1.08);
-  }
-
-  100% {
-    transform: rotate(0deg) scale(1);
   }
 }
