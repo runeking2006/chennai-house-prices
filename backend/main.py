@@ -213,6 +213,8 @@ def predict(request: Request, data: InputData):
 
         for col, le in label_encoders.items():
             if col in df.columns:
+                if df.at[0, col] not in le.classes_:
+                    le.classes_ = np.append(le.classes_, df.at[0, col])
                 df[col] = le.transform(df[col])
 
         num_cols = ["built_area_sqft", "bedrooms", "bathrooms"]
