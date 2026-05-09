@@ -8,8 +8,6 @@ from typing import List, Dict, Any
 import psycopg2  # <--- Added for database connection
 import os
 from urllib.parse import urlparse
-import sqlite3
-from datetime import datetime
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -61,10 +59,6 @@ def rate_limit_handler(request: Request, exc: RateLimitExceeded):
 model = joblib.load("models/xgb_tn_property_model.pkl")
 feature_scaler = joblib.load("models/feature_scaler.pkl")
 label_encoders = joblib.load("models/label_encoders.pkl")  # expected dict: {col_name: LabelEncoder}
-
-# === Database Connection ===
-conn = psycopg2.connect(DATABASE_URL)
-cursor = conn.cursor()
 
 # === Build full District–Taluk Mapping ===
 district_taluk_pairs = [
@@ -219,8 +213,6 @@ def predict(request: Request, data: InputData):
 
         for col, le in label_encoders.items():
             if col in df.columns:
-                if df.at[0, col] not in le.classes_:
-                    le.classes_ = np.append(le.classes_, df.at[0, col])
                 df[col] = le.transform(df[col])
 
         num_cols = ["built_area_sqft", "bedrooms", "bathrooms"]
@@ -232,7 +224,8 @@ def predict(request: Request, data: InputData):
         return {"predicted_price": round(float(price_inr), 2)}
 
     except Exception as e:
-        return {"error": str(e)}
+        print(e)
+        return {"error": "Internal server error"}
 
 # === New Endpoint to Store User Inputs ===
 class FormData(BaseModel):
@@ -260,7 +253,8 @@ def store_form_data(data: FormData):
                 ))
         return {"message": "Form data stored successfully!"}
     except Exception as e:
-        return {"error": str(e)}
+        print(e)
+        return {"error": "Internal server error"}
 
 
 @app.get("/analytics/property_distribution")
@@ -300,7 +294,8 @@ def get_property_distribution(ownership_type: str = None):
         return result
 
     except Exception as e:
-        return {"error": str(e)}
+        print(e)
+        return {"error": "Internal server error"}
 
 
 
@@ -317,7 +312,8 @@ def get_trends():
         trend = df.groupby("date").size().reset_index(name="count")
         return trend.to_dict(orient="records")
     except Exception as e:
-        return {"error": str(e)}
+        print(e)
+        return {"error": "Internal server error"}
 
 @app.get("/")
 def root():
