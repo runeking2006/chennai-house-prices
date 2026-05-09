@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { predictPrice } from "./api"; // API helper
+import { predictPrice, storeFormData } from "./api"; // API helper
 import AnalyticsView from "./AnalyticsView"; // Your analytics component
 
 // ===== District–Taluk pairs =====
@@ -156,20 +156,6 @@ export default function App() {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const storeFormData = async (data) => {
-    try {
-      const res = await fetch("https://chennai-house-prices.onrender.com/store_form_data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      const result = await res.json();
-      console.log("Form data store response:", result);
-    } catch (err) {
-      console.error("Storing form data failed:", err);
-    }
   };
 
   const handlePredict = async () => {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
+import { getPropertyDistribution } from "./api";
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#a4de6c", "#d0ed57", "#8dd1e1"];
 
@@ -32,8 +33,7 @@ export default function AnalyticsView({ onBack }) {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch(`https://chennai-house-prices.onrender.com/analytics/property_distribution?ownership_type=${ownership}`);
-        const json = await res.json();
+        const json = await getPropertyDistribution(ownership);
         setPropertyDistribution(json);
       } catch (err) {
         console.error("Failed to fetch property distribution", err);
