@@ -201,13 +201,6 @@ export default function App() {
 
 
   return (
-  <>
-  <div className="floating-houses">
-  <span className="house h1">🏠</span>
-  <span className="house h2">🏡</span>
-  <span className="house h3">🏘️</span>
-  <span className="house h4">🏠</span>
-  </div>
   <div
   className="min-h-screen p-6 relative overflow-hidden"
   style={{
@@ -218,6 +211,17 @@ export default function App() {
     minHeight: "100vh",
   }}
   >
+<div className="ambient-bg">
+
+<div className="blob blob1"></div>
+<div className="blob blob2"></div>
+
+<img src="/icons/house.svg" className="ambient-icon icon1" alt="" />
+<img src="/icons/pin.svg" className="ambient-icon icon2" alt="" />
+<img src="/icons/key.svg" className="ambient-icon icon3" alt="" />
+<img src="/icons/building.svg" className="ambient-icon icon4" alt="" />
+
+</div>
 <h1 style={{ display: "none" }}>
   HPP-House Price Predictor
 </h1>
@@ -434,6 +438,5 @@ export default function App() {
         )}
       </AnimatePresence>
     </div>
-  </>
   );
 }
