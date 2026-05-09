@@ -211,15 +211,23 @@ export default function App() {
     minHeight: "100vh",
   }}
   >
-<div className="ambient-bg">
+<div className="floating-system">
 
-<div className="blob blob1"></div>
-<div className="blob blob2"></div>
+<div className="bubble bubble1">
+  <div className="float-item house">🏠</div>
+</div>
 
-<img src="/icons/house.svg" className="ambient-icon icon1" alt="" />
-<img src="/icons/pin.svg" className="ambient-icon icon2" alt="" />
-<img src="/icons/key.svg" className="ambient-icon icon3" alt="" />
-<img src="/icons/building.svg" className="ambient-icon icon4" alt="" />
+<div className="bubble bubble2">
+  <div className="float-item pin">📍</div>
+</div>
+
+<div className="bubble bubble3">
+  <div className="float-item key">🔑</div>
+</div>
+
+<div className="bubble bubble4">
+  <div className="float-item building">🏢</div>
+</div>
 
 </div>
 <h1 style={{ display: "none" }}>

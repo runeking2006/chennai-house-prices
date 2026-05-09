@@ -137,9 +137,9 @@ button:hover {
   }
 }
 
-/* ===== AMBIENT BACKGROUND ===== */
+/* ===== FLOATING SYSTEM ===== */
 
-.ambient-bg {
+.floating-system {
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -147,76 +147,149 @@ button:hover {
   z-index: 0;
 }
 
-/* ===== BLUR BLOBS ===== */
+/* ===== FLOATING BUBBLES ===== */
 
-.blob {
+.bubble {
   position: absolute;
-  width: 320px;
-  height: 320px;
   border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.12;
-  animation: blobMove 18s ease-in-out infinite;
+  backdrop-filter: blur(8px);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  animation: bubbleFloat 18s ease-in-out infinite;
 }
 
-.blob1 {
-  background: #7c3aed;
-  top: -100px;
-  left: -100px;
+.bubble1 {
+  width: 140px;
+  height: 140px;
+  top: 10%;
+  left: 8%;
 }
 
-.blob2 {
-  background: #4f46e5;
-  bottom: -120px;
-  right: -100px;
-  animation-delay: 8s;
+.bubble2 {
+  width: 110px;
+  height: 110px;
+  top: 35%;
+  right: 12%;
+  animation-delay: 6s;
+}
+
+.bubble3 {
+  width: 160px;
+  height: 160px;
+  bottom: 12%;
+  left: 20%;
+  animation-delay: 10s;
+}
+
+.bubble4 {
+  width: 130px;
+  height: 130px;
+  bottom: 18%;
+  right: 14%;
+  animation-delay: 14s;
 }
 
 /* ===== FLOATING ICONS ===== */
 
-.ambient-icon {
-  position: absolute;
-  width: 100px;
-  opacity: 0.04;
-  filter: blur(0.5px);
-  animation: floatAmbient 20s ease-in-out infinite;
+.float-item {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  opacity: 0.18;
+  filter: blur(0.3px);
+  animation: iconFloat 20s ease-in-out infinite;
 }
 
-.icon1 {
-  top: 12%;
-  left: 8%;
+.house {
+  transform: rotate(-10deg);
 }
 
-.icon2 {
-  top: 30%;
-  right: 10%;
-  width: 80px;
+.pin {
+  font-size: 36px;
+}
+
+.key {
+  font-size: 34px;
+}
+
+.building {
+  font-size: 40px;
+}
+
+/* ===== HOUSE ===== */
+
+.house {
+  width: 70px;
+  height: 70px;
+  top: 13%;
+  left: 10%;
+  border: 2px solid rgba(255,255,255,0.18);
+  border-radius: 18px;
+  transform: rotate(12deg);
+}
+
+/* ===== LOCATION PIN ===== */
+
+.pin {
+  width: 55px;
+  height: 55px;
+  top: 38%;
+  right: 15%;
+  border: 2px solid rgba(255,255,255,0.18);
+  border-radius: 50%;
   animation-delay: 4s;
 }
 
-.icon3 {
-  bottom: 14%;
-  left: 20%;
-  width: 70px;
+/* ===== KEY ===== */
+
+.key {
+  width: 90px;
+  height: 30px;
+  bottom: 16%;
+  left: 24%;
+  border-radius: 20px;
+  border: 2px solid rgba(255,255,255,0.18);
   animation-delay: 8s;
 }
 
-.icon4 {
-  bottom: 20%;
-  right: 18%;
-  width: 110px;
+/* ===== BUILDING ===== */
+
+.building {
+  width: 75px;
+  height: 120px;
+  bottom: 18%;
+  right: 14%;
+  border-radius: 18px;
+  border: 2px solid rgba(255,255,255,0.18);
   animation-delay: 12s;
 }
 
 /* ===== ANIMATION ===== */
 
-@keyframes floatAmbient {
+@keyframes bubbleFloat {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-18px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes iconFloat {
   0% {
     transform: translate(0px, 0px) rotate(0deg);
   }
 
   50% {
-    transform: translate(10px, -20px) rotate(2deg);
+    transform: translate(10px, -16px) rotate(3deg);
   }
 
   100% {
@@ -224,21 +297,9 @@ button:hover {
   }
 }
 
-@keyframes blobMove {
-  0% {
-    transform: translate(0px, 0px);
-  }
+/* ===== KEEP CONTENT ABOVE ===== */
 
-  50% {
-    transform: translate(30px, -20px);
-  }
-
-  100% {
-    transform: translate(0px, 0px);
-  }
-}
-
-.min-h-screen {
+.min-h-screen > * {
   position: relative;
   z-index: 1;
 }
