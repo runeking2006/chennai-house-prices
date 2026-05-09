@@ -201,7 +201,14 @@ export default function App() {
 
 
   return (
-    <div
+  <>
+  <div className="floating-houses">
+  <span className="house h1">🏠</span>
+  <span className="house h2">🏡</span>
+  <span className="house h3">🏘️</span>
+  <span className="house h4">🏠</span>
+  </div>
+  <div
   className="min-h-screen p-6"
   style={{
     backgroundImage: 'url("unnamed.jpg")',
@@ -427,5 +434,6 @@ export default function App() {
         )}
       </AnimatePresence>
     </div>
+  </>
   );
 }
