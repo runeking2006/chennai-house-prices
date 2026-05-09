@@ -1,4 +1,5 @@
 /* === Global layout === */
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -7,18 +8,22 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   color: #222;
+  overflow-x: hidden;
 }
 
-
 /* === App container === */
+
 .App {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem 1rem;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 /* === Title === */
+
 h1 {
   color: #333;
   margin-bottom: 1rem;
@@ -26,6 +31,7 @@ h1 {
 }
 
 /* === Form section === */
+
 form {
   background: white;
   border-radius: 12px;
@@ -68,6 +74,7 @@ button:hover {
 }
 
 /* === Prediction result === */
+
 .result-box {
   background: #e9f5ff;
   border-radius: 12px;
@@ -77,7 +84,8 @@ button:hover {
   font-size: 1.1rem;
 }
 
-/* === Note below prediction === */
+/* === Note === */
+
 .note {
   margin-top: 0.8rem;
   font-size: 0.9rem;
@@ -85,6 +93,7 @@ button:hover {
 }
 
 /* === Analytics section === */
+
 .analytics-section {
   margin-top: 2rem;
   background: white;
@@ -99,7 +108,8 @@ button:hover {
   color: #333;
 }
 
-/* Toggle buttons for ownership type */
+/* === Toggle buttons === */
+
 .toggle-buttons {
   display: flex;
   justify-content: center;
@@ -122,6 +132,7 @@ button:hover {
 }
 
 /* === Charts === */
+
 .chart-container {
   display: flex;
   flex-direction: column;
@@ -129,7 +140,6 @@ button:hover {
   gap: 2rem;
 }
 
-/* Responsive chart layout */
 @media (min-width: 768px) {
   .chart-container {
     flex-direction: row;
@@ -137,169 +147,132 @@ button:hover {
   }
 }
 
-/* ===== FLOATING SYSTEM ===== */
+/* ================================================= */
+/* ===== FLOATING AMBIENT SYSTEM =================== */
+/* ================================================= */
 
 .floating-system {
-  position: absolute;
+  position: fixed;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
 }
 
-/* ===== FLOATING BUBBLES ===== */
+/* ===== FLOATING GLASS BUBBLES ===== */
 
 .bubble {
   position: absolute;
   border-radius: 50%;
-  backdrop-filter: blur(8px);
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  animation: bubbleFloat 18s ease-in-out infinite;
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+
+  animation: bubbleFloat 14s ease-in-out infinite;
 }
 
 .bubble1 {
-  width: 140px;
-  height: 140px;
-  top: 10%;
-  left: 8%;
+  width: 180px;
+  height: 180px;
+  top: 8%;
+  left: 6%;
 }
 
 .bubble2 {
-  width: 110px;
-  height: 110px;
-  top: 35%;
-  right: 12%;
-  animation-delay: 6s;
+  width: 150px;
+  height: 150px;
+  top: 30%;
+  right: 10%;
+  animation-delay: 4s;
 }
 
 .bubble3 {
-  width: 160px;
-  height: 160px;
-  bottom: 12%;
-  left: 20%;
-  animation-delay: 10s;
+  width: 190px;
+  height: 190px;
+  bottom: 10%;
+  left: 18%;
+  animation-delay: 8s;
 }
 
 .bubble4 {
-  width: 130px;
-  height: 130px;
-  bottom: 18%;
+  width: 170px;
+  height: 170px;
+  bottom: 16%;
   right: 14%;
-  animation-delay: 14s;
+  animation-delay: 12s;
 }
 
-/* ===== FLOATING ICONS ===== */
+/* ===== FLOATING ITEMS ===== */
 
 .float-item {
   width: 100%;
   height: 100%;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 42px;
-  opacity: 0.18;
-  filter: blur(0.3px);
-  animation: iconFloat 20s ease-in-out infinite;
+
+  opacity: 0.9;
+
+  animation: iconFloat 8s ease-in-out infinite;
 }
 
+/* ===== ICON STYLES ===== */
+
 .house {
-  transform: rotate(-10deg);
+  font-size: 80px;
 }
 
 .pin {
-  font-size: 36px;
+  font-size: 72px;
 }
 
 .key {
-  font-size: 34px;
+  font-size: 68px;
 }
 
 .building {
-  font-size: 40px;
+  font-size: 74px;
 }
 
-/* ===== HOUSE ===== */
-
-.house {
-  width: 70px;
-  height: 70px;
-  top: 13%;
-  left: 10%;
-  border: 2px solid rgba(255,255,255,0.18);
-  border-radius: 18px;
-  transform: rotate(12deg);
-}
-
-/* ===== LOCATION PIN ===== */
-
-.pin {
-  width: 55px;
-  height: 55px;
-  top: 38%;
-  right: 15%;
-  border: 2px solid rgba(255,255,255,0.18);
-  border-radius: 50%;
-  animation-delay: 4s;
-}
-
-/* ===== KEY ===== */
-
-.key {
-  width: 90px;
-  height: 30px;
-  bottom: 16%;
-  left: 24%;
-  border-radius: 20px;
-  border: 2px solid rgba(255,255,255,0.18);
-  animation-delay: 8s;
-}
-
-/* ===== BUILDING ===== */
-
-.building {
-  width: 75px;
-  height: 120px;
-  bottom: 18%;
-  right: 14%;
-  border-radius: 18px;
-  border: 2px solid rgba(255,255,255,0.18);
-  animation-delay: 12s;
-}
-
-/* ===== ANIMATION ===== */
+/* ===== BUBBLE FLOAT ===== */
 
 @keyframes bubbleFloat {
+
   0% {
-    transform: translateY(0px);
+    transform: translateY(0px) translateX(0px);
+  }
+
+  25% {
+    transform: translateY(-20px) translateX(10px);
   }
 
   50% {
-    transform: translateY(-18px);
+    transform: translateY(-45px) translateX(-12px);
+  }
+
+  75% {
+    transform: translateY(-20px) translateX(12px);
   }
 
   100% {
-    transform: translateY(0px);
+    transform: translateY(0px) translateX(0px);
   }
 }
+
+/* ===== ICON FLOAT ===== */
 
 @keyframes iconFloat {
+
   0% {
-    transform: translate(0px, 0px) rotate(0deg);
+    transform: rotate(0deg) scale(1);
   }
 
   50% {
-    transform: translate(10px, -16px) rotate(3deg);
+    transform: rotate(8deg) scale(1.08);
   }
 
   100% {
-    transform: translate(0px, 0px) rotate(0deg);
+    transform: rotate(0deg) scale(1);
   }
-}
-
-/* ===== KEEP CONTENT ABOVE ===== */
-
-.min-h-screen > * {
-  position: relative;
-  z-index: 1;
 }
