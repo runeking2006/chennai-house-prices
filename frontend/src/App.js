@@ -209,7 +209,7 @@ export default function App() {
   <span className="house h4">🏠</span>
   </div>
   <div
-  className="min-h-screen p-6"
+  className="min-h-screen p-6 relative overflow-hidden"
   style={{
     backgroundImage: 'url("unnamed.jpg")',
     backgroundSize: "cover",
