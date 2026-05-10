@@ -136,3 +136,41 @@ button:hover {
   }
 }
 
+/* ===== AUTO DARK MODE ===== */
+
+.dark-mode {
+  background: rgba(2, 6, 23, 0.65);
+
+  backdrop-filter: blur(4px);
+}
+
+/* cards */
+
+.dark-mode .bg-white,
+.dark-mode form,
+.dark-mode .analytics-section,
+.dark-mode .shadow-2xl {
+  background: rgba(15, 23, 42, 0.95) !important;
+
+  color: white !important;
+}
+
+/* inputs */
+
+.dark-mode input,
+.dark-mode select {
+  background: #1e293b !important;
+
+  color: white !important;
+
+  border: 1px solid #475569 !important;
+}
+
+/* text */
+
+.dark-mode p,
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode label {
+  color: white !important;
+}

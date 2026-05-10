@@ -360,6 +360,9 @@ export default function App() {
     bedrooms: "",
     bathrooms: "",
   });
+  const prefersDarkMode = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
   const [taluks, setTaluks] = useState([]);
   const [prediction, setPrediction] = useState(null);
   const [message, setMessage] = useState("");
@@ -436,7 +439,9 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen p-6"
+    className={`min-h-screen p-6 ${
+      prefersDarkMode ? "dark-mode" : ""
+    }`}
       style={{
         backgroundImage: 'url("unnamed.jpg")',
         backgroundSize: "cover",
