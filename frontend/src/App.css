@@ -136,3 +136,64 @@ button:hover {
     justify-content: space-around;
   }
 }
+
+/* ===== LIGHT MODE ===== */
+
+.light-mode {
+  background-color: rgba(255,255,255,0.15);
+  color: #222;
+}
+
+/* ===== DARK MODE ===== */
+
+.dark-mode {
+  background-color: #0f172a;
+  color: white;
+}
+
+/* ===== DARK MODE FORM ===== */
+
+.dark-mode .bg-white {
+  background: rgba(15, 23, 42, 0.92) !important;
+  color: white !important;
+}
+
+/* ===== INPUTS ===== */
+
+.dark-mode input,
+.dark-mode select {
+  background: #1e293b;
+  color: white;
+  border: 1px solid #475569;
+}
+
+/* ===== PLACEHOLDER ===== */
+
+.dark-mode input::placeholder {
+  color: #cbd5e1;
+}
+
+/* ===== TEXT ===== */
+
+.dark-mode p,
+.dark-mode h2,
+.dark-mode label {
+  color: white !important;
+}
+
+/* ===== DARK MODE TOGGLE ===== */
+
+.theme-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 50;
+
+  background: rgba(15, 23, 42, 0.9);
+
+  backdrop-filter: blur(8px);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+}

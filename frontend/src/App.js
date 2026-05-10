@@ -133,7 +133,7 @@ export default function App() {
     bedrooms: "",
     bathrooms: "",
   });
-
+  const [darkMode, setDarkMode] = useState(false);
   const [taluks, setTaluks] = useState([]);
   const [prediction, setPrediction] = useState(null);
   const [message, setMessage] = useState("");
@@ -202,7 +202,7 @@ export default function App() {
 
   return (
   <div
-  className="min-h-screen p-6"
+  className={`min-h-screen p-6 relative ${darkMode ? "dark-mode" : "light-mode"}`}
   style={{
     backgroundImage: 'url("unnamed.jpg")',
     backgroundSize: "cover",
@@ -223,6 +223,13 @@ export default function App() {
       {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
       <div className="flex justify-center gap-4 mb-6 z-40 relative">
 
+      <button
+       onClick={() => setDarkMode(!darkMode)}
+       className="theme-toggle px-4 py-2 rounded-lg font-semibold text-white"
+      >
+       {darkMode ? "☀️" : "🌙"}
+      </button>
+
         <button
           onClick={() => setShowAnalytics(false)}
           className={`px-4 py-2 rounded-lg font-semibold ${
@@ -240,6 +247,7 @@ export default function App() {
         >
           📊 Analytics
         </button>
+
       </div>
 
       {/* ===== PREDICTOR VIEW ===== */}
