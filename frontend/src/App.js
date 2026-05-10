@@ -220,15 +220,16 @@ export default function App() {
   Predict house prices in Chennai and Tamil Nadu using government guideline values and machine learning.
 </p>
 
+<button
+  onClick={() => setDarkMode(!darkMode)}
+  className="theme-toggle px-4 py-2 rounded-lg font-semibold text-white"
+>
+ {darkMode ? "☀️" : "🌙"}
+</button>
+
+
       {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
       <div className="flex justify-center gap-4 mb-6 z-40 relative">
-
-      <button
-       onClick={() => setDarkMode(!darkMode)}
-       className="theme-toggle px-4 py-2 rounded-lg font-semibold text-white"
-      >
-       {darkMode ? "☀️" : "🌙"}
-      </button>
 
         <button
           onClick={() => setShowAnalytics(false)}
