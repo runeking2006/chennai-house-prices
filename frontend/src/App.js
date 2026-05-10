@@ -489,7 +489,11 @@ export default function App() {
           transition={{ duration: 0.6 }}
           className="flex items-center justify-center"
         >
-          <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-6 space-y-5">
+          <div className={`w-full max-w-md shadow-2xl rounded-2xl p-6 space-y-5 ${
+  prefersDarkMode
+    ? "bg-slate-900 text-white"
+    : "bg-white text-black"
+}`}>
             <h2 className="text-2xl font-bold text-center text-indigo-700">
               🏠 Tamil Nadu Property Price Predictor
             </h2>
