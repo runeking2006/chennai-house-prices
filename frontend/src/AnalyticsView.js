@@ -27,7 +27,7 @@ const getRandomReasons = () => {
   return shuffled.slice(0, 4);
 };
 
-export default function AnalyticsView({ onBack, prefersDarkMode }) {
+export default function AnalyticsView({ onBack, darkMode }) {
   const [ownership, setOwnership] = useState("Freehold");
   const [propertyDistribution, setPropertyDistribution] = useState([]);
   const [drillDown, setDrillDown] = useState({ type: null, district: null });
@@ -137,7 +137,7 @@ export default function AnalyticsView({ onBack, prefersDarkMode }) {
         x={x}
         y={y}
         fontSize={20}
-        fill={prefersDarkMode ? "#ffffff" : "#000000"}
+        fill={darkMode ? "#ffffff" : "#000000"}
         textAnchor="middle"
       >
         {`${(percent * 100).toFixed(0)}%`}
@@ -150,7 +150,7 @@ export default function AnalyticsView({ onBack, prefersDarkMode }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={`min-h-screen p-6 flex flex-col items-center space-y-6 ${
-        prefersDarkMode ? "bg-slate-950 text-white" : "bg-gray-50 text-black"
+        darkMode ? "bg-slate-950 text-white" : "bg-gray-50 text-black"
       }`}
       style={{ position: "relative" }}
     >
@@ -160,7 +160,7 @@ export default function AnalyticsView({ onBack, prefersDarkMode }) {
           value={ownership}
           onChange={(e) => setOwnership(e.target.value)}
           className={`rounded-lg p-1 ${
-            window.matchMedia("(prefers-color-scheme: dark)").matches
+            darkMode
               ? "bg-slate-800 text-white border border-slate-600"
               : "bg-white text-black border border-gray-300"
           }`}
@@ -240,15 +240,14 @@ export default function AnalyticsView({ onBack, prefersDarkMode }) {
                     return (
                       <div
                         className={`p-3 rounded-lg shadow-lg text-sm space-y-1 ${
-                          window.matchMedia("(prefers-color-scheme: dark)")
-                            .matches
+                          darkMode
                             ? "bg-slate-900 text-white"
                             : "bg-white text-black"
                         }`}
                       >
                         <div
                           className={`font-semibold ${
-                            prefersDarkMode ? "text-white" : "text-gray-800"
+                            darkMode ? "text-white" : "text-gray-800"
                           }`}
                         >
                           {taluk}
@@ -289,9 +288,7 @@ export default function AnalyticsView({ onBack, prefersDarkMode }) {
                 aria-label={`${type} Property Distribution Chart`}
                 key={type}
                 className={`p-4 rounded-2xl shadow-md ${
-                  window.matchMedia("(prefers-color-scheme: dark)").matches
-                    ? "bg-slate-900 text-white"
-                    : "bg-white text-black"
+                  darkMode ? "bg-slate-900 text-white" : "bg-white text-black"
                 }`}
               >
                 <h3 className="text-lg font-semibold text-center mb-2">
@@ -302,10 +299,7 @@ export default function AnalyticsView({ onBack, prefersDarkMode }) {
                   <div className="h-[300px] flex items-center justify-center">
                     <p
                       className={`${
-                        window.matchMedia("(prefers-color-scheme: dark)")
-                          .matches
-                          ? "text-gray-300"
-                          : "text-gray-500"
+                        darkMode ? "text-gray-300" : "text-gray-500"
                       }`}
                     >
                       No data available.
@@ -338,7 +332,14 @@ export default function AnalyticsView({ onBack, prefersDarkMode }) {
                           />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: darkMode ? "#0f172a" : "#ffffff",
+                          border: "none",
+                          borderRadius: "12px",
+                          color: darkMode ? "#ffffff" : "#000000",
+                        }}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 )}
