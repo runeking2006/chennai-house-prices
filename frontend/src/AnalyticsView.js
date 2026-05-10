@@ -27,7 +27,10 @@ const getRandomReasons = () => {
   return shuffled.slice(0, 4);
 };
 
-export default function AnalyticsView({ onBack }) {
+export default function AnalyticsView({
+  onBack,
+  prefersDarkMode,
+}) {
   const [ownership, setOwnership] = useState("Freehold");
   const [propertyDistribution, setPropertyDistribution] = useState([]);
   const [drillDown, setDrillDown] = useState({ type: null, district: null });
@@ -144,7 +147,7 @@ export default function AnalyticsView({ onBack }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={`min-h-screen p-6 flex flex-col items-center space-y-6 ${
-        window.matchMedia("(prefers-color-scheme: dark)").matches
+        prefersDarkMode
           ? "bg-slate-950 text-white"
           : "bg-gray-50 text-black"
       }`}
