@@ -360,7 +360,9 @@ export default function App() {
     bedrooms: "",
     bathrooms: "",
   });
-  const prefersDarkMode = true;
+  const prefersDarkMode = window.matchMedia(
+    "(prefers-color-scheme: dark)",
+  ).matches;
   const [taluks, setTaluks] = useState([]);
   const [prediction, setPrediction] = useState(null);
   const [message, setMessage] = useState("");
@@ -437,9 +439,7 @@ export default function App() {
 
   return (
     <div
-    className={`min-h-screen p-6 ${
-      prefersDarkMode ? "dark-mode" : ""
-    }`}
+      className={`min-h-screen p-6 ${prefersDarkMode ? "dark-mode" : ""}`}
       style={{
         backgroundImage: 'url("unnamed.jpg")',
         backgroundSize: "cover",
@@ -489,12 +489,18 @@ export default function App() {
           transition={{ duration: 0.6 }}
           className="flex items-center justify-center"
         >
-          <div className={`w-full max-w-md shadow-2xl rounded-2xl p-6 space-y-5 ${
-  prefersDarkMode
-    ? "bg-slate-900 text-white"
-    : "bg-white text-black"
-}`}>
-            <h2 className="text-2xl font-bold text-center text-indigo-700">
+          <div
+            className={`w-full max-w-md shadow-2xl rounded-2xl p-6 space-y-5 ${
+              prefersDarkMode
+                ? "bg-slate-900 text-white"
+                : "bg-white text-black"
+            }`}
+          >
+            <h2
+              className={`text-2xl font-bold text-center ${
+                prefersDarkMode ? "text-white" : "text-indigo-700"
+              }`}
+            >
               🏠 Tamil Nadu Property Price Predictor
             </h2>
 
@@ -504,7 +510,11 @@ export default function App() {
               value={form.district}
               onChange={handleChange}
               aria-label="Select District" // 6️⃣ Accessibility
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+              className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
+                prefersDarkMode
+                  ? "bg-slate-800 text-white border border-slate-600"
+                  : "bg-white text-black border border-gray-300"
+              }`}
             >
               <option value="">Select District</option>
               {/* 1️⃣ Dropdown keys */}
@@ -522,7 +532,11 @@ export default function App() {
               onChange={handleChange}
               disabled={!form.district}
               aria-label="Select Taluk" // 6️⃣ Accessibility
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+              className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 ${
+                prefersDarkMode
+                  ? "bg-slate-800 text-white border border-slate-600"
+                  : "bg-white text-black border border-gray-300"
+              }`}
             >
               <option value="">Select Taluk</option>
               {/* 1️⃣ Dropdown keys */}
@@ -539,7 +553,11 @@ export default function App() {
               value={form.property_type}
               onChange={handleChange}
               aria-label="Select Property Type" // 6️⃣ Accessibility
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+              className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
+                prefersDarkMode
+                  ? "bg-slate-800 text-white border border-slate-600"
+                  : "bg-white text-black border border-gray-300"
+              }`}
             >
               <option value="">Select Property Type</option>
               {/* 1️⃣ Dropdown keys */}
@@ -555,7 +573,11 @@ export default function App() {
               value={form.ownership_type}
               onChange={handleChange}
               aria-label="Select Ownership Type" // 6️⃣ Accessibility
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+              className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
+                prefersDarkMode
+                  ? "bg-slate-800 text-white border border-slate-600"
+                  : "bg-white text-black border border-gray-300"
+              }`}
             >
               <option value="">Select Ownership Type</option>
               {/* 1️⃣ Dropdown keys */}
@@ -572,7 +594,11 @@ export default function App() {
               onChange={handleChange}
               min="0" // 3️⃣ Prevent invalid numeric input
               aria-label="Built Area (sqft)" // 6️⃣ Accessibility
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+              className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
+                prefersDarkMode
+                  ? "bg-slate-800 text-white border border-slate-600"
+                  : "bg-white text-black border border-gray-300"
+              }`}
             />
             <div className="flex gap-2">
               <input
@@ -583,7 +609,11 @@ export default function App() {
                 onChange={handleChange}
                 min="0" // 3️⃣ Prevent invalid numeric input
                 aria-label="Bedrooms" // 6️⃣ Accessibility
-                className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+                className={`w-1/2 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
+                  prefersDarkMode
+                    ? "bg-slate-800 text-white border border-slate-600"
+                    : "bg-white text-black border border-gray-300"
+                }`}
               />
               <input
                 type="number"
@@ -593,7 +623,11 @@ export default function App() {
                 onChange={handleChange}
                 min="0" // 3️⃣ Prevent invalid numeric input
                 aria-label="Bathrooms" // 6️⃣ Accessibility
-                className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500"
+                className={`w-1/2 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
+                  prefersDarkMode
+                    ? "bg-slate-800 text-white border border-slate-600"
+                    : "bg-white text-black border border-gray-300"
+                }`}
               />
             </div>
 
@@ -615,7 +649,11 @@ export default function App() {
               )}
             </button>
 
-            <p className="text-xs text-gray-500 text-center">
+            <p
+              className={`text-xs text-center ${
+                prefersDarkMode ? "text-gray-300" : "text-gray-500"
+              }`}
+            >
               Note: These predictions are used for understanding user
               preferences for buying property.
             </p>
@@ -625,13 +663,21 @@ export default function App() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-green-50 p-4 rounded-xl text-center border border-green-200"
+                className={`p-4 rounded-xl text-center ${
+                  prefersDarkMode
+                    ? "bg-green-900 border border-green-700"
+                    : "bg-green-50 border border-green-200"
+                }`}
               >
                 <div className="flex flex-col items-center gap-3">
                   <p className="text-lg font-semibold text-green-700">
                     Predicted Price: ₹ {formatINR(prediction.totalPrice)}
                   </p>
-                  <p className="text-sm text-gray-700">
+                  <p
+                    className={`text-sm ${
+                      prefersDarkMode ? "text-gray-200" : "text-gray-700"
+                    }`}
+                  >
                     Per sqft: ₹ {formatINR(prediction.perSqft, 2)}
                   </p>
                   <button
@@ -674,7 +720,11 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             // 4️⃣ Analytics overlay styling
-            className="bg-white overflow-auto p-6"
+            className={`overflow-auto p-6 ${
+              prefersDarkMode
+                ? "bg-slate-950 text-white"
+                : "bg-white text-black"
+            }`}
           >
             <AnalyticsView onBack={() => setShowAnalytics(false)} />
           </motion.div>

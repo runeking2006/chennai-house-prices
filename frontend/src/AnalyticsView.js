@@ -3,7 +3,15 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
 import { getPropertyDistribution } from "./api";
 
-const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#a4de6c", "#d0ed57", "#8dd1e1"];
+const COLORS = [
+  "#8884d8",
+  "#82ca9d",
+  "#ffc658",
+  "#ff8042",
+  "#a4de6c",
+  "#d0ed57",
+  "#8dd1e1",
+];
 
 const HOVER_REASONS = [
   "🏙️ Closer to city center",
@@ -11,7 +19,7 @@ const HOVER_REASONS = [
   "🚇 Metro accessible",
   "🌊 Low flood risk",
   "🏠 Age of the properties",
-  "🛣️ Road accessing space"
+  "🛣️ Road accessing space",
 ];
 
 const getRandomReasons = () => {
@@ -45,21 +53,39 @@ export default function AnalyticsView({ onBack }) {
     fetchDistribution();
   }, [ownership]);
 
-  const getPieData = useCallback((type) => {
-    const filtered = propertyDistribution.filter(d => d.property_type === type);
-    const districtMap = {};
-    filtered.forEach(d => {
-      const talukSum = Object.values(d.taluk_counts || {}).reduce((acc, val) => acc + val, 0);
-      districtMap[d.district] = (districtMap[d.district] || 0) + talukSum;
-    });
-    return Object.entries(districtMap).map(([name, value]) => ({ name, value }));
-  }, [propertyDistribution]);
+  const getPieData = useCallback(
+    (type) => {
+      const filtered = propertyDistribution.filter(
+        (d) => d.property_type === type,
+      );
+      const districtMap = {};
+      filtered.forEach((d) => {
+        const talukSum = Object.values(d.taluk_counts || {}).reduce(
+          (acc, val) => acc + val,
+          0,
+        );
+        districtMap[d.district] = (districtMap[d.district] || 0) + talukSum;
+      });
+      return Object.entries(districtMap).map(([name, value]) => ({
+        name,
+        value,
+      }));
+    },
+    [propertyDistribution],
+  );
 
-  const getTalukData = useCallback((type, district) => {
-    const filtered = propertyDistribution.filter(d => d.property_type === type && d.district === district);
-    if (!filtered.length) return [];
-    return Object.entries(filtered[0].taluk_counts || {}).map(([name, value]) => ({ name, value }));
-  }, [propertyDistribution]);
+  const getTalukData = useCallback(
+    (type, district) => {
+      const filtered = propertyDistribution.filter(
+        (d) => d.property_type === type && d.district === district,
+      );
+      if (!filtered.length) return [];
+      return Object.entries(filtered[0].taluk_counts || {}).map(
+        ([name, value]) => ({ name, value }),
+      );
+    },
+    [propertyDistribution],
+  );
 
   const handleSliceClick = (type, district) => setDrillDown({ type, district });
 
@@ -77,7 +103,10 @@ export default function AnalyticsView({ onBack }) {
 
   const totalCount = useMemo(() => {
     return propertyDistribution.reduce((acc, d) => {
-      const talukSum = Object.values(d.taluk_counts || {}).reduce((sum, val) => sum + val, 0);
+      const talukSum = Object.values(d.taluk_counts || {}).reduce(
+        (sum, val) => sum + val,
+        0,
+      );
       return acc + talukSum;
     }, 0);
   }, [propertyDistribution]);
@@ -88,9 +117,9 @@ export default function AnalyticsView({ onBack }) {
     const shuffled = [...HOVER_REASONS].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, 3);
 
-    setTalukReasonMap(prev => ({
+    setTalukReasonMap((prev) => ({
       ...prev,
-      [taluk]: selected
+      [taluk]: selected,
     }));
 
     return selected;
@@ -114,16 +143,23 @@ export default function AnalyticsView({ onBack }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen bg-gray-50 p-6 flex flex-col items-center space-y-6"
+      className={`min-h-screen p-6 flex flex-col items-center space-y-6 ${
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "bg-slate-950 text-white"
+          : "bg-gray-50 text-black"
+      }`}
       style={{ position: "relative" }}
     >
-
       <div className="flex gap-4 items-center">
         <span className="font-semibold">Ownership:</span>
         <select
           value={ownership}
           onChange={(e) => setOwnership(e.target.value)}
-          className="border border-gray-300 rounded-lg p-1"
+          className={`rounded-lg p-1 ${
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "bg-slate-800 text-white border border-slate-600"
+              : "bg-white text-black border border-gray-300"
+          }`}
           aria-label="Select Ownership Type"
         >
           <option>Freehold</option>
@@ -131,16 +167,23 @@ export default function AnalyticsView({ onBack }) {
         </select>
       </div>
 
-      {loading && <p className="text-center text-gray-500">Loading analytics...</p>}
+      {loading && (
+        <p className="text-center text-gray-500">Loading analytics...</p>
+      )}
       {error && <p className="text-center text-red-500">{error}</p>}
       {!loading && !error && propertyDistribution.length === 0 && (
-        <p className="text-center text-gray-500">No data available for this selection.</p>
-      )}
-      {!loading && !error && propertyDistribution.length > 0 && !drillDown.type && (
-        <p className="text-center font-semibold mb-2">
-          Market Demand: {totalCount}
+        <p className="text-center text-gray-500">
+          No data available for this selection.
         </p>
       )}
+      {!loading &&
+        !error &&
+        propertyDistribution.length > 0 &&
+        !drillDown.type && (
+          <p className="text-center font-semibold mb-2">
+            Market Demand: {totalCount}
+          </p>
+        )}
 
       {drillDown.type ? (
         <div className="w-full max-w-4xl">
@@ -160,7 +203,9 @@ export default function AnalyticsView({ onBack }) {
           </p>
 
           {talukData.length === 0 ? (
-            <p className="text-center text-gray-500">No taluk data available.</p>
+            <p className="text-center text-gray-500">
+              No taluk data available.
+            </p>
           ) : (
             <ResponsiveContainer width="100%" height={400}>
               <PieChart>
@@ -174,7 +219,10 @@ export default function AnalyticsView({ onBack }) {
                   labelLine={false}
                 >
                   {talukData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
 
@@ -186,9 +234,18 @@ export default function AnalyticsView({ onBack }) {
                     const reasons = getTalukReasons(taluk);
 
                     return (
-                      <div className="bg-white p-3 rounded-lg shadow-lg text-sm space-y-1">
-                        <div className="font-semibold text-gray-800">{taluk}</div>
-                        {reasons.map(r => (
+                      <div
+                        className={`p-3 rounded-lg shadow-lg text-sm space-y-1 ${
+                          window.matchMedia("(prefers-color-scheme: dark)")
+                            .matches
+                            ? "bg-slate-900 text-white"
+                            : "bg-white text-black"
+                        }`}
+                      >
+                        <div className="font-semibold text-gray-800">
+                          {taluk}
+                        </div>
+                        {reasons.map((r) => (
                           <div key={r}>{r}</div>
                         ))}
                       </div>
@@ -219,12 +276,32 @@ export default function AnalyticsView({ onBack }) {
             const pieData = getPieData(type);
 
             return (
-              <div role="img" aria-label={`${type} Property Distribution Chart`} key={type} className="bg-white p-4 rounded-2xl shadow-md">
-                <h3 className="text-lg font-semibold text-center mb-2">{type} Distribution</h3>
+              <div
+                role="img"
+                aria-label={`${type} Property Distribution Chart`}
+                key={type}
+                className={`p-4 rounded-2xl shadow-md ${
+                  window.matchMedia("(prefers-color-scheme: dark)").matches
+                    ? "bg-slate-900 text-white"
+                    : "bg-white text-black"
+                }`}
+              >
+                <h3 className="text-lg font-semibold text-center mb-2">
+                  {type} Distribution
+                </h3>
 
                 {pieData.length === 0 ? (
                   <div className="h-[300px] flex items-center justify-center">
-                    <p className="text-gray-500">No data available.</p>
+                    <p
+                      className={`${
+                        window.matchMedia("(prefers-color-scheme: dark)")
+                          .matches
+                          ? "text-gray-300"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      No data available.
+                    </p>
                   </div>
                 ) : (
                   <ResponsiveContainer width="100%" height={300}>
@@ -240,11 +317,17 @@ export default function AnalyticsView({ onBack }) {
                         strokeWidth={activeIndex !== null ? 3 : 0}
                         onClick={(entry, index) => {
                           setActiveIndex(index);
-                          handleSliceClick(type, entry?.name || entry?.payload?.name);
+                          handleSliceClick(
+                            type,
+                            entry?.name || entry?.payload?.name,
+                          );
                         }}
                       >
                         {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
                         ))}
                       </Pie>
                       <Tooltip />
