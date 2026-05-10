@@ -351,23 +351,6 @@ const Spinner = () => (
 );
 
 export default function App() {
-  // Theme state (light | dark) persisted to localStorage
-  const [theme, setTheme] = useState(() => {
-    try {
-      return localStorage.getItem("theme") || "light";
-    } catch (e) {
-      return "light";
-    }
-  });
-
-  useEffect(() => {
-    try {
-      localStorage.setItem("theme", theme);
-    } catch (e) {}
-  }, [theme]);
-
-  const toggleTheme = () => setTheme((t) => (t === "light" ? "dark" : "light"));
-
   const [form, setForm] = useState({
     district: "",
     taluk: "",
@@ -453,9 +436,7 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen p-6 theme-root ${
-        theme === "dark" ? "theme-dark" : "theme-light"
-      }`}
+      className="min-h-screen p-6"
       style={{
         backgroundImage: 'url("unnamed.jpg")',
         backgroundSize: "cover",
@@ -464,16 +445,6 @@ export default function App() {
         minHeight: "100vh",
       }}
     >
-      {/* Top-right fixed theme toggle (isolated styles) */}
-      <button
-        type="button"
-        className="theme-toggle"
-        onClick={toggleTheme}
-        aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-        title={theme === "dark" ? "Light mode" : "Dark mode"}
-      >
-        <span className="theme-toggle__knob" aria-hidden="true"></span>
-      </button>
       <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
 
       <p style={{ display: "none" }}>
