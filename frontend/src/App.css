@@ -174,3 +174,20 @@ button:hover {
 .dark-mode label {
   color: white !important;
 }
+
+/* FORCE TAILWIND DARK OVERRIDES */
+
+.dark-mode .text-indigo-700,
+.dark-mode .text-gray-700,
+.dark-mode .text-gray-500,
+.dark-mode .text-green-700 {
+  color: white !important;
+}
+
+.dark-mode .bg-green-50 {
+  background: #14532d !important;
+}
+
+.dark-mode .border-green-200 {
+  border-color: #166534 !important;
+}
