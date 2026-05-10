@@ -5,89 +5,317 @@ import AnalyticsView from "./AnalyticsView"; // Your analytics component
 
 // ===== District–Taluk pairs =====
 const district_taluk_pairs = [
-  ["Chennai", "Alandur"], ["Chennai", "Ambattur"], ["Chennai", "Aminjikarai"], ["Chennai", "Ayanavaram"],
-  ["Chennai", "Egmore"], ["Chennai", "Guindy"], ["Chennai", "Madhavaram"], ["Chennai", "Madhuravoyal"],
-  ["Chennai", "Mambalam"], ["Chennai", "Mylapore"], ["Chennai", "Perambur"], ["Chennai", "Purasavakkam"],
-  ["Chennai", "Sholinganallur"], ["Chennai", "Thiruvottriyur"], ["Chennai", "Tondiarpet"], ["Chennai", "Velacherry"],
-  ["Coimbatore", "Anaimalai"], ["Coimbatore", "Annur"], ["Coimbatore", "Coimbatore_North"], ["Coimbatore", "Coimbatore_South"],
-  ["Coimbatore", "Kinathukadavu"], ["Coimbatore", "Madukarai"], ["Coimbatore", "Mettupalayam"], ["Coimbatore", "Perur"],
-  ["Coimbatore", "Pollachi"], ["Coimbatore", "Sulur"], ["Coimbatore", "Valparai"],
-  ["Cuddalore", "Bhuvanagiri"], ["Cuddalore", "Chidambaram"], ["Cuddalore", "Kattumannarkoil"], ["Cuddalore", "Kurinjipadi"],
-  ["Cuddalore", "Panruti"], ["Cuddalore", "Srimushnam"], ["Cuddalore", "Thittakudi"], ["Cuddalore", "Veppur"], ["Cuddalore", "Virudhachalam"],
-  ["Dharmapuri", "Dharmapuri"], ["Dharmapuri", "Harur"], ["Dharmapuri", "Karimangalam"], ["Dharmapuri", "Nallampalli"],
-  ["Dharmapuri", "Palacode"], ["Dharmapuri", "Pappireddipatti"], ["Dharmapuri", "Pennagaram"],
-  ["Dindigul", "Atthur"], ["Dindigul", "Dindigul_East"], ["Dindigul", "Dindigul_West"], ["Dindigul", "Guziliyamparai"],
-  ["Dindigul", "Kodaikanal"], ["Dindigul", "Natham"], ["Dindigul", "Nilakottai"], ["Dindigul", "Oddanchatram"],
-  ["Dindigul", "Palani"], ["Dindigul", "Vedasandur"],
-  ["Erode", "Erode"], ["Erode", "Anthiyur"], ["Erode", "Bhavani"], ["Erode", "Gobichettipalayam"], ["Erode", "Kodumudi"],
-  ["Erode", "Modakurichi"], ["Erode", "Nambiyur"], ["Erode", "Perundurai"], ["Erode", "Sathyamangalam"], ["Erode", "Thalavadi"],
-  ["Kancheepuram", "Kancheepuram"], ["Kancheepuram", "Kundrathur"], ["Kancheepuram", "Sriperumbudur"],
-  ["Kancheepuram", "Uthiramerur"], ["Kancheepuram", "Walajabad"],
-  ["Kanniyakumari", "Agasteeswaram"], ["Kanniyakumari", "Kalkulam"], ["Kanniyakumari", "Killiyur"], ["Kanniyakumari", "Thiruvatar"],
-  ["Kanniyakumari", "Thovalai"], ["Kanniyakumari", "Vilavankodu"],
-  ["Karur", "Karur"], ["Karur", "Aravakurichi"], ["Karur", "Kadavur"], ["Karur", "Krishnarayapuram"],
-  ["Karur", "Kulithalai"], ["Karur", "Manmangalam"], ["Karur", "Pugalur"],
-  ["Madurai", "Kallikudi"], ["Madurai", "Madurai_East"], ["Madurai", "Madurai_North"], ["Madurai", "Madurai_South"],
-  ["Madurai", "Madurai_West"], ["Madurai", "Melur"], ["Madurai", "Peraiyur"], ["Madurai", "Thirumangalam"],
-  ["Madurai", "Thiruparankundram"], ["Madurai", "Usilampatti"], ["Madurai", "Vadipatti"],
-  ["Nagapattinam", "Nagapattinam"], ["Nagapattinam", "Kilvelur"], ["Nagapattinam", "Thirukkuvalai"], ["Nagapattinam", "Vedaranyam"],
-  ["Namakkal", "Namakkal"], ["Namakkal", "Kholli_Hills"], ["Namakkal", "Kumarapalayam"], ["Namakkal", "Mohanoor"],
-  ["Namakkal", "Paramathi_Velur"], ["Namakkal", "Rasipuram"], ["Namakkal", "Senthamangalam"], ["Namakkal", "Tiruchengode"],
-  ["Nilgiris", "Udagamandalam"], ["Nilgiris", "Coonoor"], ["Nilgiris", "Gudalur"], ["Nilgiris", "Kothagiri"],
-  ["Nilgiris", "Kundah"], ["Nilgiris", "Pandalur"],
-  ["Perambalur", "Perambalur"], ["Perambalur", "Alathur"], ["Perambalur", "Kunnam"], ["Perambalur", "Veppanthattai"],
-  ["Pudukottai", "Pudukottai"], ["Pudukottai", "Alangudi"], ["Pudukottai", "Aranthangi"], ["Pudukottai", "Avudiyarkoil"],
-  ["Pudukottai", "Gandarvakottai"], ["Pudukottai", "Iluppur"], ["Pudukottai", "Karambakudi"], ["Pudukottai", "Kulathur"],
-  ["Pudukottai", "Manamelkudi"], ["Pudukottai", "Ponnamaravathi"], ["Pudukottai", "Thirumayam"], ["Pudukottai", "Viralimalai"],
-  ["Ramanathapuram", "Ramanathapuram"], ["Ramanathapuram", "Kadaladi"], ["Ramanathapuram", "Kamuthi"], ["Ramanathapuram", "Kezhakarai"],
-  ["Ramanathapuram", "Mudukulathur"], ["Ramanathapuram", "Paramakudi"], ["Ramanathapuram", "Rajasingamangalam"],
-  ["Ramanathapuram", "Rameswaram"], ["Ramanathapuram", "Tiruvadanai"],
-  ["Salem", "Salem"], ["Salem", "Attur"], ["Salem", "Edapadi"], ["Salem", "Gangavalli"], ["Salem", "Kadaiyampatti"],
-  ["Salem", "Mettur"], ["Salem", "Omalur"], ["Salem", "Pethanayakanpalayam"], ["Salem", "Salem_South"], ["Salem", "Salem_West"],
-  ["Salem", "Sankari"], ["Salem", "Vazhapadi"], ["Salem", "Yercaud"],
-  ["Sivagangai", "Sivagangai"], ["Sivagangai", "Devakottai"], ["Sivagangai", "Ilayankudi"], ["Sivagangai", "Kalaiyarkovil"],
-  ["Sivagangai", "Karaikudi"], ["Sivagangai", "Manamadurai"], ["Sivagangai", "Singampunari"], ["Sivagangai", "Thirupuvanam"],
+  ["Chennai", "Alandur"],
+  ["Chennai", "Ambattur"],
+  ["Chennai", "Aminjikarai"],
+  ["Chennai", "Ayanavaram"],
+  ["Chennai", "Egmore"],
+  ["Chennai", "Guindy"],
+  ["Chennai", "Madhavaram"],
+  ["Chennai", "Madhuravoyal"],
+  ["Chennai", "Mambalam"],
+  ["Chennai", "Mylapore"],
+  ["Chennai", "Perambur"],
+  ["Chennai", "Purasavakkam"],
+  ["Chennai", "Sholinganallur"],
+  ["Chennai", "Thiruvottriyur"],
+  ["Chennai", "Tondiarpet"],
+  ["Chennai", "Velacherry"],
+  ["Coimbatore", "Anaimalai"],
+  ["Coimbatore", "Annur"],
+  ["Coimbatore", "Coimbatore_North"],
+  ["Coimbatore", "Coimbatore_South"],
+  ["Coimbatore", "Kinathukadavu"],
+  ["Coimbatore", "Madukarai"],
+  ["Coimbatore", "Mettupalayam"],
+  ["Coimbatore", "Perur"],
+  ["Coimbatore", "Pollachi"],
+  ["Coimbatore", "Sulur"],
+  ["Coimbatore", "Valparai"],
+  ["Cuddalore", "Bhuvanagiri"],
+  ["Cuddalore", "Chidambaram"],
+  ["Cuddalore", "Kattumannarkoil"],
+  ["Cuddalore", "Kurinjipadi"],
+  ["Cuddalore", "Panruti"],
+  ["Cuddalore", "Srimushnam"],
+  ["Cuddalore", "Thittakudi"],
+  ["Cuddalore", "Veppur"],
+  ["Cuddalore", "Virudhachalam"],
+  ["Dharmapuri", "Dharmapuri"],
+  ["Dharmapuri", "Harur"],
+  ["Dharmapuri", "Karimangalam"],
+  ["Dharmapuri", "Nallampalli"],
+  ["Dharmapuri", "Palacode"],
+  ["Dharmapuri", "Pappireddipatti"],
+  ["Dharmapuri", "Pennagaram"],
+  ["Dindigul", "Atthur"],
+  ["Dindigul", "Dindigul_East"],
+  ["Dindigul", "Dindigul_West"],
+  ["Dindigul", "Guziliyamparai"],
+  ["Dindigul", "Kodaikanal"],
+  ["Dindigul", "Natham"],
+  ["Dindigul", "Nilakottai"],
+  ["Dindigul", "Oddanchatram"],
+  ["Dindigul", "Palani"],
+  ["Dindigul", "Vedasandur"],
+  ["Erode", "Erode"],
+  ["Erode", "Anthiyur"],
+  ["Erode", "Bhavani"],
+  ["Erode", "Gobichettipalayam"],
+  ["Erode", "Kodumudi"],
+  ["Erode", "Modakurichi"],
+  ["Erode", "Nambiyur"],
+  ["Erode", "Perundurai"],
+  ["Erode", "Sathyamangalam"],
+  ["Erode", "Thalavadi"],
+  ["Kancheepuram", "Kancheepuram"],
+  ["Kancheepuram", "Kundrathur"],
+  ["Kancheepuram", "Sriperumbudur"],
+  ["Kancheepuram", "Uthiramerur"],
+  ["Kancheepuram", "Walajabad"],
+  ["Kanniyakumari", "Agasteeswaram"],
+  ["Kanniyakumari", "Kalkulam"],
+  ["Kanniyakumari", "Killiyur"],
+  ["Kanniyakumari", "Thiruvatar"],
+  ["Kanniyakumari", "Thovalai"],
+  ["Kanniyakumari", "Vilavankodu"],
+  ["Karur", "Karur"],
+  ["Karur", "Aravakurichi"],
+  ["Karur", "Kadavur"],
+  ["Karur", "Krishnarayapuram"],
+  ["Karur", "Kulithalai"],
+  ["Karur", "Manmangalam"],
+  ["Karur", "Pugalur"],
+  ["Madurai", "Kallikudi"],
+  ["Madurai", "Madurai_East"],
+  ["Madurai", "Madurai_North"],
+  ["Madurai", "Madurai_South"],
+  ["Madurai", "Madurai_West"],
+  ["Madurai", "Melur"],
+  ["Madurai", "Peraiyur"],
+  ["Madurai", "Thirumangalam"],
+  ["Madurai", "Thiruparankundram"],
+  ["Madurai", "Usilampatti"],
+  ["Madurai", "Vadipatti"],
+  ["Nagapattinam", "Nagapattinam"],
+  ["Nagapattinam", "Kilvelur"],
+  ["Nagapattinam", "Thirukkuvalai"],
+  ["Nagapattinam", "Vedaranyam"],
+  ["Namakkal", "Namakkal"],
+  ["Namakkal", "Kholli_Hills"],
+  ["Namakkal", "Kumarapalayam"],
+  ["Namakkal", "Mohanoor"],
+  ["Namakkal", "Paramathi_Velur"],
+  ["Namakkal", "Rasipuram"],
+  ["Namakkal", "Senthamangalam"],
+  ["Namakkal", "Tiruchengode"],
+  ["Nilgiris", "Udagamandalam"],
+  ["Nilgiris", "Coonoor"],
+  ["Nilgiris", "Gudalur"],
+  ["Nilgiris", "Kothagiri"],
+  ["Nilgiris", "Kundah"],
+  ["Nilgiris", "Pandalur"],
+  ["Perambalur", "Perambalur"],
+  ["Perambalur", "Alathur"],
+  ["Perambalur", "Kunnam"],
+  ["Perambalur", "Veppanthattai"],
+  ["Pudukottai", "Pudukottai"],
+  ["Pudukottai", "Alangudi"],
+  ["Pudukottai", "Aranthangi"],
+  ["Pudukottai", "Avudiyarkoil"],
+  ["Pudukottai", "Gandarvakottai"],
+  ["Pudukottai", "Iluppur"],
+  ["Pudukottai", "Karambakudi"],
+  ["Pudukottai", "Kulathur"],
+  ["Pudukottai", "Manamelkudi"],
+  ["Pudukottai", "Ponnamaravathi"],
+  ["Pudukottai", "Thirumayam"],
+  ["Pudukottai", "Viralimalai"],
+  ["Ramanathapuram", "Ramanathapuram"],
+  ["Ramanathapuram", "Kadaladi"],
+  ["Ramanathapuram", "Kamuthi"],
+  ["Ramanathapuram", "Kezhakarai"],
+  ["Ramanathapuram", "Mudukulathur"],
+  ["Ramanathapuram", "Paramakudi"],
+  ["Ramanathapuram", "Rajasingamangalam"],
+  ["Ramanathapuram", "Rameswaram"],
+  ["Ramanathapuram", "Tiruvadanai"],
+  ["Salem", "Salem"],
+  ["Salem", "Attur"],
+  ["Salem", "Edapadi"],
+  ["Salem", "Gangavalli"],
+  ["Salem", "Kadaiyampatti"],
+  ["Salem", "Mettur"],
+  ["Salem", "Omalur"],
+  ["Salem", "Pethanayakanpalayam"],
+  ["Salem", "Salem_South"],
+  ["Salem", "Salem_West"],
+  ["Salem", "Sankari"],
+  ["Salem", "Vazhapadi"],
+  ["Salem", "Yercaud"],
+  ["Sivagangai", "Sivagangai"],
+  ["Sivagangai", "Devakottai"],
+  ["Sivagangai", "Ilayankudi"],
+  ["Sivagangai", "Kalaiyarkovil"],
+  ["Sivagangai", "Karaikudi"],
+  ["Sivagangai", "Manamadurai"],
+  ["Sivagangai", "Singampunari"],
+  ["Sivagangai", "Thirupuvanam"],
   ["Sivagangai", "Tirupathur"],
-  ["Thanjavur", "Thanjavur"], ["Thanjavur", "Boothalur"], ["Thanjavur", "Kumbakonam"], ["Thanjavur", "Orathanadu"],
-  ["Thanjavur", "Papanasam"], ["Thanjavur", "Pattukottai"], ["Thanjavur", "Peravurani"], ["Thanjavur", "Thiruvaiyaru"],
+  ["Thanjavur", "Thanjavur"],
+  ["Thanjavur", "Boothalur"],
+  ["Thanjavur", "Kumbakonam"],
+  ["Thanjavur", "Orathanadu"],
+  ["Thanjavur", "Papanasam"],
+  ["Thanjavur", "Pattukottai"],
+  ["Thanjavur", "Peravurani"],
+  ["Thanjavur", "Thiruvaiyaru"],
   ["Thanjavur", "Thiruvidaimaruthur"],
-  ["Theni", "Theni"], ["Theni", "Aandipatti"], ["Theni", "Bodinayakanur"], ["Theni", "Periyakulam"], ["Theni", "Uthamapalayam"],
-  ["Thiruvallur", "Thiruvallur"], ["Thiruvallur", "Avadi"], ["Thiruvallur", "Gummidipoondi"], ["Thiruvallur", "Pallipattu"],
-  ["Thiruvallur", "Ponneri"], ["Thiruvallur", "Poonamallee"], ["Thiruvallur", "RK_Pet"], ["Thiruvallur", "Tiruthani"], ["Thiruvallur","Uthukottai"],
-  ["Thiruvannamalai", "Thiruvannamalai"], ["Thiruvannamalai", "Arni"], ["Thiruvannamalai", "Chengam"], ["Thiruvannamalai", "Chetpet"],
-  ["Thiruvannamalai", "Cheyyar"], ["Thiruvannamalai", "Jamunamarathur"], ["Thiruvannamalai", "Kalasapakkam"], ["Thiruvannamalai", "Kilpennathur"],
-  ["Thiruvannamalai", "Polur"], ["Thiruvannamalai", "Thandramet"], ["Thiruvannamalai", "Vandavasi"], ["Thiruvannamalai", "Vembakkam"],
-  ["Thiruvarur", "Thiruvarur"], ["Thiruvarur", "Kodavasal"], ["Thiruvarur", "Koothanallur"], ["Thiruvarur", "Mannargudi"],
-  ["Thiruvarur", "Nannilam"], ["Thiruvarur", "Needamangalam"], ["Thiruvarur", "Thiruthuraipoondi"], ["Thiruvarur", "Valangaiman"],
-  ["Thoothukudi", "Thoothukudi"], ["Thoothukudi", "Eral"], ["Thoothukudi", "Ettayapuram"], ["Thoothukudi", "Kayathar"],
-  ["Thoothukudi", "Kovilpatti"], ["Thoothukudi", "Ottapidaram"], ["Thoothukudi", "Sattankulam"], ["Thoothukudi", "Srivaikundam"],
-  ["Thoothukudi", "Tiruchendur"], ["Thoothukudi", "Vilathikulam"],
-  ["Tiruchirappalli", "Lalgudi"], ["Tiruchirappalli", "Manachanallur"], ["Tiruchirappalli", "Manapparai"], ["Tiruchirappalli", "Marungapuri"],
-  ["Tiruchirappalli", "Musiri"], ["Tiruchirappalli", "Srirangam"], ["Tiruchirappalli", "Thottiam"], ["Tiruchirappalli", "Thuraiyur"],
-  ["Tiruchirappalli", "Tiruchirappalli_West"], ["Tiruchirappalli", "Tiruchirappalli_East"], ["Tiruchirappalli", "Tiruverumbur"],
-  ["Tirunelveli", "Tirunelveli"], ["Tirunelveli", "Ambasamudram"], ["Tirunelveli", "Cheranmahadevi"], ["Tirunelveli", "Manur"],
-  ["Tirunelveli", "Nanguneri"], ["Tirunelveli", "Palayamkottai"], ["Tirunelveli", "Radhapuram"], ["Tirunelveli", "Thisayanvilai"],
-  ["Vellore", "Vellore"], ["Vellore", "Aanikattu"], ["Vellore", "Gudiyatham"], ["Vellore", "K_V_Kuppam"],
-  ["Vellore", "Katpadi"], ["Vellore", "Pernambut"],
-  ["Villupuram", "Villupuram"], ["Villupuram", "Gingee"], ["Villupuram", "Kandachipuram"], ["Villupuram", "Marakanam"],
-  ["Villupuram", "Melmalaiyanur"], ["Villupuram", "Thiruvennainallur"], ["Villupuram", "Tindivanam"], ["Villupuram", "Vanur"], ["Villupuram", "Vikravandi"],
-  ["Virudhunagar", "Virudhunagar"], ["Virudhunagar", "Aruppukottai"], ["Virudhunagar", "Kariyapatti"], ["Virudhunagar", "Rajapalayam"],
-  ["Virudhunagar", "Sathur"], ["Virudhunagar", "Sivakasi"], ["Virudhunagar", "Srivilliputhur"], ["Virudhunagar", "Tiruchuli"],
-  ["Virudhunagar", "Vembakottai"], ["Virudhunagar", "Watrap"],
-  ["Ariyalur", "Ariyalur"], ["Ariyalur", "Andimadam"], ["Ariyalur", "Sendurai"], ["Ariyalur", "Udaiyarpalayam"],
-  ["Krishnagiri", "Krishnagiri"], ["Krishnagiri", "Anjetty"], ["Krishnagiri", "Bargur"], ["Krishnagiri", "Hosur"],
-  ["Krishnagiri", "Pochampalli"], ["Krishnagiri", "Sulagiri"], ["Krishnagiri", "Thenkanikottai"], ["Krishnagiri", "Uthangarai"],
-  ["Tiruppur", "Avinashi"], ["Tiruppur", "Dharapuram"], ["Tiruppur", "Kangeyam"], ["Tiruppur", "Madathukkulam"],
-  ["Tiruppur", "Oothukuli"], ["Tiruppur", "Palladam"], ["Tiruppur", "Tiruppur_North"], ["Tiruppur", "Tiruppur_South"], ["Tiruppur", "Udumalaipettai"],
-  ["Chengalpattu", "Chengalpattu"], ["Chengalpattu", "Cheyyur"], ["Chengalpattu", "Maduranthakam"], ["Chengalpattu", "Pallavaram"],
-  ["Chengalpattu", "Tambaram"], ["Chengalpattu", "Thirukalukundram"], ["Chengalpattu","Tiruporur"], ["Chengalpattu", "Vandalur"],
-  ["Kallakurichi", "Kallakurichi"], ["Kallakurichi", "Chinnaselam"], ["Kallakurichi", "Kalvarayan_Hills"], ["Kallakurichi", "Sankarapuram"],
-  ["Kallakurichi", "Tirukoilur"], ["Kallakurichi", "Ulundurpet"],
-  ["Ranipet", "Arakkonam"], ["Ranipet", "Arcot"], ["Ranipet", "Kalavai"], ["Ranipet", "Nemili"], ["Ranipet", "Sholingur"], ["Ranipet", "Walajah"],
-  ["Tenkasi", "Tenkasi"], ["Tenkasi", "Alangulam"], ["Tenkasi", "Kadayanallur"], ["Tenkasi", "Sankarankovil"], ["Tenkasi", "Shenkottai"],
-  ["Tenkasi", "Sivagiri"], ["Tenkasi", "Thiruvengadam"], ["Tenkasi", "Veerakeralampudur"],
-  ["Tirupathur", "Tirupathur"], ["Tirupathur", "Ambur"], ["Tirupathur", "Natrampalli"], ["Tirupathur", "Vaniyambadi"],
-  ["Mayiladuthurai", "Mayiladuthurai"], ["Mayiladuthurai", "Kuthalam"], ["Mayiladuthurai", "Sirkali"], ["Mayiladuthurai", "Tharangambadi"]
+  ["Theni", "Theni"],
+  ["Theni", "Aandipatti"],
+  ["Theni", "Bodinayakanur"],
+  ["Theni", "Periyakulam"],
+  ["Theni", "Uthamapalayam"],
+  ["Thiruvallur", "Thiruvallur"],
+  ["Thiruvallur", "Avadi"],
+  ["Thiruvallur", "Gummidipoondi"],
+  ["Thiruvallur", "Pallipattu"],
+  ["Thiruvallur", "Ponneri"],
+  ["Thiruvallur", "Poonamallee"],
+  ["Thiruvallur", "RK_Pet"],
+  ["Thiruvallur", "Tiruthani"],
+  ["Thiruvallur", "Uthukottai"],
+  ["Thiruvannamalai", "Thiruvannamalai"],
+  ["Thiruvannamalai", "Arni"],
+  ["Thiruvannamalai", "Chengam"],
+  ["Thiruvannamalai", "Chetpet"],
+  ["Thiruvannamalai", "Cheyyar"],
+  ["Thiruvannamalai", "Jamunamarathur"],
+  ["Thiruvannamalai", "Kalasapakkam"],
+  ["Thiruvannamalai", "Kilpennathur"],
+  ["Thiruvannamalai", "Polur"],
+  ["Thiruvannamalai", "Thandramet"],
+  ["Thiruvannamalai", "Vandavasi"],
+  ["Thiruvannamalai", "Vembakkam"],
+  ["Thiruvarur", "Thiruvarur"],
+  ["Thiruvarur", "Kodavasal"],
+  ["Thiruvarur", "Koothanallur"],
+  ["Thiruvarur", "Mannargudi"],
+  ["Thiruvarur", "Nannilam"],
+  ["Thiruvarur", "Needamangalam"],
+  ["Thiruvarur", "Thiruthuraipoondi"],
+  ["Thiruvarur", "Valangaiman"],
+  ["Thoothukudi", "Thoothukudi"],
+  ["Thoothukudi", "Eral"],
+  ["Thoothukudi", "Ettayapuram"],
+  ["Thoothukudi", "Kayathar"],
+  ["Thoothukudi", "Kovilpatti"],
+  ["Thoothukudi", "Ottapidaram"],
+  ["Thoothukudi", "Sattankulam"],
+  ["Thoothukudi", "Srivaikundam"],
+  ["Thoothukudi", "Tiruchendur"],
+  ["Thoothukudi", "Vilathikulam"],
+  ["Tiruchirappalli", "Lalgudi"],
+  ["Tiruchirappalli", "Manachanallur"],
+  ["Tiruchirappalli", "Manapparai"],
+  ["Tiruchirappalli", "Marungapuri"],
+  ["Tiruchirappalli", "Musiri"],
+  ["Tiruchirappalli", "Srirangam"],
+  ["Tiruchirappalli", "Thottiam"],
+  ["Tiruchirappalli", "Thuraiyur"],
+  ["Tiruchirappalli", "Tiruchirappalli_West"],
+  ["Tiruchirappalli", "Tiruchirappalli_East"],
+  ["Tiruchirappalli", "Tiruverumbur"],
+  ["Tirunelveli", "Tirunelveli"],
+  ["Tirunelveli", "Ambasamudram"],
+  ["Tirunelveli", "Cheranmahadevi"],
+  ["Tirunelveli", "Manur"],
+  ["Tirunelveli", "Nanguneri"],
+  ["Tirunelveli", "Palayamkottai"],
+  ["Tirunelveli", "Radhapuram"],
+  ["Tirunelveli", "Thisayanvilai"],
+  ["Vellore", "Vellore"],
+  ["Vellore", "Aanikattu"],
+  ["Vellore", "Gudiyatham"],
+  ["Vellore", "K_V_Kuppam"],
+  ["Vellore", "Katpadi"],
+  ["Vellore", "Pernambut"],
+  ["Villupuram", "Villupuram"],
+  ["Villupuram", "Gingee"],
+  ["Villupuram", "Kandachipuram"],
+  ["Villupuram", "Marakanam"],
+  ["Villupuram", "Melmalaiyanur"],
+  ["Villupuram", "Thiruvennainallur"],
+  ["Villupuram", "Tindivanam"],
+  ["Villupuram", "Vanur"],
+  ["Villupuram", "Vikravandi"],
+  ["Virudhunagar", "Virudhunagar"],
+  ["Virudhunagar", "Aruppukottai"],
+  ["Virudhunagar", "Kariyapatti"],
+  ["Virudhunagar", "Rajapalayam"],
+  ["Virudhunagar", "Sathur"],
+  ["Virudhunagar", "Sivakasi"],
+  ["Virudhunagar", "Srivilliputhur"],
+  ["Virudhunagar", "Tiruchuli"],
+  ["Virudhunagar", "Vembakottai"],
+  ["Virudhunagar", "Watrap"],
+  ["Ariyalur", "Ariyalur"],
+  ["Ariyalur", "Andimadam"],
+  ["Ariyalur", "Sendurai"],
+  ["Ariyalur", "Udaiyarpalayam"],
+  ["Krishnagiri", "Krishnagiri"],
+  ["Krishnagiri", "Anjetty"],
+  ["Krishnagiri", "Bargur"],
+  ["Krishnagiri", "Hosur"],
+  ["Krishnagiri", "Pochampalli"],
+  ["Krishnagiri", "Sulagiri"],
+  ["Krishnagiri", "Thenkanikottai"],
+  ["Krishnagiri", "Uthangarai"],
+  ["Tiruppur", "Avinashi"],
+  ["Tiruppur", "Dharapuram"],
+  ["Tiruppur", "Kangeyam"],
+  ["Tiruppur", "Madathukkulam"],
+  ["Tiruppur", "Oothukuli"],
+  ["Tiruppur", "Palladam"],
+  ["Tiruppur", "Tiruppur_North"],
+  ["Tiruppur", "Tiruppur_South"],
+  ["Tiruppur", "Udumalaipettai"],
+  ["Chengalpattu", "Chengalpattu"],
+  ["Chengalpattu", "Cheyyur"],
+  ["Chengalpattu", "Maduranthakam"],
+  ["Chengalpattu", "Pallavaram"],
+  ["Chengalpattu", "Tambaram"],
+  ["Chengalpattu", "Thirukalukundram"],
+  ["Chengalpattu", "Tiruporur"],
+  ["Chengalpattu", "Vandalur"],
+  ["Kallakurichi", "Kallakurichi"],
+  ["Kallakurichi", "Chinnaselam"],
+  ["Kallakurichi", "Kalvarayan_Hills"],
+  ["Kallakurichi", "Sankarapuram"],
+  ["Kallakurichi", "Tirukoilur"],
+  ["Kallakurichi", "Ulundurpet"],
+  ["Ranipet", "Arakkonam"],
+  ["Ranipet", "Arcot"],
+  ["Ranipet", "Kalavai"],
+  ["Ranipet", "Nemili"],
+  ["Ranipet", "Sholingur"],
+  ["Ranipet", "Walajah"],
+  ["Tenkasi", "Tenkasi"],
+  ["Tenkasi", "Alangulam"],
+  ["Tenkasi", "Kadayanallur"],
+  ["Tenkasi", "Sankarankovil"],
+  ["Tenkasi", "Shenkottai"],
+  ["Tenkasi", "Sivagiri"],
+  ["Tenkasi", "Thiruvengadam"],
+  ["Tenkasi", "Veerakeralampudur"],
+  ["Tirupathur", "Tirupathur"],
+  ["Tirupathur", "Ambur"],
+  ["Tirupathur", "Natrampalli"],
+  ["Tirupathur", "Vaniyambadi"],
+  ["Mayiladuthurai", "Mayiladuthurai"],
+  ["Mayiladuthurai", "Kuthalam"],
+  ["Mayiladuthurai", "Sirkali"],
+  ["Mayiladuthurai", "Tharangambadi"],
 ];
 
 // === Helper for Indian currency formatting ===
@@ -122,9 +350,8 @@ const Spinner = () => (
   </svg>
 );
 
-
 export default function App() {
-  const [form, setForm] =useState({
+  const [form, setForm] = useState({
     district: "",
     taluk: "",
     property_type: "",
@@ -133,7 +360,6 @@ export default function App() {
     bedrooms: "",
     bathrooms: "",
   });
-  const [darkMode, setDarkMode] = useState(false);
   const [taluks, setTaluks] = useState([]);
   const [prediction, setPrediction] = useState(null);
   const [message, setMessage] = useState("");
@@ -143,7 +369,9 @@ export default function App() {
 
   const districts = [...new Set(district_taluk_pairs.map(([d]) => d))];
   const taluks_by_district = districts.reduce((acc, d) => {
-    acc[d] = district_taluk_pairs.filter(([district]) => district === d).map(([, t]) => t);
+    acc[d] = district_taluk_pairs
+      .filter(([district]) => district === d)
+      .map(([, t]) => t);
     return acc;
   }, {});
 
@@ -160,9 +388,17 @@ export default function App() {
 
   const handlePredict = async () => {
     // 2️⃣ Form validation before API call
-    if (!form.district || !form.taluk || !form.property_type || !form.ownership_type || !form.built_area_sqft || !form.bedrooms || !form.bathrooms) {
-        setMessage("Please fill in all required fields.");
-        return;
+    if (
+      !form.district ||
+      !form.taluk ||
+      !form.property_type ||
+      !form.ownership_type ||
+      !form.built_area_sqft ||
+      !form.bedrooms ||
+      !form.bathrooms
+    ) {
+      setMessage("Please fill in all required fields.");
+      return;
     }
 
     setLoading(true);
@@ -198,43 +434,32 @@ export default function App() {
     setLoading(false);
   };
 
-
-
   return (
-  <div
-  className={`min-h-screen p-6 relative ${darkMode ? "dark-mode" : "light-mode"}`}
-  style={{
-    backgroundImage: 'url("unnamed.jpg")',
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    minHeight: "100vh",
-  }}
-  >
+    <div
+      className="min-h-screen p-6"
+      style={{
+        backgroundImage: 'url("unnamed.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        minHeight: "100vh",
+      }}
+    >
+      <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
 
-<h1 style={{ display: "none" }}>
-  HPP-House Price Predictor
-</h1>
-
-<p style={{ display: "none" }}>
-  Predict house prices in Chennai and Tamil Nadu using government guideline values and machine learning.
-</p>
-
-<button
-  onClick={() => setDarkMode(!darkMode)}
-  className="theme-toggle px-4 py-2 rounded-lg font-semibold text-white"
->
- {darkMode ? "☀️" : "🌙"}
-</button>
-
+      <p style={{ display: "none" }}>
+        Predict house prices in Chennai and Tamil Nadu using government
+        guideline values and machine learning.
+      </p>
 
       {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
       <div className="flex justify-center gap-4 mb-6 z-40 relative">
-
         <button
           onClick={() => setShowAnalytics(false)}
           className={`px-4 py-2 rounded-lg font-semibold ${
-            !showAnalytics ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700"
+            !showAnalytics
+              ? "bg-indigo-600 text-white"
+              : "bg-gray-200 text-gray-700"
           }`}
         >
           🏠 Predictor
@@ -243,12 +468,13 @@ export default function App() {
         <button
           onClick={() => setShowAnalytics(true)}
           className={`px-4 py-2 rounded-lg font-semibold ${
-            showAnalytics ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700"
+            showAnalytics
+              ? "bg-indigo-600 text-white"
+              : "bg-gray-200 text-gray-700"
           }`}
         >
           📊 Analytics
         </button>
-
       </div>
 
       {/* ===== PREDICTOR VIEW ===== */}
@@ -275,7 +501,11 @@ export default function App() {
             >
               <option value="">Select District</option>
               {/* 1️⃣ Dropdown keys */}
-              {districts.map((d) => (<option key={d} value={d}>{d}</option>))}
+              {districts.map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
+              ))}
             </select>
 
             {/* Taluk */}
@@ -289,7 +519,11 @@ export default function App() {
             >
               <option value="">Select Taluk</option>
               {/* 1️⃣ Dropdown keys */}
-              {taluks.map((t) => (<option key={t} value={t}>{t}</option>))}
+              {taluks.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
             </select>
 
             {/* Property Type */}
@@ -375,7 +609,8 @@ export default function App() {
             </button>
 
             <p className="text-xs text-gray-500 text-center">
-              Note: These predictions are used for understanding user preferences for buying property.
+              Note: These predictions are used for understanding user
+              preferences for buying property.
             </p>
 
             {/* Result */}
@@ -414,7 +649,9 @@ export default function App() {
             )}
 
             {message && (
-              <p className="text-red-500 text-sm text-center font-medium">{message}</p>
+              <p className="text-red-500 text-sm text-center font-medium">
+                {message}
+              </p>
             )}
           </div>
         </motion.div>
@@ -430,7 +667,7 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             // 4️⃣ Analytics overlay styling
-            className="bg-white overflow-auto p-6" 
+            className="bg-white overflow-auto p-6"
           >
             <AnalyticsView onBack={() => setShowAnalytics(false)} />
           </motion.div>
