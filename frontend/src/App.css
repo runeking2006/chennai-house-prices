@@ -136,3 +136,137 @@ button:hover {
   }
 }
 
+/* ==================== Theme system (light / dark) ==================== */
+/* Root holder: add `theme-root` to app container and toggle `theme-dark`/`theme-light` */
+.theme-root {
+  --page-text: #222222;
+  --muted-text: #666666;
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --input-border: #cccccc;
+  --control-bg: #007bff;
+  color: var(--page-text);
+}
+
+.theme-root.theme-dark {
+  --page-text: #e6eef8;
+  --muted-text: #9aa4b2;
+  --card-bg: rgba(8,12,20,0.78);
+  --input-bg: rgba(255,255,255,0.03);
+  --input-border: rgba(255,255,255,0.12);
+  --control-bg: #2563eb;
+}
+
+/* Apply theme to common utility classes used in the app without changing markup */
+.theme-root .bg-white {
+  background-color: var(--card-bg) !important;
+  color: var(--page-text) !important;
+}
+
+.theme-root .text-gray-700,
+.theme-root .text-gray-800 {
+  color: var(--page-text) !important;
+}
+.theme-root .text-gray-500,
+.theme-root .text-gray-600 {
+  color: var(--muted-text) !important;
+}
+
+.theme-root input,
+.theme-root select,
+.theme-root textarea {
+  background-color: var(--input-bg) !important;
+  color: var(--page-text) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.theme-root .border-gray-300 {
+  border-color: var(--input-border) !important;
+}
+
+/* Small adjustments for other card / surface utilities */
+.theme-root .bg-green-50 {
+  background-color: rgba(16,185,129,0.06) !important;
+}
+.theme-root .bg-indigo-600 {
+  background-color: var(--control-bg) !important;
+}
+
+/* ==================== Theme toggle (isolated, not affected by global button{}) ==================== */
+.theme-toggle {
+  all: unset;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  width: 56px;
+  height: 34px;
+  border-radius: 999px;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.16);
+  cursor: pointer;
+  background: linear-gradient(90deg, #eef2ff, #e6e6e6);
+  transition: background 160ms ease, transform 120ms ease;
+}
+
+.theme-toggle:active { transform: scale(0.98); }
+
+.theme-root.theme-dark .theme-toggle {
+  background: linear-gradient(90deg, #0f1724, #23303b);
+}
+
+.theme-toggle::before {
+  content: '☀';
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 0.95;
+}
+.theme-toggle::after {
+  content: '🌙';
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.theme-toggle__knob {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(2,6,23,0.18);
+  margin-left: 4px;
+  transition: transform 220ms cubic-bezier(.2,.8,.2,1), background 160ms ease;
+  transform: translateX(0);
+}
+
+.theme-root.theme-dark .theme-toggle__knob {
+  transform: translateX(22px);
+  background: #0b1220;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.45);
+}
+
+/* Accessibility helper (screen-reader-only) */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+
