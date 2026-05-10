@@ -339,6 +339,12 @@ export default function AnalyticsView({ onBack, darkMode }) {
                           borderRadius: "12px",
                           color: darkMode ? "#ffffff" : "#000000",
                         }}
+                        itemStyle={{
+                          color: darkMode ? "#ffffff" : "#000000",
+                        }}
+                        labelStyle={{
+                          color: darkMode ? "#ffffff" : "#000000",
+                        }}
                       />
                     </PieChart>
                   </ResponsiveContainer>

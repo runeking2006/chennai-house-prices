@@ -461,7 +461,9 @@ export default function App() {
       <div className="flex justify-end mb-4">
         <button
           onClick={() => setDarkMode(!darkMode)}
-          className="px-4 py-2 rounded-lg bg-black text-white"
+          className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+            darkMode ? "bg-white text-black" : "bg-black text-white"
+          }`}
         >
           {darkMode ? "☀️ Light" : "🌙 Dark"}
         </button>
