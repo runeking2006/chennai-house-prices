@@ -149,12 +149,20 @@ button:hover {
 }
 
 .theme-root.theme-dark {
-  --page-text: #e6eef8;
-  --muted-text: #9aa4b2;
-  --card-bg: rgba(8,12,20,0.78);
-  --input-bg: rgba(255,255,255,0.03);
-  --input-border: rgba(255,255,255,0.12);
-  --control-bg: #2563eb;
+  --page-text: #ffffff;
+  --muted-text: #cbd5e1;
+
+  --card-bg: rgba(15, 23, 42, 0.96);
+
+  --input-bg: rgba(30, 41, 59, 0.95);
+
+  --input-border: rgba(255,255,255,0.15);
+
+  --control-bg: #4f46e5;
+
+  background: rgba(2, 6, 23, 0.55);
+
+  backdrop-filter: blur(3px);
 }
 
 /* Apply theme to common utility classes used in the app without changing markup */
@@ -199,8 +207,8 @@ button:hover {
   top: 1rem;
   right: 1rem;
   z-index: 9999;
-  width: 56px;
-  height: 34px;
+  width: 74px;
+  height: 40px;
   border-radius: 999px;
   padding: 4px;
   display: inline-flex;
@@ -240,8 +248,8 @@ button:hover {
 }
 
 .theme-toggle__knob {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #ffffff;
   box-shadow: 0 4px 12px rgba(2,6,23,0.18);
