@@ -727,9 +727,9 @@ export default function App() {
             }`}
           >
             <AnalyticsView
-  onBack={() => setShowAnalytics(false)}
-  prefersDarkMode={prefersDarkMode}
-/>
+              onBack={() => setShowAnalytics(false)}
+              prefersDarkMode={prefersDarkMode}
+            />
           </motion.div>
         )}
       </AnimatePresence>
