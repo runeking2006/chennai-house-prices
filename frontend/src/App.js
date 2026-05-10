@@ -360,9 +360,11 @@ export default function App() {
     bedrooms: "",
     bathrooms: "",
   });
-  const prefersDarkMode = window.matchMedia(
+  const systemDarkMode = window.matchMedia(
     "(prefers-color-scheme: dark)",
   ).matches;
+
+  const [darkMode, setDarkMode] = useState(systemDarkMode);
   const [taluks, setTaluks] = useState([]);
   const [prediction, setPrediction] = useState(null);
   const [message, setMessage] = useState("");
@@ -439,7 +441,7 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen p-6 ${prefersDarkMode ? "dark-mode" : ""}`}
+      className={`min-h-screen p-6 ${darkMode ? "dark-mode" : ""}`}
       style={{
         backgroundImage: 'url("unnamed.jpg")',
         backgroundSize: "cover",
@@ -456,6 +458,14 @@ export default function App() {
       </p>
 
       {/* ===== CORRECTED STRUCTURE: Toggles are outside and above all conditional content ===== */}
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="px-4 py-2 rounded-lg bg-black text-white"
+        >
+          {darkMode ? "☀️ Light" : "🌙 Dark"}
+        </button>
+      </div>
       <div className="flex justify-center gap-4 mb-6 z-40 relative">
         <button
           onClick={() => setShowAnalytics(false)}
@@ -491,14 +501,12 @@ export default function App() {
         >
           <div
             className={`w-full max-w-md shadow-2xl rounded-2xl p-6 space-y-5 ${
-              prefersDarkMode
-                ? "bg-slate-900 text-white"
-                : "bg-white text-black"
+              darkMode ? "bg-slate-900 text-white" : "bg-white text-black"
             }`}
           >
             <h2
               className={`text-2xl font-bold text-center ${
-                prefersDarkMode ? "text-white" : "text-indigo-700"
+                darkMode ? "text-white" : "text-indigo-700"
               }`}
             >
               🏠 Tamil Nadu Property Price Predictor
@@ -511,7 +519,7 @@ export default function App() {
               onChange={handleChange}
               aria-label="Select District" // 6️⃣ Accessibility
               className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
-                prefersDarkMode
+                darkMode
                   ? "bg-slate-800 text-white border border-slate-600"
                   : "bg-white text-black border border-gray-300"
               }`}
@@ -533,7 +541,7 @@ export default function App() {
               disabled={!form.district}
               aria-label="Select Taluk" // 6️⃣ Accessibility
               className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 ${
-                prefersDarkMode
+                darkMode
                   ? "bg-slate-800 text-white border border-slate-600"
                   : "bg-white text-black border border-gray-300"
               }`}
@@ -554,7 +562,7 @@ export default function App() {
               onChange={handleChange}
               aria-label="Select Property Type" // 6️⃣ Accessibility
               className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
-                prefersDarkMode
+                darkMode
                   ? "bg-slate-800 text-white border border-slate-600"
                   : "bg-white text-black border border-gray-300"
               }`}
@@ -574,7 +582,7 @@ export default function App() {
               onChange={handleChange}
               aria-label="Select Ownership Type" // 6️⃣ Accessibility
               className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
-                prefersDarkMode
+                darkMode
                   ? "bg-slate-800 text-white border border-slate-600"
                   : "bg-white text-black border border-gray-300"
               }`}
@@ -595,7 +603,7 @@ export default function App() {
               min="0" // 3️⃣ Prevent invalid numeric input
               aria-label="Built Area (sqft)" // 6️⃣ Accessibility
               className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
-                prefersDarkMode
+                darkMode
                   ? "bg-slate-800 text-white border border-slate-600"
                   : "bg-white text-black border border-gray-300"
               }`}
@@ -610,7 +618,7 @@ export default function App() {
                 min="0" // 3️⃣ Prevent invalid numeric input
                 aria-label="Bedrooms" // 6️⃣ Accessibility
                 className={`w-1/2 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
-                  prefersDarkMode
+                  darkMode
                     ? "bg-slate-800 text-white border border-slate-600"
                     : "bg-white text-black border border-gray-300"
                 }`}
@@ -624,7 +632,7 @@ export default function App() {
                 min="0" // 3️⃣ Prevent invalid numeric input
                 aria-label="Bathrooms" // 6️⃣ Accessibility
                 className={`w-1/2 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
-                  prefersDarkMode
+                  darkMode
                     ? "bg-slate-800 text-white border border-slate-600"
                     : "bg-white text-black border border-gray-300"
                 }`}
@@ -651,7 +659,7 @@ export default function App() {
 
             <p
               className={`text-xs text-center ${
-                prefersDarkMode ? "text-gray-300" : "text-gray-500"
+                darkMode ? "text-gray-300" : "text-gray-500"
               }`}
             >
               Note: These predictions are used for understanding user
@@ -664,7 +672,7 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className={`p-4 rounded-xl text-center ${
-                  prefersDarkMode
+                  darkMode
                     ? "bg-green-900 border border-green-700"
                     : "bg-green-50 border border-green-200"
                 }`}
@@ -675,7 +683,7 @@ export default function App() {
                   </p>
                   <p
                     className={`text-sm ${
-                      prefersDarkMode ? "text-gray-200" : "text-gray-700"
+                      darkMode ? "text-gray-200" : "text-gray-700"
                     }`}
                   >
                     Per sqft: ₹ {formatINR(prediction.perSqft, 2)}
@@ -721,14 +729,12 @@ export default function App() {
             transition={{ duration: 0.3 }}
             // 4️⃣ Analytics overlay styling
             className={`overflow-auto p-6 ${
-              prefersDarkMode
-                ? "bg-slate-950 text-white"
-                : "bg-white text-black"
+              darkMode ? "bg-slate-950 text-white" : "bg-white text-black"
             }`}
           >
             <AnalyticsView
               onBack={() => setShowAnalytics(false)}
-              prefersDarkMode={prefersDarkMode}
+              darkMode={darkMode}
             />
           </motion.div>
         )}
