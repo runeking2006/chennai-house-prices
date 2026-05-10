@@ -680,7 +680,7 @@ export default function App() {
                 }`}
               >
                 <div className="flex flex-col items-center gap-3">
-                  <p className="text-lg font-semibold text-red-700">
+                  <p className="text-lg font-semibold text-gray-950">
                     Predicted Price: ₹ {formatINR(prediction.totalPrice)}
                   </p>
                   <p
