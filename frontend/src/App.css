@@ -160,9 +160,9 @@ button:hover {
 
   --control-bg: #4f46e5;
 
-  background: rgba(2, 6, 23, 0.55);
+  background: rgba(0, 0, 0, 0.72);
 
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(8px);
 }
 
 /* Apply theme to common utility classes used in the app without changing markup */

@@ -472,7 +472,6 @@ export default function App() {
         aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
         title={theme === "dark" ? "Light mode" : "Dark mode"}
       >
-        <span className="theme-toggle__icon" aria-hidden="true"></span>
         <span className="theme-toggle__knob" aria-hidden="true"></span>
       </button>
       <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
