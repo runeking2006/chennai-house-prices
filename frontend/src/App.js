@@ -360,9 +360,7 @@ export default function App() {
     bedrooms: "",
     bathrooms: "",
   });
-  const prefersDarkMode = window.matchMedia(
-    "(prefers-color-scheme: dark)"
-  ).matches;
+  const prefersDarkMode = true;
   const [taluks, setTaluks] = useState([]);
   const [prediction, setPrediction] = useState(null);
   const [message, setMessage] = useState("");
