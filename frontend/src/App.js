@@ -664,8 +664,7 @@ export default function App() {
                 darkMode ? "text-gray-300" : "text-gray-500"
               }`}
             >
-              Note: These predictions are used for understanding user
-              preferences for buying property.
+              Note: For plot properties, please keep bedrooms and bathrooms as 0.
             </p>
 
             {/* Result */}
