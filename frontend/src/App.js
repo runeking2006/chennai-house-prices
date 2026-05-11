@@ -665,7 +665,7 @@ export default function App() {
               }`}
             >
               Note: For plot properties, please keep bedrooms and bathrooms as
-              Zero.
+              zero.
             </p>
 
             {/* Result */}
