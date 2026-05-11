@@ -664,7 +664,8 @@ export default function App() {
                 darkMode ? "text-gray-300" : "text-gray-500"
               }`}
             >
-              Note: For plot properties, please keep bedrooms and bathrooms as 0.
+              Note: For plot properties, please keep bedrooms and bathrooms as
+              0.
             </p>
 
             {/* Result */}
@@ -679,7 +680,11 @@ export default function App() {
                 }`}
               >
                 <div className="flex flex-col items-center gap-3">
-                  <p className="text-lg font-semibold text-gray-950">
+                  <p
+                    className={`text-lg font-semibold ${
+                      darkMode ? "text-white" : "text-green-900"
+                    }`}
+                  >
                     Predicted Price: ₹ {formatINR(prediction.totalPrice)}
                   </p>
                   <p
