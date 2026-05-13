@@ -160,6 +160,8 @@ button:hover {
 .floating-icons span {
   position: absolute;
 
+  bottom: -120px;
+
   display: block;
 
   font-size: 28px;
@@ -205,16 +207,16 @@ button:hover {
 
 @keyframes floatUp {
   0% {
-    transform: translateY(110vh) rotate(0deg);
+    transform: translateY(120vh) rotate(0deg);
     opacity: 0;
   }
 
   10% {
-    opacity: 0.15;
+    opacity: 0.12;
   }
 
   50% {
-    opacity: 0.2;
+    opacity: 0.18;
   }
 
   100% {
