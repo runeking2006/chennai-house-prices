@@ -207,11 +207,13 @@ button:hover {
 /* Animation */
 
 @keyframes floatUp {
-  from {
+  0% {
     transform: translateY(0);
+    opacity: 0.25;
   }
 
-  to {
+  100% {
     transform: translateY(-140vh);
+    opacity: 0.25;
   }
 }
