@@ -160,19 +160,18 @@ button:hover {
 }
 
 .floating-icons span {
-  position: absolute;
+  position: fixed !important;
 
-  top: 100vh;
-
-  display: block;
+  bottom: -100px !important;
 
   font-size: 42px;
 
   opacity: 0.45;
 
   animation: floatUp 8s linear infinite;
-}
 
+  z-index: 60;
+}
 /* Random positions */
 
 .floating-icons span:nth-child(1) {
@@ -208,21 +207,11 @@ button:hover {
 /* Animation */
 
 @keyframes floatUp {
-  0% {
-    transform: translateY(120vh) rotate(0deg);
-    opacity: 0;
+  from {
+    transform: translateY(0);
   }
 
-  10% {
-    opacity: 0.12;
-  }
-
-  50% {
-    opacity: 0.18;
-  }
-
-  100% {
-    transform: translateY(-120vh) rotate(360deg);
-    opacity: 0;
+  to {
+    transform: translateY(-140vh);
   }
 }
