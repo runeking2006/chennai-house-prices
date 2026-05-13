@@ -441,7 +441,10 @@ export default function App() {
 
   return (
     <>
-      <div className="floating-icons fixed top-0 left-0 w-full h-full z-50 pointer-events-none">
+      <div
+        className="floating-icons fixed top-0 left-0 w-full h-full pointer-events-none"
+        style={{ position: "fixed", zIndex: 99999 }}
+      >
         <span>🏠</span>
         <span>🏡</span>
         <span>🏢</span>
