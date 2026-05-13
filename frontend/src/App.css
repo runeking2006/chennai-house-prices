@@ -160,7 +160,7 @@ button:hover {
 }
 
 .floating-icons span {
-  position: fixed !important;
+  position: absolute;
 
   bottom: -100px !important;
 
