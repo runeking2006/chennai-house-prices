@@ -156,7 +156,7 @@ button:hover {
 
   pointer-events: none;
 
-  z-index: 9999;
+  z-index: 50;
 }
 
 .floating-icons span {
@@ -166,11 +166,11 @@ button:hover {
 
   display: block;
 
-  font-size: 28px;
+  font-size: 42px;
 
-  opacity: 0.18;
+  opacity: 0.45;
 
-  animation: floatUp 18s linear infinite;
+  animation: floatUp 8s linear infinite;
 }
 
 /* Random positions */
