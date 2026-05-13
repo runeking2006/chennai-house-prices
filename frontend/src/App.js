@@ -450,6 +450,15 @@ export default function App() {
         minHeight: "100vh",
       }}
     >
+    <div className="floating-icons">
+     <span>🏠</span>
+     <span>🏡</span>
+     <span>🏢</span>
+     <span>🏘️</span>
+     <span>🏠</span>
+     <span>🏡</span>
+    </div>
+
       <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
 
       <p style={{ display: "none" }}>

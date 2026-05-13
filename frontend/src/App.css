@@ -140,3 +140,85 @@ button:hover {
   background: rgba(2, 6, 23, 0.65);
   backdrop-filter: blur(4px);
 }
+
+/* ===== FLOATING PROPERTY ICONS ===== */
+
+.floating-icons {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+.floating-icons span {
+  position: absolute;
+
+  display: block;
+
+  font-size: 28px;
+
+  opacity: 0.18;
+
+  animation: floatUp 18s linear infinite;
+}
+
+/* Random positions */
+
+.floating-icons span:nth-child(1) {
+  left: 8%;
+  animation-delay: 0s;
+}
+
+.floating-icons span:nth-child(2) {
+  left: 22%;
+  animation-delay: 4s;
+}
+
+.floating-icons span:nth-child(3) {
+  left: 40%;
+  animation-delay: 2s;
+}
+
+.floating-icons span:nth-child(4) {
+  left: 62%;
+  animation-delay: 6s;
+}
+
+.floating-icons span:nth-child(5) {
+  left: 78%;
+  animation-delay: 1s;
+}
+
+.floating-icons span:nth-child(6) {
+  left: 90%;
+  animation-delay: 5s;
+}
+
+/* Animation */
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(110vh) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.15;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+
+  100% {
+    transform: translateY(-120vh) rotate(360deg);
+    opacity: 0;
+  }
+}
