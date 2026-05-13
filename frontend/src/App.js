@@ -440,6 +440,15 @@ export default function App() {
   };
 
   return (
+    <>
+    <div className="floating-icons">
+     <span>🏠</span>
+     <span>🏡</span>
+     <span>🏢</span>
+     <span>🏘️</span>
+     <span>🏠</span>
+     <span>🏡</span>
+    </div>
     <div
       className={`min-h-screen p-6 ${darkMode ? "dark-mode" : ""}`}
       style={{
@@ -450,14 +459,6 @@ export default function App() {
         minHeight: "100vh",
       }}
     >
-    <div className="floating-icons">
-     <span>🏠</span>
-     <span>🏡</span>
-     <span>🏢</span>
-     <span>🏘️</span>
-     <span>🏠</span>
-     <span>🏡</span>
-    </div>
 
       <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
 
@@ -755,5 +756,6 @@ export default function App() {
         )}
       </AnimatePresence>
     </div>
+  </>
   );
 }
