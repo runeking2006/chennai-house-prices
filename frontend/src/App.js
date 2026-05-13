@@ -441,7 +441,7 @@ export default function App() {
 
   return (
     <>
-      <div className="floating-icons">
+      <div className="floating-icons fixed top-0 left-0 w-full h-full z-50 pointer-events-none">
         <span>🏠</span>
         <span>🏡</span>
         <span>🏢</span>
