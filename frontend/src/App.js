@@ -440,14 +440,21 @@ export default function App() {
   };
 
   return (
-    <>
+    <div
+      className={`min-h-screen p-6 ${darkMode ? "dark-mode" : ""}`}
+      style={{
+        backgroundImage: 'url("unnamed.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        minHeight: "100vh",
+      }}
+    >
       <div className="floating-icon icon1">🏠</div>
       <div className="floating-icon icon2">🏢</div>
       <div className="floating-icon icon3">📈</div>
       <div className="floating-icon icon4">💰</div>
       <div className="floating-icon icon5">🏡</div>
-
-      <div className="App">
       <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
 
       <p style={{ display: "none" }}>
@@ -744,6 +751,5 @@ export default function App() {
         )}
       </AnimatePresence>
     </div>
-  </>
   );
 }
