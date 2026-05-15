@@ -209,7 +209,18 @@ button:hover {
 }
 
 .floating-icon {
-  width: 32px;
-  height: 32px;
+  position: fixed;
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.08;
+
+  animation: ambientFloat 12s ease-in-out infinite;
+
   object-fit: contain;
+  display: block;
 }
