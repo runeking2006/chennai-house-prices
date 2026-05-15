@@ -148,27 +148,22 @@ button:hover {
 .icon1 {
   top: 12%;
   left: 3%;
-  animation-delay: 0s;
 }
 
 .icon2 {
   top: 28%;
   right: 4%;
-  animation-delay: 3s;
 }
 
 .icon3 {
   bottom: 18%;
   left: 6%;
-  animation-delay: 6s;
 }
 
 .icon4 {
   bottom: 10%;
   right: 8%;
-  animation-delay: 9s;
 }
-
 /* Motion */
 
 @keyframes ambientFloat {
@@ -208,10 +203,8 @@ button:hover {
   pointer-events: none;
   opacity: 0.08;
 
-  animation: ambientFloat 12s ease-in-out infinite;
-
   object-fit: contain;
-  
+
   display: inline-block;
 
   will-change: transform;

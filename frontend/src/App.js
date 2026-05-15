@@ -458,6 +458,7 @@ export default function App() {
           style={{
             width: "32px",
             height: "32px",
+            animation: "ambientFloat 12s ease-in-out infinite",
           }}
         />
 
@@ -468,6 +469,7 @@ export default function App() {
           style={{
             width: "32px",
             height: "32px",
+            animation: "ambientFloat 12s ease-in-out infinite 3s",
           }}
         />
 
@@ -478,6 +480,7 @@ export default function App() {
           style={{
             width: "32px",
             height: "32px",
+            animation: "ambientFloat 12s ease-in-out infinite 6s",
           }}
         />
 
@@ -488,6 +491,7 @@ export default function App() {
           style={{
             width: "32px",
             height: "32px",
+            animation: "ambientFloat 12s ease-in-out infinite 9s",
           }}
         />
         <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
