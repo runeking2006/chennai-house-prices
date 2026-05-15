@@ -441,45 +441,6 @@ export default function App() {
 
   return (
     <>
-      <img
-        src="/icons/house.png"
-        className="floating-icon icon1"
-        alt=""
-        style={{
-          width: "32px",
-          height: "32px",
-        }}
-      />
-
-      <img
-        src="/icons/building.png"
-        className="floating-icon icon2"
-        alt=""
-        style={{
-          width: "32px",
-          height: "32px",
-        }}
-      />
-
-      <img
-        src="/icons/chart.png"
-        className="floating-icon icon3"
-        alt=""
-        style={{
-          width: "32px",
-          height: "32px",
-        }}
-      />
-
-      <img
-        src="/icons/money.png"
-        className="floating-icon icon4"
-        alt=""
-        style={{
-          width: "32px",
-          height: "32px",
-        }}
-      />
       <div
         className={`min-h-screen p-6 ${darkMode ? "dark-mode" : ""}`}
         style={{
@@ -490,6 +451,45 @@ export default function App() {
           minHeight: "100vh",
         }}
       >
+        <img
+          src="/icons/house.png"
+          className="floating-icon icon1"
+          alt=""
+          style={{
+            width: "32px",
+            height: "32px",
+          }}
+        />
+
+        <img
+          src="/icons/building.png"
+          className="floating-icon icon2"
+          alt=""
+          style={{
+            width: "32px",
+            height: "32px",
+          }}
+        />
+
+        <img
+          src="/icons/chart.png"
+          className="floating-icon icon3"
+          alt=""
+          style={{
+            width: "32px",
+            height: "32px",
+          }}
+        />
+
+        <img
+          src="/icons/money.png"
+          className="floating-icon icon4"
+          alt=""
+          style={{
+            width: "32px",
+            height: "32px",
+          }}
+        />
         <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
 
         <p style={{ display: "none" }}>
