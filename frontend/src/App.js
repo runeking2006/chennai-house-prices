@@ -440,11 +440,19 @@ export default function App() {
   };
 
   return (
-    <>{/*
-      <div className="floating-icon icon1">🏠</div>
-      <div className="floating-icon icon2">🏢</div>
-      <div className="floating-icon icon3">📈</div>
-      <div className="floating-icon icon4">💰</div>*/}
+    <>
+      <div className="floating-icon icon1">
+        <span>🏠</span>
+      </div>
+      <div className="floating-icon icon2">
+        <span>🏢</span>
+      </div>
+      <div className="floating-icon icon3">
+        <span>📈</span>
+      </div>
+      <div className="floating-icon icon4">
+        <span>💰</span>
+      </div>
       <div
         className={`min-h-screen p-6 ${darkMode ? "dark-mode" : ""}`}
         style={{

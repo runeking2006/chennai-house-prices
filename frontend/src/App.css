@@ -203,3 +203,7 @@ button:hover {
     transform: translateY(0px) translateX(0px) rotate(0deg);
   }
 }
+
+.floating-icon span {
+  display: block;
+}
