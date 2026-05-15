@@ -15,6 +15,8 @@ body {
   margin: 0 auto;
   padding: 2rem 1rem;
   text-align: center;
+  position: relative;
+  z-index: 10;
 }
 
 /* === Title === */
@@ -146,9 +148,10 @@ button:hover {
   position: fixed;
   font-size: 2rem;
   opacity: 0.18;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
   animation: floatUpDown linear infinite alternate;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
 }
 
 /* Different positions */
