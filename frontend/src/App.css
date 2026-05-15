@@ -143,17 +143,6 @@ button:hover {
 
 /* === Ambient Floating Icons === */
 
-.floating-icon {
-  top: 0;
-  position: fixed;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.06;
-  font-size: 2rem;
-  animation: ambientFloat 12s ease-in-out infinite;
-  filter: blur(0.2px);
-}
-
 /* Positions */
 
 .icon1 {
