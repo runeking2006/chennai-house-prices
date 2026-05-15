@@ -140,3 +140,55 @@ button:hover {
   background: rgba(2, 6, 23, 0.65);
   backdrop-filter: blur(4px);
 }
+
+/* === Floating Background Icons === */
+.floating-icon {
+  position: fixed;
+  font-size: 2rem;
+  opacity: 0.18;
+  z-index: 0;
+  pointer-events: none;
+  animation: floatUpDown linear infinite alternate;
+}
+
+/* Different positions */
+.icon1 {
+  top: 10%;
+  left: 5%;
+  animation-duration: 6s;
+}
+
+.icon2 {
+  top: 75%;
+  left: 12%;
+  animation-duration: 8s;
+}
+
+.icon3 {
+  top: 20%;
+  right: 8%;
+  animation-duration: 7s;
+}
+
+.icon4 {
+  top: 65%;
+  right: 15%;
+  animation-duration: 9s;
+}
+
+.icon5 {
+  top: 40%;
+  left: 50%;
+  animation-duration: 10s;
+}
+
+/* Floating motion */
+@keyframes floatUpDown {
+  from {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  to {
+    transform: translateY(-20px) rotate(10deg);
+  }
+}
