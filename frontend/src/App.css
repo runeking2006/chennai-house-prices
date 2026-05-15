@@ -211,5 +211,8 @@ button:hover {
   animation: ambientFloat 12s ease-in-out infinite;
 
   object-fit: contain;
-  display: block;
+  
+  display: inline-block;
+
+  will-change: transform;
 }
