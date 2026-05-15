@@ -441,18 +441,13 @@ export default function App() {
 
   return (
     <>
-      <div className="floating-icon icon1">
-        <span>🏠</span>
-      </div>
-      <div className="floating-icon icon2">
-        <span>🏢</span>
-      </div>
-      <div className="floating-icon icon3">
-        <span>📈</span>
-      </div>
-      <div className="floating-icon icon4">
-        <span>💰</span>
-      </div>
+      <img src="/icons/house.png" className="floating-icon icon1" alt="" />
+
+      <img src="/icons/building.png" className="floating-icon icon2" alt="" />
+
+      <img src="/icons/chart.png" className="floating-icon icon3" alt="" />
+
+      <img src="/icons/money.png" className="floating-icon icon4" alt="" />
       <div
         className={`min-h-screen p-6 ${darkMode ? "dark-mode" : ""}`}
         style={{
