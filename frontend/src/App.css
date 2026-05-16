@@ -194,18 +194,13 @@ button:hover {
 
 .floating-icon {
   position: fixed;
-  width: 32px !important;
-  height: 32px !important;
-  max-width: 32px !important;
-  max-height: 32px !important;
 
   z-index: 0;
   pointer-events: none;
+
   opacity: 0.28;
 
-  object-fit: contain;
-
-  display: inline-block;
+  animation: ambientFloat 12s ease-in-out infinite;
 
   will-change: transform;
 }

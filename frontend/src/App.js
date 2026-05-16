@@ -451,49 +451,49 @@ export default function App() {
           minHeight: "100vh",
         }}
       >
-        <img
-          src="/icons/house.png"
-          className="floating-icon icon1"
-          alt=""
-          style={{
-            width: "32px",
-            height: "32px",
-            animation: "ambientFloat 12s ease-in-out infinite",
-          }}
-        />
+        <div className="floating-icon icon1">
+          <img
+            src="/icons/house.png"
+            alt=""
+            style={{
+              width: "32px",
+              height: "32px",
+            }}
+          />
+        </div>
 
-        <img
-          src="/icons/building.png"
-          className="floating-icon icon2"
-          alt=""
-          style={{
-            width: "32px",
-            height: "32px",
-            animation: "ambientFloat 12s ease-in-out infinite 3s",
-          }}
-        />
+        <div className="floating-icon icon2">
+          <img
+            src="/icons/building.png"
+            alt=""
+            style={{
+              width: "32px",
+              height: "32px",
+            }}
+          />
+        </div>
 
-        <img
-          src="/icons/chart.png"
-          className="floating-icon icon3"
-          alt=""
-          style={{
-            width: "32px",
-            height: "32px",
-            animation: "ambientFloat 12s ease-in-out infinite 6s",
-          }}
-        />
+        <div className="floating-icon icon3">
+          <img
+            src="/icons/chart.png"
+            alt=""
+            style={{
+              width: "32px",
+              height: "32px",
+            }}
+          />
+        </div>
 
-        <img
-          src="/icons/money.png"
-          className="floating-icon icon4"
-          alt=""
-          style={{
-            width: "32px",
-            height: "32px",
-            animation: "ambientFloat 12s ease-in-out infinite 9s",
-          }}
-        />
+        <div className="floating-icon icon4">
+          <img
+            src="/icons/money.png"
+            alt=""
+            style={{
+              width: "32px",
+              height: "32px",
+            }}
+          />
+        </div>
         <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
 
         <p style={{ display: "none" }}>
