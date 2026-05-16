@@ -149,7 +149,7 @@ button:hover {
 
   font-size: 2rem;
 
-  opacity: 0.6;
+  opacity: 0.9;
   pointer-events: none;
 
   animation-name: floatY;
@@ -166,43 +166,36 @@ button:hover {
 .icon2 {
   top: 30%;
   right: 5%;
-  animation-delay: 1s;
 }
 
 .icon3 {
   bottom: 22%;
   left: 6%;
-  animation-delay: 2s;
 }
 
 .icon4 {
   bottom: 12%;
   right: 8%;
-  animation-delay: 3s;
 }
 
 .icon5 {
   top: 55%;
   left: 12%;
-  animation-delay: 1.5s;
 }
 
 .icon6 {
   top: 70%;
   right: 15%;
-  animation-delay: 2.5s;
 }
 
 .icon7 {
   top: 18%;
   left: 45%;
-  animation-delay: 3.5s;
 }
 
 .icon8 {
   bottom: 20%;
   right: 35%;
-  animation-delay: 4.5s;
 }
 
 @keyframes floatY {
