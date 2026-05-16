@@ -180,14 +180,14 @@ button:hover {
 
 @keyframes floatY {
   0% {
-    transform: translateY(0px);
+    margin-top: 0px;
   }
 
   50% {
-    transform: translateY(-30px);
+    margin-top: -20px;
   }
 
   100% {
-    transform: translateY(0px);
+    margin-top: 0px;
   }
 }
