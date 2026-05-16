@@ -460,6 +460,8 @@ export default function App() {
         <div className="floating-icon icon6">💵</div>
         <div className="floating-icon icon7">📊</div>
         <div className="floating-icon icon8">🏬</div>
+        <div className="floating-icon icon9">🏡</div>
+        <div className="floating-icon icon10">📉</div>
         <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
 
         <p style={{ display: "none" }}>
@@ -509,7 +511,7 @@ export default function App() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex items-center justify-center"
+            className="relative z-10 flex items-center justify-center"
           >
             <div
               className={`w-full max-w-md shadow-2xl rounded-2xl p-6 space-y-5 ${
@@ -744,7 +746,7 @@ export default function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               // 4️⃣ Analytics overlay styling
-              className={`overflow-auto p-6 ${
+              className={`relative z-10 overflow-auto p-6 ${
                 darkMode ? "bg-slate-950 text-white" : "bg-white text-black"
               }`}
             >
