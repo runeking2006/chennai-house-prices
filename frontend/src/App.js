@@ -453,12 +453,13 @@ export default function App() {
         }}
       >
         <div className="floating-icon icon1">🏠</div>
-
         <div className="floating-icon icon2">🏢</div>
-
         <div className="floating-icon icon3">📈</div>
-
         <div className="floating-icon icon4">💰</div>
+        <div className="floating-icon icon5">🏡</div>
+        <div className="floating-icon icon6">💵</div>
+        <div className="floating-icon icon7">📊</div>
+        <div className="floating-icon icon8">🏬</div>
         <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
 
         <p style={{ display: "none" }}>
