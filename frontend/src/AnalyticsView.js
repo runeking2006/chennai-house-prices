@@ -185,7 +185,7 @@ export default function AnalyticsView({ onBack, darkMode }) {
         propertyDistribution.length > 0 &&
         !drillDown.type && (
           <p className="text-center font-semibold mb-2">
-            Area Interest: {totalCount}
+            Location Interest Count: {totalCount}
           </p>
         )}
 
@@ -203,7 +203,7 @@ export default function AnalyticsView({ onBack, darkMode }) {
           </h2>
 
           <p className="text-center font-semibold mb-2">
-          Area Interest: {talukData.reduce((sum, t) => sum + t.value, 0)}
+            Location Interest Count: {talukData.reduce((sum, t) => sum + t.value, 0)}
           </p>
 
           {talukData.length === 0 ? (
