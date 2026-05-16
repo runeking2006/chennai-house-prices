@@ -452,47 +452,19 @@ export default function App() {
         }}
       >
         <div className="floating-icon icon1">
-          <img
-            src="/icons/house.png"
-            alt=""
-            style={{
-              width: "32px",
-              height: "32px",
-            }}
-          />
+          <img src="/icons/house.png" alt="" width="32" height="32" />
         </div>
 
         <div className="floating-icon icon2">
-          <img
-            src="/icons/building.png"
-            alt=""
-            style={{
-              width: "32px",
-              height: "32px",
-            }}
-          />
+          <img src="/icons/building.png" alt="" width="32" height="32" />
         </div>
 
         <div className="floating-icon icon3">
-          <img
-            src="/icons/chart.png"
-            alt=""
-            style={{
-              width: "32px",
-              height: "32px",
-            }}
-          />
+          <img src="/icons/chart.png" alt="" width="32" height="32" />
         </div>
 
         <div className="floating-icon icon4">
-          <img
-            src="/icons/money.png"
-            alt=""
-            style={{
-              width: "32px",
-              height: "32px",
-            }}
-          />
+          <img src="/icons/money.png" alt="" width="32" height="32" />
         </div>
         <h1 style={{ display: "none" }}>HPP-House Price Predictor</h1>
 

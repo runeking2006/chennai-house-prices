@@ -141,9 +141,19 @@ button:hover {
   backdrop-filter: blur(4px);
 }
 
-/* === Ambient Floating Icons === */
+/* === Floating Icons === */
 
-/* Positions */
+.floating-icon {
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.25;
+
+  animation-name: ambientFloat;
+  animation-duration: 6s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
 
 .icon1 {
   top: 12%;
@@ -153,38 +163,31 @@ button:hover {
 .icon2 {
   top: 28%;
   right: 4%;
+  animation-delay: 1s;
 }
 
 .icon3 {
   bottom: 18%;
   left: 6%;
+  animation-delay: 2s;
 }
 
 .icon4 {
   bottom: 10%;
   right: 8%;
+  animation-delay: 3s;
 }
-/* Motion */
+
 @keyframes ambientFloat {
   0% {
-    transform: translateX(0px);
+    transform: translateY(0px);
   }
 
   50% {
-    transform: translateX(300px);
+    transform: translateY(-40px);
   }
 
   100% {
-    transform: translateX(0px);
+    transform: translateY(0px);
   }
-}
-
-.floating-icon span {
-  display: block;
-}
-
-.floating-icon {
-  position: fixed;
-  z-index: 9999;
-  animation: ambientFloat 2s linear infinite;
 }
