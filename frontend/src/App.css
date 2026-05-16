@@ -141,22 +141,25 @@ button:hover {
   backdrop-filter: blur(4px);
 }
 
-/* === Floating Icons === */
-
-/* ===== FLOATING ICONS ===== */
+/* ===== Floating Background Icons ===== */
 
 .floating-icon {
   position: fixed;
-  font-size: 40px;
-
   z-index: 1;
+
+  font-size: 2rem;
+
+  opacity: 0.18;
   pointer-events: none;
 
-  animation: floatY 4s ease-in-out infinite;
+  animation-name: floatY;
+  animation-duration: 5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 
 .icon1 {
-  top: 10%;
+  top: 12%;
   left: 3%;
 }
 
@@ -167,13 +170,13 @@ button:hover {
 }
 
 .icon3 {
-  bottom: 25%;
-  left: 7%;
+  bottom: 22%;
+  left: 6%;
   animation-delay: 2s;
 }
 
 .icon4 {
-  bottom: 10%;
+  bottom: 12%;
   right: 8%;
   animation-delay: 3s;
 }
@@ -184,7 +187,7 @@ button:hover {
   }
 
   50% {
-    margin-top: -20px;
+    margin-top: -25px;
   }
 
   100% {
