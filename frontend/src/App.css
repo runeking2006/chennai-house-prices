@@ -143,32 +143,32 @@ button:hover {
 
 /* === Floating Icons === */
 
+/* ===== FLOATING ICONS ===== */
+
 .floating-icon {
   position: fixed;
+  font-size: 40px;
+
   z-index: 1;
   pointer-events: none;
-  opacity: 0.25;
 
-  animation-name: ambientFloat;
-  animation-duration: 6s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
+  animation: floatY 4s ease-in-out infinite;
 }
 
 .icon1 {
-  top: 12%;
+  top: 10%;
   left: 3%;
 }
 
 .icon2 {
-  top: 28%;
-  right: 4%;
+  top: 30%;
+  right: 5%;
   animation-delay: 1s;
 }
 
 .icon3 {
-  bottom: 18%;
-  left: 6%;
+  bottom: 25%;
+  left: 7%;
   animation-delay: 2s;
 }
 
@@ -178,13 +178,13 @@ button:hover {
   animation-delay: 3s;
 }
 
-@keyframes ambientFloat {
+@keyframes floatY {
   0% {
     transform: translateY(0px);
   }
 
   50% {
-    transform: translateY(-40px);
+    transform: translateY(-30px);
   }
 
   100% {
