@@ -172,15 +172,15 @@ button:hover {
   }
 
   25% {
-    transform: translateY(-25px) translateX(12px);
+    transform: translateY(-60px) translateX(30px);
   }
 
   50% {
-    transform: translateY(15px) translateX(-10px);
+    transform: translateY(35px) translateX(-25px);
   }
 
   75% {
-    transform: translateY(-18px) translateX(8px);
+    transform: translateY(-45px) translateX(20px);
   }
 
   100% {
@@ -201,7 +201,7 @@ button:hover {
 
   z-index: 0;
   pointer-events: none;
-  opacity: 0.08;
+  opacity: 0.28;
 
   object-fit: contain;
 
