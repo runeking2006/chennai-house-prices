@@ -36,8 +36,8 @@ Hosted on Hugging Face.
 
 Available on:
 
-* Hugging Face
-* Kaggle
+* Hugging Face[https://huggingface.co/datasets/runeking2006/ROUGH_TAMIL_NADU_HOUSING_DATASET]
+* Kaggle[https://www.kaggle.com/datasets/runeking2006/rough-tamil-nadu-housing-dataset]
 
 These resources allow developers, students, and researchers to explore the training data, validate results, and extend the project further.
 
