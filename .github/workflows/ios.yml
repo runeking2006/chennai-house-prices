@@ -1,0 +1,44 @@
+name: Build iOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build React app
+        working-directory: frontend
+        run: CI=false npm run build
+
+      - name: Sync Capacitor
+        working-directory: frontend
+        run: npx cap sync ios
+
+      - name: Build iOS
+        working-directory: frontend/ios
+        run: |
+          xcodebuild \
+            -workspace App/App.xcworkspace \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -derivedDataPath build
+
+      - name: Upload iOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: tamil-nadu-property-predictor-ios
+          path: frontend/ios/build/Build/Products/Debug-iphonesimulator/App.app
