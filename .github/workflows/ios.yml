@@ -30,9 +30,9 @@ jobs:
         working-directory: frontend
         run: npx cap sync ios
 
-      - name: Install CocoaPods
-        working-directory: frontend/ios/App
-        run: pod install
+      - name: Install CocoaPods dependencies
+        working-directory: frontend
+        run: npx cap update ios
 
       - name: Build iOS archive
         working-directory: frontend/ios
