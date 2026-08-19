@@ -65,7 +65,7 @@ jobs:
         run: |
           brew tap mobile-dev-inc/tap
           brew trust mobile-dev-inc/tap
-          brew install maestro
+          brew install --formula mobile-dev-inc/tap/maestro
 
       - name: Create UI test
         run: |
