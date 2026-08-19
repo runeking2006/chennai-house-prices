@@ -80,7 +80,7 @@ jobs:
 
           - takeScreenshot: predictor
 
-          - tapOn: "Analytics"
+          - tapOn: ".*Analytics.*"
 
           - waitForAnimationToEnd
           - waitForAnimationToEnd
