@@ -45,22 +45,63 @@ jobs:
       - name: Boot Simulator
         run: |
           DEVICE=$(xcrun simctl list devices available | grep -m 1 "iPhone" | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
+          echo "DEVICE=$DEVICE" >> "$GITHUB_ENV"
+
           xcrun simctl boot "$DEVICE" || true
           xcrun simctl bootstatus "$DEVICE" -b
 
       - name: Install App
         working-directory: frontend/ios
         run: |
-          DEVICE=$(xcrun simctl list devices booted | grep -m 1 "iPhone" | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
-          xcrun simctl install "$DEVICE" build/simulator/Build/Products/Debug-iphonesimulator/App.app
+          xcrun simctl install "$DEVICE" \
+            build/simulator/Build/Products/Debug-iphonesimulator/App.app
 
-      - name: Screenshot
+      - name: Launch App
         run: |
-          DEVICE=$(xcrun simctl list devices booted | grep -m 1 "iPhone" | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
-          xcrun simctl io "$DEVICE" screenshot ios-preview.png
+          xcrun simctl launch "$DEVICE" com.chennaihouseprices.app
+          sleep 8
 
-      - name: Upload Screenshot
+      - name: Install Maestro
+        run: |
+          brew tap mobile-dev-inc/tap
+          brew install maestro
+
+      - name: Create UI test
+        run: |
+          mkdir -p .maestro
+
+          cat > .maestro/test.yaml <<'EOF'
+          appId: com.chennaihouseprices.app
+
+          ---
+          - launchApp
+          - waitForAnimationToEnd
+
+          - takeScreenshot: predictor
+
+          - tapOn: "Analytics"
+
+          - waitForAnimationToEnd
+          - waitForAnimationToEnd
+          - waitForAnimationToEnd
+          - waitForAnimationToEnd
+          - waitForAnimationToEnd
+
+          - takeScreenshot: analytics
+          EOF
+
+      - name: Run UI test
+        run: |
+          maestro test .maestro/test.yaml
+
+      - name: Collect screenshots
+        run: |
+          mkdir -p ios-screenshots
+          find . -name "predictor*.png" -exec cp {} ios-screenshots/predictor.png \;
+          find . -name "analytics*.png" -exec cp {} ios-screenshots/analytics.png \;
+
+      - name: Upload Screenshots
         uses: actions/upload-artifact@v4
         with:
           name: ios-preview
-          path: ios-preview.png
+          path: ios-screenshots/
