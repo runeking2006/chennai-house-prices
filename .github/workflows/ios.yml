@@ -93,14 +93,12 @@ jobs:
 
       - name: Run UI test
         run: |
-          maestro test .maestro/test.yaml
+          maestro test .maestro/test.yaml --test-output-dir=ios-screenshots
 
-      - name: Collect screenshots
+      - name: List screenshots
         run: |
-          mkdir -p ios-screenshots
-          find . -name "predictor*.png" -exec cp {} ios-screenshots/predictor.png \;
-          find . -name "analytics*.png" -exec cp {} ios-screenshots/analytics.png \;
-
+          find ios-screenshots -type f
+          
       - name: Upload Screenshots
         uses: actions/upload-artifact@v4
         with:
