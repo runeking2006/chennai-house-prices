@@ -56,6 +56,61 @@ These resources allow developers, students, and researchers to explore the train
 * Cloud deployment on Render
 * Hugging Face model hosting
 * Automated uptime maintenance
+* Hybrid Android and iOS mobile application
+* Automated Android APK builds using GitHub Actions
+* Automated iOS Simulator builds and UI previews
+
+---
+
+## 📱 Mobile Application Development
+
+The project has been extended from a web application into a hybrid mobile application using **Capacitor**, allowing the same React frontend to target Android and iOS while continuing to use the existing online FastAPI backend.
+
+### Android
+
+* Capacitor Android integration
+* Android APK generation through GitHub Actions
+* Automated React production build and Capacitor synchronization
+* APK artifact generation for testing and distribution
+* Custom application icon and mobile app configuration
+
+### iOS
+
+* Capacitor iOS integration
+* iOS Simulator build support
+* Automated iOS Simulator testing through GitHub Actions macOS runners
+* Automated simulator boot, application installation, and UI preview
+* Automated screenshots for Predictor and Analytics views
+
+### Mobile Architecture
+
+Both Android and iOS use the same:
+
+* React frontend
+* FastAPI backend
+* PostgreSQL database
+* Hugging Face machine learning model
+* Online API configuration
+
+The mobile applications therefore maintain the same prediction and analytics functionality as the web application while providing a mobile-native application shell.
+
+### Automated Mobile Build Pipeline
+
+GitHub Actions is used to automate mobile builds without requiring a local Android or macOS development environment.
+
+```text
+React Source
+     ↓
+Production Build
+     ↓
+Capacitor Sync
+     ↓
+Android / iOS Build
+     ↓
+GitHub Actions
+     ↓
+Installable APK / iOS Simulator App
+```
 
 ---
 
