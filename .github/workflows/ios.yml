@@ -1,4 +1,4 @@
-name: Build iOS
+name: Build iOS Simulator
 
 on:
   workflow_dispatch:
@@ -30,33 +30,20 @@ jobs:
         working-directory: frontend
         run: npx cap sync ios
 
-      - name: Install CocoaPods dependencies
-        working-directory: frontend
-        run: npx cap update ios
-
-      - name: Build iOS archive
+      - name: Build iOS Simulator app
         working-directory: frontend/ios
         run: |
           xcodebuild \
             -project App/App.xcodeproj \
             -scheme App \
-            -configuration Release \
-            -sdk iphoneos \
-            -archivePath build/App.xcarchive \
-            archive \
-            CODE_SIGNING_ALLOWED=NO
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/simulator \
+            build
 
-      - name: Export IPA
-        working-directory: frontend/ios
-        run: |
-          mkdir -p build/Payload
-          mkdir -p build/IPA
-          cp -R build/App.xcarchive/Products/Applications/App.app build/Payload/
-          cd build
-          zip -r IPA/Tamil-Nadu-Property-Price-Predictor.ipa Payload
-
-      - name: Upload IPA
+      - name: Upload Simulator App
         uses: actions/upload-artifact@v4
         with:
-          name: tamil-nadu-property-predictor-ios
-          path: frontend/ios/build/IPA/Tamil-Nadu-Property-Price-Predictor.ipa
+          name: tamil-nadu-property-predictor-ios-simulator
+          path: frontend/ios/build/simulator/Build/Products/Debug-iphonesimulator/App.app
