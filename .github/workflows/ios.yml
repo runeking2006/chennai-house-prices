@@ -1,10 +1,10 @@
-name: Build iOS Simulator
+name: Preview iOS
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  preview:
     runs-on: macos-latest
 
     steps:
@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         working-directory: frontend
         run: npm install
 
@@ -22,7 +22,7 @@ jobs:
         working-directory: frontend
         run: echo "REACT_APP_API_BASE_URL=${{ vars.REACT_APP_API_BASE_URL }}" > .env
 
-      - name: Build React app
+      - name: Build React
         working-directory: frontend
         run: CI=false npm run build
 
@@ -30,7 +30,7 @@ jobs:
         working-directory: frontend
         run: npx cap sync ios
 
-      - name: Build iOS Simulator app
+      - name: Build Simulator
         working-directory: frontend/ios
         run: |
           xcodebuild \
@@ -42,8 +42,25 @@ jobs:
             -derivedDataPath build/simulator \
             build
 
-      - name: Upload Simulator App
+      - name: Boot Simulator
+        run: |
+          DEVICE=$(xcrun simctl list devices available | grep -m 1 "iPhone" | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
+          xcrun simctl boot "$DEVICE" || true
+          xcrun simctl bootstatus "$DEVICE" -b
+
+      - name: Install App
+        working-directory: frontend/ios
+        run: |
+          DEVICE=$(xcrun simctl list devices booted | grep -m 1 "iPhone" | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
+          xcrun simctl install "$DEVICE" build/simulator/Build/Products/Debug-iphonesimulator/App.app
+
+      - name: Screenshot
+        run: |
+          DEVICE=$(xcrun simctl list devices booted | grep -m 1 "iPhone" | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
+          xcrun simctl io "$DEVICE" screenshot ios-preview.png
+
+      - name: Upload Screenshot
         uses: actions/upload-artifact@v4
         with:
-          name: tamil-nadu-property-predictor-ios-simulator
-          path: frontend/ios/build/simulator/Build/Products/Debug-iphonesimulator/App.app
+          name: ios-preview
+          path: ios-preview.png
