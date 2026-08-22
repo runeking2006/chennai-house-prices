@@ -25,11 +25,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
-      - name: Install Rust toolchain
+      - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install Linux system dependencies
+      - name: Install Linux dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
@@ -40,7 +42,7 @@ jobs:
             librsvg2-dev \
             patchelf
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         working-directory: frontend
         run: npm ci
 
@@ -48,11 +50,11 @@ jobs:
         working-directory: frontend
         run: echo "REACT_APP_API_BASE_URL=${{ vars.REACT_APP_API_BASE_URL }}" > .env
 
-      - name: Build Tauri desktop app
+      - name: Build Tauri
         working-directory: frontend
         run: npm run tauri:build
 
-      - name: Upload desktop artifacts
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: tauri-${{ matrix.os }}
