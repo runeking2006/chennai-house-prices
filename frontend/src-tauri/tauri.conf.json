@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.chennaihouseprices.desktop",
   "build": {
-    "beforeBuildCommand": "${{ if runner.os == 'Windows' then 'set CI=false && npm run build' else 'CI=false npm run build' }}",
+    "beforeBuildCommand": "npm run build",
     "frontendDist": "../build"
   },
   "app": {

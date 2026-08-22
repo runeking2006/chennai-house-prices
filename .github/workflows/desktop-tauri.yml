@@ -50,8 +50,6 @@ jobs:
 
       - name: Build Tauri desktop app
         working-directory: frontend
-        env:
-          CI: false
         run: npm run tauri:build
 
       - name: Upload desktop artifacts
