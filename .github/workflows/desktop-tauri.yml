@@ -7,6 +7,9 @@ on:
       - 'frontend/**'
       - '.github/workflows/desktop-tauri.yml'
 
+permissions:
+  contents: read
+
 jobs:
   build:
     strategy:
