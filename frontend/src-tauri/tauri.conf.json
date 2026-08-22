@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.chennaihouseprices.desktop",
   "build": {
-    "beforeBuildCommand": "CI=npm run build",
+    "beforeBuildCommand": "cross-env CI=false npm run build",
     "frontendDist": "../build"
   },
   "app": {
