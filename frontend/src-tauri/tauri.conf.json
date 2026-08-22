@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Tamil Nadu Property Price Predictor",
+  "version": "0.1.0",
+  "identifier": "com.chennaihouseprices.desktop",
+  "build": {
+    "beforeBuildCommand": "CI=false npm run build",
+    "frontendDist": "../build"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Tamil Nadu Property Price Predictor",
+        "width": 1200,
+        "height": 900,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["deb", "rpm", "msi", "nsis", "dmg", "app"]
+  }
+}

@@ -59,6 +59,7 @@ These resources allow developers, students, and researchers to explore the train
 * Hybrid Android and iOS mobile application
 * Automated Android APK builds using GitHub Actions
 * Automated iOS Simulator builds and UI previews
+* Cross-platform desktop installers using Tauri (Windows, macOS, Linux)
 
 ---
 
@@ -111,6 +112,32 @@ GitHub Actions
      ↓
 Installable APK / iOS Simulator App
 ```
+
+---
+
+## 🖥️ Desktop Application Development
+
+The same React frontend is also packaged as a desktop app using **Tauri** while keeping the existing Capacitor Android/iOS setup unchanged.
+
+### Desktop Build (Local)
+
+```bash
+cd frontend
+npm install
+REACT_APP_API_BASE_URL=<your_api_base_url> npm run tauri:build
+```
+
+Tauri uses the existing React production build output (`frontend/build`) as its frontend bundle.
+
+### Desktop CI Build Artifacts
+
+GitHub Actions workflow `.github/workflows/desktop-tauri.yml` builds installers for:
+
+* Windows
+* macOS
+* Linux
+
+Each run uploads platform-specific downloadable artifacts from Tauri bundle outputs.
 
 ---
 
