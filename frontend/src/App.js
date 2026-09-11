@@ -421,7 +421,7 @@ export default function App() {
       !Number.isInteger(bathrooms) ||
       bathrooms < 0
     ) {
-      setMessage("Please enter valid non-negative room counts and a built area of at least 1 sqft.");
+      setMessage("Please enter valid non-negative room counts and a built area of at least 100 sqft.");
       return;
     }
 
