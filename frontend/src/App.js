@@ -327,6 +327,8 @@ const formatINR = (num, decimals = 0) => {
   });
 };
 
+const MIN_BUILT_AREA_SQFT = 100;
+
 // Simple loading spinner component
 const Spinner = () => (
   <svg
@@ -400,10 +402,26 @@ export default function App() {
       !form.property_type ||
       !form.ownership_type ||
       !form.built_area_sqft ||
-      !form.bedrooms ||
-      !form.bathrooms
+      form.bedrooms === "" ||
+      form.bathrooms === ""
     ) {
       setMessage("Please fill in all required fields.");
+      return;
+    }
+
+    const builtArea = parseFloat(form.built_area_sqft);
+    const bedrooms = parseInt(form.bedrooms, 10);
+    const bathrooms = parseInt(form.bathrooms, 10);
+
+    if (
+      !Number.isFinite(builtArea) ||
+      builtArea < MIN_BUILT_AREA_SQFT ||
+      !Number.isInteger(bedrooms) ||
+      bedrooms < 0 ||
+      !Number.isInteger(bathrooms) ||
+      bathrooms < 0
+    ) {
+      setMessage("Please enter valid non-negative room counts and a built area of at least 1 sqft.");
       return;
     }
 
@@ -413,9 +431,9 @@ export default function App() {
     try {
       const res = await predictPrice({
         ...form,
-        built_area_sqft: parseFloat(form.built_area_sqft),
-        bedrooms: parseInt(form.bedrooms),
-        bathrooms: parseInt(form.bathrooms),
+        built_area_sqft: builtArea,
+        bedrooms,
+        bathrooms,
       });
 
       if (res.predicted_price) {
@@ -427,9 +445,9 @@ export default function App() {
           taluk: form.taluk,
           property_type: form.property_type,
           ownership_type: form.ownership_type,
-          built_area_sqft: parseFloat(form.built_area_sqft),
-          bedrooms: parseInt(form.bedrooms),
-          bathrooms: parseInt(form.bathrooms),
+          built_area_sqft: builtArea,
+          bedrooms,
+          bathrooms,
         });
       } else if (res.error) setMessage(res.error);
     } catch (err) {
@@ -614,7 +632,7 @@ export default function App() {
                 placeholder="Built Area (sqft)"
                 value={form.built_area_sqft}
                 onChange={handleChange}
-                min="0" // 3️⃣ Prevent invalid numeric input
+                min={MIN_BUILT_AREA_SQFT}
                 aria-label="Built Area (sqft)" // 6️⃣ Accessibility
                 className={`w-full rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
                   darkMode
@@ -629,7 +647,7 @@ export default function App() {
                   placeholder="Bedrooms"
                   value={form.bedrooms}
                   onChange={handleChange}
-                  min="0" // 3️⃣ Prevent invalid numeric input
+                  min="0"
                   aria-label="Bedrooms" // 6️⃣ Accessibility
                   className={`w-1/2 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
                     darkMode
@@ -643,7 +661,7 @@ export default function App() {
                   placeholder="Bathrooms"
                   value={form.bathrooms}
                   onChange={handleChange}
-                  min="0" // 3️⃣ Prevent invalid numeric input
+                  min="0"
                   aria-label="Bathrooms" // 6️⃣ Accessibility
                   className={`w-1/2 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 ${
                     darkMode
